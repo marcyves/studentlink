@@ -39,12 +39,42 @@ php artisan serve
 
 Code cours démo : **JOIN2026** · Code groupe : **BETA002**
 
-En dev (terminal séparé) :
+En dev (terminal séparé ou `composer dev`) :
 
 ```bash
-npm run dev
+composer dev
+# ou manuellement :
 php artisan serve
+php artisan reverb:start
+npm run dev
 ```
+
+### Chat temps réel (optionnel)
+
+Par défaut `BROADCAST_CONNECTION=log` : le chat fonctionne sans serveur WebSocket.
+
+Pour le **temps réel** (messages instantanés chez les autres membres) :
+
+```bash
+# .env
+BROADCAST_CONNECTION=reverb
+VITE_REVERB_APP_KEY="${REVERB_APP_KEY}"
+VITE_REVERB_HOST="${REVERB_HOST}"
+VITE_REVERB_PORT="${REVERB_PORT}"
+VITE_REVERB_SCHEME="${REVERB_SCHEME}"
+
+php artisan reverb:start   # ou composer dev
+npm run dev                # rebuild si vars VITE changées
+```
+
+## Fonctionnalités MVP
+
+- Tableaux de bord étudiant / professeur
+- Rejoindre un cours (code) et un groupe (code invite)
+- Grilles d'évaluation (critères pondérés)
+- Évaluations par les pairs (inter-groupe et intra-groupe)
+- Chat de groupe (temps réel via Reverb)
+- Export CSV des notes (dashboard professeur)
 
 ## Rôles utilisateur
 

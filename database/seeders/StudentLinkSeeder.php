@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Course;
 use App\Models\Group;
+use App\Models\GroupMessage;
 use App\Models\Project;
 use App\Models\Rubric;
 use App\Models\User;
@@ -82,5 +83,16 @@ class StudentLinkSeeder extends Seeder
         $groupB->submission()->create(['status' => 'pending']);
 
         app(PeerEvaluationSyncService::class)->syncForProject($project);
+
+        GroupMessage::create([
+            'group_id' => $groupA->id,
+            'user_id' => $students[0]->id,
+            'body' => 'Salut l\'équipe — on valide le plan pour vendredi ?',
+        ]);
+        GroupMessage::create([
+            'group_id' => $groupA->id,
+            'user_id' => $students[1]->id,
+            'body' => 'Oui, je m\'occupe du wireframe ce soir.',
+        ]);
     }
 }

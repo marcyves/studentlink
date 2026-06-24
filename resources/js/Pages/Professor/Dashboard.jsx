@@ -65,6 +65,13 @@ export default function Dashboard({ courses }) {
                                             </span>
                                         )}
                                     </Link>
+                                    <a
+                                        href={route('professor.grades.export', project.id)}
+                                        className="inline-flex items-center gap-1 rounded-studentlink border border-primary-container/30 bg-white px-3 py-2 text-sm font-medium text-primary-container"
+                                    >
+                                        <Icon name="download" className="text-base" />
+                                        Export CSV
+                                    </a>
                                 </div>
 
                                 <div className="divide-y divide-primary-container/10">

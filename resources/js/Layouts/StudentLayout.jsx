@@ -4,6 +4,7 @@ import { Link, usePage } from '@inertiajs/react';
 const navItems = [
     { name: 'dashboard', icon: 'dashboard', label: 'Accueil' },
     { name: 'student.evaluations.index', icon: 'rate_review', label: 'Évaluations' },
+    { name: 'student.chat.index', icon: 'forum', label: 'Chat' },
     { name: 'profile.edit', icon: 'person', label: 'Profil' },
 ];
 
@@ -33,7 +34,9 @@ export default function StudentLayout({ children, title }) {
                             className={`flex flex-col items-center gap-1 px-3 py-2 text-xs ${
                                 route().current(item.name) ||
                                 (item.name === 'student.evaluations.index' &&
-                                    route().current('student.evaluations.*'))
+                                    route().current('student.evaluations.*')) ||
+                                (item.name === 'student.chat.index' &&
+                                    route().current('student.chat.*'))
                                     ? 'font-semibold text-primary-container'
                                     : 'text-on-surface/60'
                             }`}
