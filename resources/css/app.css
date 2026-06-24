@@ -7,3 +7,25 @@
 body {
     @apply bg-surface text-on-surface antialiased;
 }
+
+.slider-peer::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: #712ae2;
+    cursor: pointer;
+    border-radius: 9999px;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.slider-peer::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: #712ae2;
+    cursor: pointer;
+    border-radius: 9999px;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

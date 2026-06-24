@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\EvaluationType;
+use App\Enums\PeerEvaluationStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,8 +24,14 @@ class PeerEvaluation extends Model
     {
         return [
             'type' => EvaluationType::class,
+            'status' => PeerEvaluationStatus::class,
             'submitted_at' => 'datetime',
         ];
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === PeerEvaluationStatus::Pending;
     }
 
     public function project(): BelongsTo

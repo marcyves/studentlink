@@ -7,6 +7,7 @@ use App\Models\Group;
 use App\Models\Project;
 use App\Models\Rubric;
 use App\Models\User;
+use App\Services\PeerEvaluationSyncService;
 use Illuminate\Database\Seeder;
 
 class StudentLinkSeeder extends Seeder
@@ -79,5 +80,7 @@ class StudentLinkSeeder extends Seeder
             $students[4]->id => ['is_leader' => false],
         ]);
         $groupB->submission()->create(['status' => 'pending']);
+
+        app(PeerEvaluationSyncService::class)->syncForProject($project);
     }
 }

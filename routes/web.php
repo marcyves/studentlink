@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Professor\RubricController as ProfessorRubricController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
+use App\Http\Controllers\Student\PeerEvaluationController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -27,6 +28,9 @@ Route::middleware(['auth', 'verified', 'student'])->prefix('student')->name('stu
     Route::post('/courses/join', [StudentDashboardController::class, 'joinCourse'])->name('courses.join');
     Route::post('/groups', [StudentDashboardController::class, 'storeGroup'])->name('groups.store');
     Route::post('/groups/join', [StudentDashboardController::class, 'joinGroup'])->name('groups.join');
+    Route::get('/evaluations', [PeerEvaluationController::class, 'index'])->name('evaluations.index');
+    Route::get('/evaluations/{evaluation}', [PeerEvaluationController::class, 'show'])->name('evaluations.show');
+    Route::put('/evaluations/{evaluation}', [PeerEvaluationController::class, 'update'])->name('evaluations.update');
 });
 
 Route::middleware(['auth', 'verified', 'professor'])->prefix('professor')->name('professor.')->group(function () {

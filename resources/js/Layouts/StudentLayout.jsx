@@ -2,8 +2,9 @@ import Icon from '@/Components/Icon';
 import { Link, usePage } from '@inertiajs/react';
 
 const navItems = [
-    { href: 'dashboard', icon: 'dashboard', label: 'Accueil' },
-    { href: 'profile.edit', icon: 'person', label: 'Profil' },
+    { name: 'dashboard', icon: 'dashboard', label: 'Accueil' },
+    { name: 'student.evaluations.index', icon: 'rate_review', label: 'Évaluations' },
+    { name: 'profile.edit', icon: 'person', label: 'Profil' },
 ];
 
 export default function StudentLayout({ children, title }) {
@@ -27,10 +28,12 @@ export default function StudentLayout({ children, title }) {
                 <div className="mx-auto flex max-w-lg justify-around py-2">
                     {navItems.map((item) => (
                         <Link
-                            key={item.href}
-                            href={route(item.href)}
-                            className={`flex flex-col items-center gap-1 px-4 py-2 text-xs ${
-                                route().current(item.href)
+                            key={item.name}
+                            href={route(item.name)}
+                            className={`flex flex-col items-center gap-1 px-3 py-2 text-xs ${
+                                route().current(item.name) ||
+                                (item.name === 'student.evaluations.index' &&
+                                    route().current('student.evaluations.*'))
                                     ? 'font-semibold text-primary-container'
                                     : 'text-on-surface/60'
                             }`}

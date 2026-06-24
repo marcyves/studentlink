@@ -3,7 +3,7 @@ import Icon from '@/Components/Icon';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import StudentLayout from '@/Layouts/StudentLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
 function JoinCourseForm() {
@@ -164,9 +164,20 @@ export default function Dashboard({ groups, enrolledCourses, stats }) {
             </section>
 
             <section className="space-y-3">
-                <h2 className="text-sm font-semibold uppercase tracking-wide text-on-surface/50">
-                    Mes groupes
-                </h2>
+                <div className="flex items-center justify-between">
+                    <h2 className="text-sm font-semibold uppercase tracking-wide text-on-surface/50">
+                        Mes groupes
+                    </h2>
+                    {stats.pendingEvaluations > 0 && (
+                        <Link
+                            href={route('student.evaluations.index')}
+                            className="text-xs font-medium text-secondary"
+                        >
+                            {stats.pendingEvaluations} évaluation
+                            {stats.pendingEvaluations > 1 ? 's' : ''} à faire →
+                        </Link>
+                    )}
+                </div>
                 {groups.length === 0 ? (
                     <p className="rounded-studentlink border border-dashed border-outline-variant/50 p-6 text-center text-sm text-on-surface/60">
                         Aucun groupe pour l&apos;instant.

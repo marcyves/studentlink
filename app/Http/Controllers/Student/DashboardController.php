@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Enums\PeerEvaluationStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Group;
+use App\Models\PeerEvaluation;
 use App\Models\Project;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -46,7 +48,10 @@ class DashboardController extends Controller
             'enrolledCourses' => $enrolledCourses,
             'stats' => [
                 'groups' => $groups->count(),
-                'pendingEvaluations' => 0,
+                'pendingEvaluations' => PeerEvaluation::query()
+                    ->where('reviewer_id', $user->id)
+                    ->where('status', PeerEvaluationStatus::Pending)
+                    ->count(),
             ],
         ]);
     }
