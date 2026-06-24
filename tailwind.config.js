@@ -17,6 +17,7 @@ export default {
             },
             colors: {
                 surface: '#f8f9ff',
+                'surface-container': '#e5eeff',
                 background: '#f8f9ff',
                 primary: {
                     DEFAULT: '#004ac6',

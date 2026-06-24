@@ -26,9 +26,18 @@ cp .env.example .env
 php artisan key:generate
 npm install
 npm run build
-php artisan migrate
+php artisan migrate --seed
 php artisan serve
 ```
+
+### Comptes démo (après seed)
+
+| Rôle | Email | Mot de passe |
+|------|-------|--------------|
+| Professeur | `prof@studentlink.test` | `password` |
+| Étudiant | `alice@studentlink.test` | `password` |
+
+Code cours démo : **JOIN2026** · Code groupe : **BETA002**
 
 En dev (terminal séparé) :
 

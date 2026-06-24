@@ -1,22 +1,38 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Professor\RubricController as ProfessorRubricController;
+use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'laravelVersion' => Application::VERSION,
+            'phpVersion' => PHP_VERSION,
+        ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', DashboardController::class)
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
+Route::middleware(['auth', 'verified', 'student'])->prefix('student')->name('student.')->group(function () {
+    Route::post('/courses/join', [StudentDashboardController::class, 'joinCourse'])->name('courses.join');
+    Route::post('/groups', [StudentDashboardController::class, 'storeGroup'])->name('groups.store');
+    Route::post('/groups/join', [StudentDashboardController::class, 'joinGroup'])->name('groups.join');
+});
+
+Route::middleware(['auth', 'verified', 'professor'])->prefix('professor')->name('professor.')->group(function () {
+    Route::get('/projects/{project}/rubric', [ProfessorRubricController::class, 'edit'])->name('rubrics.edit');
+    Route::put('/projects/{project}/rubric', [ProfessorRubricController::class, 'update'])->name('rubrics.update');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
