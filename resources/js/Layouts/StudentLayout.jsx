@@ -1,5 +1,6 @@
 import Icon from '@/Components/Icon';
-import { Link, usePage } from '@inertiajs/react';
+import UserMenu from '@/Components/UserMenu';
+import { Link } from '@inertiajs/react';
 
 const navItems = [
     { name: 'dashboard', icon: 'dashboard', label: 'Accueil' },
@@ -9,18 +10,22 @@ const navItems = [
 ];
 
 export default function StudentLayout({ children, title }) {
-    const { auth } = usePage().props;
-
     return (
         <div className="min-h-screen bg-surface pb-24">
             <header className="border-b border-primary-container/15 bg-white px-4 py-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-secondary">
-                    StudentLink
-                </p>
-                {title && (
-                    <h1 className="text-xl font-semibold text-on-surface">{title}</h1>
-                )}
-                <p className="text-sm text-on-surface/60">{auth.user.name}</p>
+                <div className="mx-auto flex max-w-lg items-start justify-between gap-3">
+                    <div className="min-w-0">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-secondary">
+                            StudentLink
+                        </p>
+                        {title && (
+                            <h1 className="text-xl font-semibold text-on-surface">
+                                {title}
+                            </h1>
+                        )}
+                    </div>
+                    <UserMenu />
+                </div>
             </header>
 
             <main className="mx-auto max-w-lg px-4 py-4">{children}</main>

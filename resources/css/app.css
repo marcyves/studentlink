@@ -8,6 +8,13 @@ body {
     @apply bg-surface text-on-surface antialiased;
 }
 
+.mesh-gradient {
+    background-color: #f8f9ff;
+    background-image:
+        radial-gradient(at 0% 0%, rgba(0, 74, 198, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(113, 42, 226, 0.05) 0px, transparent 50%);
+}
+
 .slider-peer::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;

@@ -7,7 +7,6 @@ use App\Http\Controllers\Professor\RubricController as ProfessorRubricController
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\GroupChatController;
 use App\Http\Controllers\Student\PeerEvaluationController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,8 +16,6 @@ Route::get('/', function () {
         : Inertia::render('Welcome', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
-            'laravelVersion' => Application::VERSION,
-            'phpVersion' => PHP_VERSION,
         ]);
 });
 

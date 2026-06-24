@@ -1,39 +1,43 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import ProfessorLayout from '@/Layouts/ProfessorLayout';
+import StudentLayout from '@/Layouts/StudentLayout';
+import { Head, usePage } from '@inertiajs/react';
 import DeleteUserForm from './Partials/DeleteUserForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
 
-export default function Edit({ mustVerifyEmail, status }) {
+function ProfileCard({ children }) {
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Profile
-                </h2>
-            }
-        >
-            <Head title="Profile" />
+        <div className="rounded-studentlink border border-primary-container/15 bg-white p-5 shadow-sm md:p-6">
+            {children}
+        </div>
+    );
+}
 
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                        <UpdateProfileInformationForm
-                            mustVerifyEmail={mustVerifyEmail}
-                            status={status}
-                            className="max-w-xl"
-                        />
-                    </div>
+export default function Edit({ mustVerifyEmail, status }) {
+    const { auth } = usePage().props;
+    const Layout =
+        auth.user.role === 'professor' ? ProfessorLayout : StudentLayout;
 
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                        <UpdatePasswordForm className="max-w-xl" />
-                    </div>
+    return (
+        <Layout title="Mon profil">
+            <Head title="Profil" />
 
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                        <DeleteUserForm className="max-w-xl" />
-                    </div>
-                </div>
+            <div className="space-y-4">
+                <ProfileCard>
+                    <UpdateProfileInformationForm
+                        mustVerifyEmail={mustVerifyEmail}
+                        status={status}
+                    />
+                </ProfileCard>
+
+                <ProfileCard>
+                    <UpdatePasswordForm />
+                </ProfileCard>
+
+                <ProfileCard>
+                    <DeleteUserForm />
+                </ProfileCard>
             </div>
-        </AuthenticatedLayout>
+        </Layout>
     );
 }
