@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'professor' => \App\Http\Middleware\EnsureProfessor::class,
             'student' => \App\Http\Middleware\EnsureStudent::class,
+            'admin' => \App\Http\Middleware\EnsureAdmin::class,
         ]);
 
         $middleware->web(append: [

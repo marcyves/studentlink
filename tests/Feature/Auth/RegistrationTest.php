@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\StudentLinkSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -18,12 +19,13 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register(): void
     {
+        StudentLinkSetting::current()->update(['require_registration_domain' => false]);
+
         $response = $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',
-            'role' => 'student',
         ]);
 
         $this->assertAuthenticated();

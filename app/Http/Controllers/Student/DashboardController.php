@@ -8,14 +8,20 @@ use App\Models\Course;
 use App\Models\Group;
 use App\Models\PeerEvaluation;
 use App\Models\Project;
+use App\Services\EmailDomainService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class DashboardController extends Controller
 {
+    public function __construct(
+        private EmailDomainService $emailDomains,
+    ) {}
+
     public function index(): Response
     {
         $user = auth()->user();
@@ -66,6 +72,8 @@ class DashboardController extends Controller
             ->where('join_code', strtoupper(trim($validated['join_code'])))
             ->firstOrFail();
 
+        $this->ensureEmailAllowedForCourse($request->user()->email, $course);
+
         $request->user()->courses()->syncWithoutDetaching([$course->id]);
 
         return back()->with('success', "Inscrit au cours « {$course->title} ».");
@@ -111,9 +119,11 @@ class DashboardController extends Controller
             ->firstOrFail();
 
         $user = $request->user();
+        $course = $group->project->course;
 
-        if (! $user->courses()->where('courses.id', $group->project->course_id)->exists()) {
-            $user->courses()->attach($group->project->course_id);
+        if (! $user->courses()->where('courses.id', $course->id)->exists()) {
+            $this->ensureEmailAllowedForCourse($user->email, $course);
+            $user->courses()->attach($course->id);
         }
 
         $group->members()->syncWithoutDetaching([$user->id => ['is_leader' => false]]);
@@ -123,6 +133,21 @@ class DashboardController extends Controller
         }
 
         return back()->with('success', "Vous avez rejoint « {$group->name} ».");
+    }
+
+    private function ensureEmailAllowedForCourse(string $email, Course $course): void
+    {
+        if ($this->emailDomains->isAllowedForCourse($email, $course)) {
+            return;
+        }
+
+        $domains = collect($this->emailDomains->effectiveDomainsForCourse($course))
+            ->map(fn (string $domain) => '@'.$domain)
+            ->implode(', ');
+
+        throw ValidationException::withMessages([
+            'join_code' => "Adresse non autorisée pour ce cours. Domaines acceptés : {$domains}.",
+        ]);
     }
 
     private function formatGroup(Group $group): array

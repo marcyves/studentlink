@@ -13,8 +13,12 @@ class StudentDashboardTest extends TestCase
 
     public function test_student_can_join_course_and_create_group(): void
     {
-        $professor = User::factory()->professor()->create();
-        $student = User::factory()->create();
+        $professor = User::factory()->professor()->create([
+            'email' => 'prof@school.test',
+        ]);
+        $student = User::factory()->create([
+            'email' => 'alice@school.test',
+        ]);
 
         $course = Course::create([
             'professor_id' => $professor->id,

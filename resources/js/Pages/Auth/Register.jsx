@@ -5,13 +5,12 @@ import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-export default function Register() {
+export default function Register({ registrationHint }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
         password: '',
         password_confirmation: '',
-        role: 'student',
     });
 
     const submit = (e) => {
@@ -24,7 +23,16 @@ export default function Register() {
 
     return (
         <GuestLayout>
-            <Head title="Inscription" />
+            <Head title="Inscription étudiant" />
+
+            <p className="mb-4 text-sm text-on-surface/60">
+                Inscription réservée aux étudiants.
+                {registrationHint ? (
+                    <> Adresse institutionnelle requise ({registrationHint}).</>
+                ) : (
+                    <> Utilisez votre adresse de votre établissement.</>
+                )}
+            </p>
 
             <form onSubmit={submit}>
                 <div>
@@ -45,7 +53,7 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="email" value="Email" />
+                    <InputLabel htmlFor="email" value="E-mail institutionnel" />
 
                     <TextInput
                         id="email"
@@ -59,33 +67,6 @@ export default function Register() {
                     />
 
                     <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel value="Je suis" />
-                    <div className="mt-2 flex gap-4">
-                        <label className="flex items-center gap-2 text-sm">
-                            <input
-                                type="radio"
-                                name="role"
-                                value="student"
-                                checked={data.role === 'student'}
-                                onChange={(e) => setData('role', e.target.value)}
-                            />
-                            Étudiant
-                        </label>
-                        <label className="flex items-center gap-2 text-sm">
-                            <input
-                                type="radio"
-                                name="role"
-                                value="professor"
-                                checked={data.role === 'professor'}
-                                onChange={(e) => setData('role', e.target.value)}
-                            />
-                            Professeur
-                        </label>
-                    </div>
-                    <InputError message={errors.role} className="mt-2" />
                 </div>
 
                 <div className="mt-4">
@@ -130,18 +111,28 @@ export default function Register() {
                     />
                 </div>
 
-                <div className="mt-4 flex items-center justify-end">
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
                     <Link
                         href={route('login')}
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        className="text-sm text-on-surface/60 underline hover:text-on-surface"
                     >
                         Déjà inscrit ?
                     </Link>
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                    <PrimaryButton disabled={processing}>
                         S&apos;inscrire
                     </PrimaryButton>
                 </div>
+
+                <p className="mt-4 text-center text-xs text-on-surface/50">
+                    Enseignant ?{' '}
+                    <Link
+                        href="/#professor-access"
+                        className="text-primary-container underline"
+                    >
+                        Demandez un accès
+                    </Link>
+                </p>
             </form>
         </GuestLayout>
     );

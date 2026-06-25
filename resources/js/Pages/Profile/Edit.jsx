@@ -1,3 +1,4 @@
+import AdminLayout from '@/Layouts/AdminLayout';
 import ProfessorLayout from '@/Layouts/ProfessorLayout';
 import StudentLayout from '@/Layouts/StudentLayout';
 import { Head, usePage } from '@inertiajs/react';
@@ -16,7 +17,11 @@ function ProfileCard({ children }) {
 export default function Edit({ mustVerifyEmail, status }) {
     const { auth } = usePage().props;
     const Layout =
-        auth.user.role === 'professor' ? ProfessorLayout : StudentLayout;
+        auth.user.role === 'admin'
+            ? AdminLayout
+            : auth.user.role === 'professor'
+              ? ProfessorLayout
+              : StudentLayout;
 
     return (
         <Layout title="Mon profil">

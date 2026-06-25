@@ -15,7 +15,15 @@ class Course extends Model
         'code',
         'join_code',
         'description',
+        'allowed_email_domains',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'allowed_email_domains' => 'array',
+        ];
+    }
 
     public function professor(): BelongsTo
     {

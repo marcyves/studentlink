@@ -1,5 +1,6 @@
 import FlashMessage from '@/Components/FlashMessage';
 import Icon from '@/Components/Icon';
+import CourseDomainsForm from '@/Components/CourseDomainsForm';
 import ProfessorLayout from '@/Layouts/ProfessorLayout';
 import { Head, Link } from '@inertiajs/react';
 
@@ -17,6 +18,8 @@ export default function Dashboard({ courses }) {
             ) : (
                 courses.map((course) => (
                     <section key={course.id} className="mb-8">
+                        <CourseDomainsForm course={course} />
+
                         <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
                             <div>
                                 <h2 className="text-lg font-semibold text-on-surface">

@@ -6,11 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Group;
 use App\Models\Project;
+use App\Services\EmailDomainService;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class DashboardController extends Controller
 {
+    public function __construct(
+        private EmailDomainService $emailDomains,
+    ) {}
+
     public function index(): Response
     {
         $professor = auth()->user();
@@ -31,6 +36,11 @@ class DashboardController extends Controller
                     'title' => $course->title,
                     'code' => $course->code,
                     'join_code' => $course->join_code,
+                    'allowed_email_domains' => $course->allowed_email_domains ?? [],
+                    'effective_email_domains' => $this->emailDomains
+                        ->effectiveDomainsForCourse($course),
+                    'default_professor_domain' => $this->emailDomains
+                        ->professorDefaultDomain($professor),
                     'students_count' => $course->students()->count(),
                     'projects' => $course->projects->map(fn (Project $project) => [
                         'id' => $project->id,

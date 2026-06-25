@@ -1,4 +1,6 @@
+import FlashMessage from '@/Components/FlashMessage';
 import Icon from '@/Components/Icon';
+import ProfessorAccessForm from '@/Components/ProfessorAccessForm';
 import StudentLinkBrand from '@/Components/StudentLinkBrand';
 import { Head, Link } from '@inertiajs/react';
 
@@ -20,7 +22,7 @@ const features = [
     },
 ];
 
-export default function Welcome({ auth, canLogin, canRegister }) {
+export default function Welcome({ auth, canLogin, canRegister, registrationHint }) {
     return (
         <>
             <Head title="Accueil" />
@@ -70,6 +72,7 @@ export default function Welcome({ auth, canLogin, canRegister }) {
                 </header>
 
                 <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 pb-16 pt-8 md:px-8 md:pt-16">
+                    <FlashMessage />
                     <section className="mx-auto max-w-3xl text-center">
                         <StudentLinkBrand showTagline={false} />
 
@@ -128,9 +131,13 @@ export default function Welcome({ auth, canLogin, canRegister }) {
                                 Prêt à rejoindre votre promotion ?
                             </h2>
                             <p className="mx-auto mt-2 max-w-lg text-sm text-on-surface/60">
-                                Inscrivez-vous en tant qu&apos;étudiant ou
-                                professeur, puis rejoignez un cours avec le code
-                                fourni par votre enseignant.
+                                Inscrivez-vous avec votre adresse
+                                institutionnelle
+                                {registrationHint && (
+                                    <> ({registrationHint})</>
+                                )}
+                                , puis rejoignez un cours avec le code fourni par
+                                votre enseignant.
                             </p>
                             <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
                                 <Link
@@ -145,6 +152,26 @@ export default function Welcome({ auth, canLogin, canRegister }) {
                                 >
                                     J&apos;ai déjà un compte
                                 </Link>
+                            </div>
+                        </section>
+                    )}
+
+                    {!auth.user && (
+                        <section
+                            id="professor-access"
+                            className="mt-16 rounded-studentlink border border-secondary/20 bg-white/90 p-8 md:mt-24"
+                        >
+                            <div className="mx-auto max-w-md">
+                                <h2 className="text-center text-xl font-semibold text-on-surface">
+                                    Vous êtes professeur ?
+                                </h2>
+                                <p className="mt-2 text-center text-sm text-on-surface/60">
+                                    Les comptes enseignants sont créés par un
+                                    administrateur. Demandez un accès ci-dessous.
+                                </p>
+                                <div className="mt-6">
+                                    <ProfessorAccessForm />
+                                </div>
                             </div>
                         </section>
                     )}
