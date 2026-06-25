@@ -28,7 +28,7 @@ class DashboardController extends Controller
                 'projects.rubric.criteria',
             ])
             ->get()
-            ->map(function (Course $course) {
+            ->map(function (Course $course) use ($professor) {
                 $groups = $course->projects->flatMap->groups;
 
                 return [
