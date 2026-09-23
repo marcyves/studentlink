@@ -22,6 +22,7 @@ class DashboardController extends Controller
 
         $courses = Course::query()
             ->where('professor_id', $professor->id)
+            ->latest()
             ->with([
                 'projects.groups.members',
                 'projects.groups.submission',
@@ -34,6 +35,7 @@ class DashboardController extends Controller
                 return [
                     'id' => $course->id,
                     'title' => $course->title,
+                    'description' => $course->description,
                     'code' => $course->code,
                     'join_code' => $course->join_code,
                     'allowed_email_domains' => $course->allowed_email_domains ?? [],
@@ -45,6 +47,8 @@ class DashboardController extends Controller
                     'projects' => $course->projects->map(fn (Project $project) => [
                         'id' => $project->id,
                         'title' => $project->title,
+                        'description' => $project->description,
+                        'starts_at' => $project->starts_at?->format('d/m/Y'),
                         'ends_at' => $project->ends_at?->format('d/m/Y'),
                         'groups_count' => $project->groups->count(),
                         'rubric' => $project->rubric ? [

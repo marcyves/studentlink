@@ -5,13 +5,15 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Professor\CourseController as ProfessorCourseController;
+use App\Http\Controllers\Professor\GradeExportController;
+use App\Http\Controllers\Professor\ProjectController as ProfessorProjectController;
+use App\Http\Controllers\Professor\RubricController as ProfessorRubricController;
 use App\Http\Controllers\ProfessorAccessRequestController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Professor\GradeExportController;
-use App\Http\Controllers\Professor\RubricController as ProfessorRubricController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\GroupChatController;
 use App\Http\Controllers\Student\PeerEvaluationController;
+use App\Services\EmailDomainService;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -21,7 +23,7 @@ Route::get('/', function () {
         : Inertia::render('Welcome', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
-            'registrationHint' => app(\App\Services\EmailDomainService::class)->registrationHint(),
+            'registrationHint' => app(EmailDomainService::class)->registrationHint(),
         ]);
 });
 
@@ -45,8 +47,11 @@ Route::middleware(['auth', 'verified', 'student'])->prefix('student')->name('stu
 });
 
 Route::middleware(['auth', 'verified', 'professor'])->prefix('professor')->name('professor.')->group(function () {
+    Route::post('/courses', [ProfessorCourseController::class, 'store'])->name('courses.store');
     Route::put('/courses/{course}/domains', [ProfessorCourseController::class, 'updateDomains'])
         ->name('courses.domains.update');
+    Route::post('/courses/{course}/projects', [ProfessorProjectController::class, 'store'])
+        ->name('courses.projects.store');
     Route::get('/projects/{project}/rubric', [ProfessorRubricController::class, 'edit'])->name('rubrics.edit');
     Route::put('/projects/{project}/rubric', [ProfessorRubricController::class, 'update'])->name('rubrics.update');
     Route::get('/projects/{project}/export', GradeExportController::class)->name('grades.export');
