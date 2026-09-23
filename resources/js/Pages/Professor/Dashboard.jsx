@@ -55,7 +55,10 @@ function CreateCourseForm({ initiallyOpen = false }) {
 
         post(route('professor.courses.store'), {
             preserveScroll: true,
-            onSuccess: () => reset(),
+            onSuccess: () => {
+                reset();
+                setOpen(false);
+            },
         });
     };
 
@@ -187,7 +190,10 @@ function CreateProjectForm({ course, initiallyOpen = false }) {
         e.preventDefault();
         post(route('professor.courses.projects.store', course.id), {
             preserveScroll: true,
-            onSuccess: () => reset(),
+            onSuccess: () => {
+                reset();
+                setOpen(false);
+            },
         });
     };
 
