@@ -94,7 +94,7 @@ Colonne `users.role` : `student` (défaut), `professor`, `admin`.
 Les professeurs ne s'inscrivent pas via `/register` — demande sur la landing.
 
 ```bash
-
+php artisan studentlink:create-professor prof@ecole.fr "Nom Prénom"
 ```
 
 ## Licence
