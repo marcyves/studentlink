@@ -91,7 +91,11 @@ npm run dev                # rebuild si vars VITE changées
 
 Colonne `users.role` : `student` (défaut), `professor`, `admin`.
 
-Les professeurs ne s'inscrivent pas via `/register` — demande sur la landing ou commande artisan ci-dessus.
+Les professeurs ne s'inscrivent pas via `/register` — demande sur la landing.
+
+```bash
+
+```
 
 ## Licence
 
