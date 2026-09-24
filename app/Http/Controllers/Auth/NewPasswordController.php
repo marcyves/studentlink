@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -21,6 +22,8 @@ class NewPasswordController extends Controller
      */
     public function create(Request $request): Response
     {
+        $this->logoutAuthenticatedSession($request);
+
         return Inertia::render('Auth/ResetPassword', [
             'email' => $request->email,
             'token' => $request->route('token'),
@@ -34,6 +37,8 @@ class NewPasswordController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $this->logoutAuthenticatedSession($request);
+
         $request->validate([
             'token' => 'required',
             'email' => 'required|email',
@@ -65,5 +70,22 @@ class NewPasswordController extends Controller
         throw ValidationException::withMessages([
             'email' => [trans($status)],
         ]);
+    }
+
+    /**
+     * An already signed-in visitor (often an admin opening a professor's link)
+     * must leave that session so the reset form for the account in the link is shown.
+     */
+    private function logoutAuthenticatedSession(Request $request): void
+    {
+        if (! Auth::check()) {
+            return;
+        }
+
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
     }
 }
