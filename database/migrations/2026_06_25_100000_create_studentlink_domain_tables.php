@@ -103,7 +103,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('score');
             $table->timestamps();
 
-            $table->unique(['peer_evaluation_id', 'rubric_criterion_id']);
+            $table->unique(['peer_evaluation_id', 'rubric_criterion_id'], 'peer_eval_score_unique');
         });
     }
 
