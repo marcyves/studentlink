@@ -93,10 +93,6 @@ Colonne `users.role` : `student` (défaut), `professor`, `admin`.
 
 Les professeurs ne s'inscrivent pas via `/register` — demande sur la landing ou commande artisan ci-dessus.
 
-## Documentation produit
-
-Spécifications, maquettes Stitch et brief : voir le wiki Obsidian `Marc/Projet/StudentLink/`.
-
 ## Licence
 
 MIT
