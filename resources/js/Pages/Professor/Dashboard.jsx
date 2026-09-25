@@ -288,38 +288,6 @@ function CreateProjectForm({ course, deliverableTypes, initiallyOpen = false }) 
     );
 }
 
-function ProjectDeliverableForm({ project, deliverableTypes }) {
-    const { data, setData, put, processing, errors } = useForm({
-        deliverable_type: project.deliverable_type,
-    });
-
-    const submit = (e) => {
-        e.preventDefault();
-        put(route('professor.projects.deliverable.update', project.id), {
-            preserveScroll: true,
-        });
-    };
-
-    return (
-        <form onSubmit={submit} className="mt-3 flex flex-wrap items-end gap-3">
-            <div className="min-w-48 flex-1">
-                <InputLabel
-                    htmlFor={`deliverable-type-${project.id}`}
-                    value="Type de livrable"
-                />
-                <DeliverableTypeSelect
-                    id={`deliverable-type-${project.id}`}
-                    value={data.deliverable_type}
-                    types={deliverableTypes}
-                    onChange={(e) => setData('deliverable_type', e.target.value)}
-                />
-                <InputError message={errors.deliverable_type} className="mt-2" />
-            </div>
-            <PrimaryButton disabled={processing}>Enregistrer</PrimaryButton>
-        </form>
-    );
-}
-
 function EditCourseForm({ course }) {
     const { data, setData, put, processing, errors } = useForm({
         title: course.title,
@@ -762,10 +730,6 @@ export default function Dashboard({ courses, deliverableTypes }) {
                                         {project.deliverable_label} · {project.groups_count}{' '}
                                         groupes
                                     </p>
-                                    <ProjectDeliverableForm
-                                        project={project}
-                                        deliverableTypes={deliverableTypes}
-                                    />
                                     <div className="mt-2 flex flex-wrap items-center gap-4">
                                         <EditProjectForm
                                             project={project}
