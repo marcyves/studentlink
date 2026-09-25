@@ -2,6 +2,7 @@ import FlashMessage from '@/Components/FlashMessage';
 import Icon from '@/Components/Icon';
 import ProfessorAccessForm from '@/Components/ProfessorAccessForm';
 import StudentLinkBrand from '@/Components/StudentLinkBrand';
+import ThemeToggle from '@/Components/ThemeToggle';
 import { Head, Link } from '@inertiajs/react';
 
 const features = [
@@ -41,6 +42,7 @@ export default function Welcome({ auth, canLogin, canRegister, registrationHint 
                     </Link>
 
                     <nav className="flex items-center gap-2 sm:gap-3">
+                        <ThemeToggle />
                         {auth.user ? (
                             <Link
                                 href={route('dashboard')}
@@ -96,7 +98,7 @@ export default function Welcome({ auth, canLogin, canRegister, registrationHint 
                                 {canLogin && (
                                     <Link
                                         href={route('login')}
-                                        className="inline-flex w-full items-center justify-center gap-2 rounded-studentlink border border-primary-container/30 bg-white px-6 py-3 text-sm font-semibold text-primary-container transition hover:border-secondary/40 hover:bg-surface-container/50 sm:w-auto"
+                                        className="inline-flex w-full items-center justify-center gap-2 rounded-studentlink border border-primary-container/30 bg-card px-6 py-3 text-sm font-semibold text-primary-container transition hover:border-secondary/40 hover:bg-surface-container/50 sm:w-auto"
                                     >
                                         <Icon name="login" />
                                         Se connecter
@@ -110,7 +112,7 @@ export default function Welcome({ auth, canLogin, canRegister, registrationHint 
                         {features.map((feature) => (
                             <article
                                 key={feature.title}
-                                className="rounded-studentlink border border-primary-container/10 bg-white/80 p-6 shadow-sm backdrop-blur-sm transition hover:border-secondary/30 hover:shadow-md"
+                                className="rounded-studentlink border border-primary-container/10 bg-card/80 p-6 shadow-sm backdrop-blur-sm transition hover:border-secondary/30 hover:shadow-md"
                             >
                                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-studentlink bg-secondary/10 text-secondary">
                                     <Icon name={feature.icon} />
@@ -159,7 +161,7 @@ export default function Welcome({ auth, canLogin, canRegister, registrationHint 
                     {!auth.user && (
                         <section
                             id="professor-access"
-                            className="mt-16 rounded-studentlink border border-secondary/20 bg-white/90 p-8 md:mt-24"
+                            className="mt-16 rounded-studentlink border border-secondary/20 bg-card/90 p-8 md:mt-24"
                         >
                             <div className="mx-auto max-w-md">
                                 <h2 className="text-center text-xl font-semibold text-on-surface">

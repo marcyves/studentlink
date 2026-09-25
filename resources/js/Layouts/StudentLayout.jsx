@@ -12,7 +12,7 @@ const navItems = [
 export default function StudentLayout({ children, title }) {
     return (
         <div className="min-h-screen bg-surface pb-24">
-            <header className="border-b border-primary-container/15 bg-white px-4 py-4">
+            <header className="border-b border-primary-container/15 bg-card px-4 py-4">
                 <div className="mx-auto flex max-w-lg items-start justify-between gap-3">
                     <div className="min-w-0">
                         <p className="text-xs font-semibold uppercase tracking-wide text-secondary">
@@ -30,7 +30,7 @@ export default function StudentLayout({ children, title }) {
 
             <main className="mx-auto max-w-lg px-4 py-4">{children}</main>
 
-            <nav className="fixed bottom-0 left-0 right-0 border-t border-primary-container/15 bg-white">
+            <nav className="fixed bottom-0 left-0 right-0 border-t border-primary-container/15 bg-card">
                 <div className="mx-auto flex max-w-lg justify-around py-2">
                     {navItems.map((item) => (
                         <Link

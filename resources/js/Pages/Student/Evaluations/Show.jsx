@@ -40,7 +40,7 @@ export default function Show({ evaluation }) {
                 Retour
             </Link>
 
-            <div className="mb-6 rounded-studentlink border border-primary-container/20 bg-white p-4">
+            <div className="mb-6 rounded-studentlink border border-primary-container/20 bg-card p-4">
                 <span
                     className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
                         isInter
@@ -68,7 +68,7 @@ export default function Show({ evaluation }) {
             </div>
 
             {isInter && evaluation.deliverable && (
-                <section className="mb-6 rounded-studentlink border border-primary-container/20 bg-white p-4">
+                <section className="mb-6 rounded-studentlink border border-primary-container/20 bg-card p-4">
                     <h3 className="mb-3 text-sm font-semibold text-on-surface">
                         Livrable · {evaluation.deliverable.type_label}
                     </h3>
@@ -93,7 +93,7 @@ export default function Show({ evaluation }) {
                 {evaluation.criteria.map((criterion) => (
                     <div
                         key={criterion.id}
-                        className="rounded-studentlink border border-outline-variant/30 bg-white p-4"
+                        className="rounded-studentlink border border-outline-variant/30 bg-card p-4"
                     >
                         <ScoreSlider
                             id={`criterion-${criterion.id}`}

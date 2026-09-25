@@ -3,6 +3,7 @@ import forms from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
 export default {
+    darkMode: 'class',
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
@@ -16,22 +17,23 @@ export default {
                 sans: ['Inter', ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                surface: '#f8f9ff',
-                'surface-container': '#e5eeff',
-                background: '#f8f9ff',
+                surface: 'rgb(var(--sl-surface) / <alpha-value>)',
+                'surface-container': 'rgb(var(--sl-surface-container) / <alpha-value>)',
+                card: 'rgb(var(--sl-card) / <alpha-value>)',
+                background: 'rgb(var(--sl-surface) / <alpha-value>)',
                 primary: {
-                    DEFAULT: '#004ac6',
-                    container: '#2563eb',
+                    DEFAULT: 'rgb(var(--sl-primary) / <alpha-value>)',
+                    container: 'rgb(var(--sl-primary-container) / <alpha-value>)',
                 },
                 secondary: {
-                    DEFAULT: '#712ae2',
-                    container: '#8a4cfc',
+                    DEFAULT: 'rgb(var(--sl-secondary) / <alpha-value>)',
+                    container: 'rgb(var(--sl-secondary-container) / <alpha-value>)',
                 },
                 tertiary: {
-                    DEFAULT: '#006242',
-                    container: '#007d55',
+                    DEFAULT: 'rgb(var(--sl-tertiary) / <alpha-value>)',
+                    container: 'rgb(var(--sl-tertiary-container) / <alpha-value>)',
                 },
-                'on-surface': '#0b1c30',
+                'on-surface': 'rgb(var(--sl-on) / <alpha-value>)',
             },
             borderRadius: {
                 studentlink: '0.5rem',

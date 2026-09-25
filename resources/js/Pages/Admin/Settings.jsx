@@ -30,7 +30,7 @@ export default function Settings({ settings }) {
                 </Link>
             </p>
 
-            <section className="rounded-studentlink border border-primary-container/15 bg-white p-5">
+            <section className="rounded-studentlink border border-primary-container/15 bg-card p-5">
                 <h2 className="text-lg font-semibold text-on-surface">
                     Inscription étudiante
                 </h2>

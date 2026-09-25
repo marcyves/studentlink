@@ -10,7 +10,7 @@ import UpdateProfileInformationForm from './Partials/UpdateProfileInformationFor
 
 function ProfileCard({ children }) {
     return (
-        <div className="rounded-studentlink border border-primary-container/15 bg-white p-5 shadow-sm md:p-6">
+        <div className="rounded-studentlink border border-primary-container/15 bg-card p-5 shadow-sm md:p-6">
             {children}
         </div>
     );

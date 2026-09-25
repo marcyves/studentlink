@@ -92,7 +92,7 @@ export default function Edit({ project, rubric }) {
                     {data.criteria.map((criterion, index) => (
                         <div
                             key={index}
-                            className="grid gap-3 rounded-studentlink border border-primary-container/20 bg-white p-4 sm:grid-cols-[1fr_100px_100px_auto]"
+                            className="grid gap-3 rounded-studentlink border border-primary-container/20 bg-card p-4 sm:grid-cols-[1fr_100px_100px_auto]"
                         >
                             <TextInput
                                 value={criterion.label}
