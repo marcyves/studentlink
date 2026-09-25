@@ -5,6 +5,24 @@ import TextInput from '@/Components/TextInput';
 import { router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
+function fieldError(errors, name) {
+    if (!errors) {
+        return undefined;
+    }
+
+    if (errors[name]) {
+        return Array.isArray(errors[name]) ? errors[name][0] : errors[name];
+    }
+
+    const nested = Object.keys(errors).find((key) => key.startsWith(`${name}.`));
+
+    if (!nested) {
+        return undefined;
+    }
+
+    return Array.isArray(errors[nested]) ? errors[nested][0] : errors[nested];
+}
+
 export default function CourseDomainsForm({ course }) {
     const { errors } = usePage().props;
     const placeholder =
@@ -39,15 +57,13 @@ export default function CourseDomainsForm({ course }) {
     };
 
     return (
-        <form
-            onSubmit={submit}
-            className="mb-6 rounded-studentlink border border-primary-container/15 bg-white p-4"
-        >
+        <form onSubmit={submit}>
             <h3 className="text-sm font-semibold text-on-surface">
-                Domaines e-mail étudiants autorisés
+                {course.title}
             </h3>
             <p className="mt-1 text-xs text-on-surface/60">
-                Laissez vide pour utiliser le domaine du professeur (
+                {course.code} · laissez vide pour utiliser le domaine de votre
+                e-mail (
                 {course.default_professor_domain
                     ? `@${course.default_professor_domain}`
                     : '—'}
@@ -57,7 +73,7 @@ export default function CourseDomainsForm({ course }) {
             <div className="mt-3">
                 <InputLabel
                     htmlFor={`domains-${course.id}`}
-                    value="Domaines supplémentaires (séparés par des virgules)"
+                    value="Domaines e-mail autorisés (séparés par des virgules)"
                 />
                 <TextInput
                     id={`domains-${course.id}`}
@@ -67,7 +83,7 @@ export default function CourseDomainsForm({ course }) {
                     className="mt-1 block w-full"
                 />
                 <InputError
-                    message={errors?.allowed_email_domains}
+                    message={fieldError(errors, 'allowed_email_domains')}
                     className="mt-2"
                 />
             </div>

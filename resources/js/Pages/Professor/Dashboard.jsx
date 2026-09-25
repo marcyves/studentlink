@@ -1,4 +1,3 @@
-import CourseDomainsForm from '@/Components/CourseDomainsForm';
 import FlashMessage from '@/Components/FlashMessage';
 import Icon from '@/Components/Icon';
 import InputError from '@/Components/InputError';
@@ -9,23 +8,12 @@ import ProfessorLayout from '@/Layouts/ProfessorLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
-function fieldError(errors, name) {
-    if (errors[name]) {
-        return errors[name];
-    }
-
-    const nested = Object.keys(errors).find((key) => key.startsWith(`${name}.`));
-
-    return nested ? errors[nested] : undefined;
-}
-
 function CreateCourseForm({ initiallyOpen = false }) {
-    const { data, setData, post, processing, errors, reset, transform } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm({
         title: '',
         description: '',
         code: '',
         join_code: '',
-        domains: '',
     });
     const [open, setOpen] = useState(
         () =>
@@ -34,24 +22,12 @@ function CreateCourseForm({ initiallyOpen = false }) {
                 errors.title ||
                     errors.description ||
                     errors.code ||
-                    errors.join_code ||
-                    fieldError(errors, 'allowed_email_domains'),
+                    errors.join_code,
             ),
     );
 
     const submit = (e) => {
         e.preventDefault();
-
-        transform((form) => ({
-            title: form.title,
-            description: form.description,
-            code: form.code,
-            join_code: form.join_code,
-            allowed_email_domains: form.domains
-                .split(/[\s,;]+/)
-                .map((domain) => domain.trim().replace(/^@+/, ''))
-                .filter(Boolean),
-        }));
 
         post(route('professor.courses.store'), {
             preserveScroll: true,
@@ -86,7 +62,6 @@ function CreateCourseForm({ initiallyOpen = false }) {
                 <h2 className="text-sm font-semibold text-on-surface">Nouveau cours</h2>
                 <p className="mt-1 text-xs text-on-surface/60">
                     Les étudiants rejoignent le cours avec le code d'inscription.
-                    Sans domaine explicite, le domaine de votre e-mail est utilisé.
                 </p>
             </div>
 
@@ -139,24 +114,6 @@ function CreateCourseForm({ initiallyOpen = false }) {
                     />
                     <InputError message={errors.join_code} className="mt-2" />
                 </div>
-            </div>
-
-            <div>
-                <InputLabel
-                    htmlFor="course-domains"
-                    value="Domaines e-mail autorisés (optionnel)"
-                />
-                <TextInput
-                    id="course-domains"
-                    value={data.domains}
-                    onChange={(e) => setData('domains', e.target.value)}
-                    placeholder="ipag.fr, etu.ipag.fr"
-                    className="mt-1 block w-full"
-                />
-                <InputError
-                    message={fieldError(errors, 'allowed_email_domains')}
-                    className="mt-2"
-                />
             </div>
 
             <div className="flex items-center gap-3">
@@ -312,8 +269,6 @@ export default function Dashboard({ courses }) {
 
             {courses.map((course) => (
                 <section key={course.id} className="mb-8">
-                    <CourseDomainsForm course={course} />
-
                     <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
                         <div>
                             <h2 className="text-lg font-semibold text-on-surface">

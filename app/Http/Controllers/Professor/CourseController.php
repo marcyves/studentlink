@@ -16,17 +16,9 @@ class CourseController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $domains = $request->input('allowed_email_domains');
-
         $request->merge([
             'code' => strtoupper(trim((string) $request->input('code', ''))),
             'join_code' => strtoupper(trim((string) $request->input('join_code', ''))),
-            'allowed_email_domains' => is_array($domains)
-                ? array_values(array_filter(array_map(
-                    fn ($domain) => is_string($domain) ? ltrim(trim($domain), '@') : $domain,
-                    $domains,
-                ), fn ($domain) => $domain !== ''))
-                : $domains,
         ]);
 
         $validated = $request->validate([
@@ -34,10 +26,8 @@ class CourseController extends Controller
             'description' => ['nullable', 'string', 'max:5000'],
             'code' => ['required', 'string', 'max:32', 'alpha_dash', 'unique:courses,code'],
             'join_code' => ['required', 'string', 'max:12', 'alpha_dash', 'unique:courses,join_code'],
-            ...$this->domainRules(),
+            'allowed_email_domains' => ['prohibited'],
         ]);
-
-        $domains = $this->normalizedDomains($validated['allowed_email_domains'] ?? []);
 
         Course::create([
             'professor_id' => $request->user()->id,
@@ -45,7 +35,6 @@ class CourseController extends Controller
             'description' => $validated['description'] ?? null,
             'code' => $validated['code'],
             'join_code' => $validated['join_code'],
-            'allowed_email_domains' => $domains,
         ]);
 
         return redirect()
@@ -58,6 +47,17 @@ class CourseController extends Controller
         if ($course->professor_id !== $request->user()->id) {
             abort(403);
         }
+
+        $domains = $request->input('allowed_email_domains');
+
+        $request->merge([
+            'allowed_email_domains' => is_array($domains)
+                ? array_values(array_filter(array_map(
+                    fn ($domain) => is_string($domain) ? ltrim(trim($domain), '@') : $domain,
+                    $domains,
+                ), fn ($domain) => $domain !== ''))
+                : $domains,
+        ]);
 
         $validated = $request->validate($this->domainRules());
 
