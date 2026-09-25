@@ -9,7 +9,7 @@ export default function Edit({ project, rubric }) {
         name: rubric.name,
         criteria: rubric.criteria.length
             ? rubric.criteria
-            : [{ label: '', weight: 33, max_score: 5 }],
+            : [{ label: '', weight: 100, max_score: 5 }],
     });
 
     const updateCriterion = (index, field, value) => {
@@ -36,6 +36,14 @@ export default function Edit({ project, rubric }) {
         (sum, c) => sum + Number(c.weight || 0),
         0,
     );
+    const weightsAreValid = totalWeight === 100;
+    const criteriaError = Array.isArray(errors.criteria)
+        ? errors.criteria[0]
+        : errors.criteria;
+    const fieldErrors = Object.entries(errors)
+        .filter(([key]) => key.startsWith('criteria.'))
+        .flatMap(([, message]) => (Array.isArray(message) ? message : [message]))
+        .filter(Boolean);
 
     return (
         <ProfessorLayout title="Configuration des grilles">
@@ -49,6 +57,9 @@ export default function Edit({ project, rubric }) {
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
+                    if (!weightsAreValid) {
+                        return;
+                    }
                     put(route('professor.rubrics.update', project.id));
                 }}
                 className="max-w-2xl space-y-6"
@@ -69,7 +80,7 @@ export default function Edit({ project, rubric }) {
                         <h2 className="font-medium text-on-surface">Critères</h2>
                         <p
                             className={`text-sm ${
-                                totalWeight === 100
+                                weightsAreValid
                                     ? 'text-tertiary'
                                     : 'text-red-600'
                             }`}
@@ -92,6 +103,8 @@ export default function Edit({ project, rubric }) {
                             />
                             <TextInput
                                 type="number"
+                                min="1"
+                                max="100"
                                 value={criterion.weight}
                                 onChange={(e) =>
                                     updateCriterion(index, 'weight', e.target.value)
@@ -100,6 +113,8 @@ export default function Edit({ project, rubric }) {
                             />
                             <TextInput
                                 type="number"
+                                min="1"
+                                max="10"
                                 value={criterion.max_score}
                                 onChange={(e) =>
                                     updateCriterion(
@@ -120,9 +135,22 @@ export default function Edit({ project, rubric }) {
                         </div>
                     ))}
 
-                    {errors.criteria && (
-                        <p className="text-sm text-red-600">{errors.criteria}</p>
+                    {!weightsAreValid && (
+                        <p className="text-sm text-red-600">
+                            La somme des poids doit être égale à 100.
+                        </p>
                     )}
+
+                    {weightsAreValid && criteriaError && (
+                        <p className="text-sm text-red-600">{criteriaError}</p>
+                    )}
+
+                    {weightsAreValid &&
+                        fieldErrors.map((message, index) => (
+                            <p key={`${index}-${message}`} className="text-sm text-red-600">
+                                {message}
+                            </p>
+                        ))}
 
                     <button
                         type="button"
@@ -134,7 +162,7 @@ export default function Edit({ project, rubric }) {
                 </div>
 
                 <div className="flex gap-3">
-                    <PrimaryButton disabled={processing}>
+                    <PrimaryButton disabled={processing || !weightsAreValid}>
                         Enregistrer
                     </PrimaryButton>
                     <Link
