@@ -17,7 +17,7 @@ function MessageBubble({ message, isOwn }) {
                 className={`max-w-[85%] rounded-studentlink px-3 py-2 ${
                     isOwn
                         ? 'bg-primary-container text-white'
-                        : 'border border-primary-container/15 bg-white text-on-surface'
+                        : 'border border-primary-container/15 bg-card text-on-surface'
                 }`}
             >
                 {!isOwn && (

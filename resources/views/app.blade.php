@@ -3,6 +3,17 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script>
+            (function () {
+                try {
+                    var stored = localStorage.getItem('studentlink-theme');
+                    var dark = stored
+                        ? stored === 'dark'
+                        : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (dark) document.documentElement.classList.add('dark');
+                } catch (e) {}
+            })();
+        </script>
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 

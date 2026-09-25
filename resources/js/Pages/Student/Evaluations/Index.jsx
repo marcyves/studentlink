@@ -9,7 +9,7 @@ function EvaluationCard({ evaluation }) {
     return (
         <Link
             href={route('student.evaluations.show', evaluation.id)}
-            className="block rounded-studentlink border border-primary-container/20 bg-white p-4 transition hover:border-secondary/40"
+            className="block rounded-studentlink border border-primary-container/20 bg-card p-4 transition hover:border-secondary/40"
         >
             <div className="flex items-start justify-between gap-3">
                 <div>
@@ -60,11 +60,11 @@ export default function Index({ pending, completed, stats }) {
             <FlashMessage />
 
             <div className="mb-6 grid grid-cols-2 gap-3">
-                <div className="rounded-studentlink border border-secondary/20 bg-white p-4">
+                <div className="rounded-studentlink border border-secondary/20 bg-card p-4">
                     <p className="text-2xl font-bold text-secondary">{stats.pending}</p>
                     <p className="text-xs text-on-surface/60">À faire</p>
                 </div>
-                <div className="rounded-studentlink border border-tertiary/20 bg-white p-4">
+                <div className="rounded-studentlink border border-tertiary/20 bg-card p-4">
                     <p className="text-2xl font-bold text-tertiary">{stats.completed}</p>
                     <p className="text-xs text-on-surface/60">Terminées</p>
                 </div>

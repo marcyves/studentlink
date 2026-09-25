@@ -4,15 +4,129 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --sl-surface: 248 249 255;
+    --sl-surface-container: 229 238 255;
+    --sl-card: 255 255 255;
+    --sl-on: 11 28 48;
+    --sl-primary: 0 74 198;
+    --sl-primary-container: 37 99 235;
+    --sl-secondary: 113 42 226;
+    --sl-secondary-container: 138 76 252;
+    --sl-tertiary: 0 98 66;
+    --sl-tertiary-container: 0 125 85;
+    --sl-line: 209 213 219;
+    color-scheme: light;
+}
+
+.dark {
+    --sl-surface: 9 14 26;
+    --sl-surface-container: 24 34 56;
+    --sl-card: 17 25 42;
+    --sl-on: 226 232 244;
+    --sl-primary: 0 74 198;
+    --sl-primary-container: 37 99 235;
+    --sl-secondary: 113 42 226;
+    --sl-secondary-container: 138 76 252;
+    --sl-tertiary: 0 98 66;
+    --sl-tertiary-container: 0 125 85;
+    --sl-line: 71 85 115;
+    color-scheme: dark;
+}
+
 body {
     @apply bg-surface text-on-surface antialiased;
 }
 
 .mesh-gradient {
-    background-color: #f8f9ff;
+    background-color: rgb(var(--sl-surface));
     background-image:
-        radial-gradient(at 0% 0%, rgba(0, 74, 198, 0.05) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(113, 42, 226, 0.05) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, rgb(var(--sl-primary) / 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgb(var(--sl-secondary) / 0.08) 0px, transparent 50%);
+}
+
+.dark input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']),
+.dark textarea,
+.dark select {
+    background-color: rgb(var(--sl-card));
+    color: rgb(var(--sl-on));
+    border-color: rgb(var(--sl-line));
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: rgb(var(--sl-on) / 0.45);
+}
+
+.dark .text-primary {
+    color: rgb(147 197 253);
+}
+
+.dark .text-secondary {
+    color: rgb(196 181 253);
+}
+
+.dark .text-tertiary {
+    color: rgb(110 231 183);
+}
+
+.dark .text-gray-400,
+.dark .text-gray-500,
+.dark .text-gray-600,
+.dark .text-gray-700,
+.dark .text-gray-800,
+.dark .text-gray-900 {
+    color: rgb(var(--sl-on) / 0.78);
+}
+
+.dark .hover\:text-gray-700:hover,
+.dark .hover\:text-gray-900:hover {
+    color: rgb(var(--sl-on));
+}
+
+.dark .bg-gray-100,
+.dark .bg-gray-50,
+.dark .hover\:bg-gray-50:hover,
+.dark .hover\:bg-gray-100:hover,
+.dark .focus\:bg-gray-50:focus,
+.dark .focus\:bg-gray-100:focus {
+    background-color: rgb(var(--sl-surface-container));
+}
+
+.dark .border-gray-100,
+.dark .border-gray-200,
+.dark .border-gray-300,
+.dark .hover\:border-gray-300:hover,
+.dark .focus\:border-gray-300:focus {
+    border-color: rgb(var(--sl-line));
+}
+
+.dark .text-green-600 {
+    color: rgb(110 231 183);
+}
+
+.dark .border-red-300 {
+    border-color: rgb(248 113 113 / 0.45);
+}
+
+.dark .bg-red-50,
+.dark .bg-red-100,
+.dark .hover\:bg-red-50:hover {
+    background-color: rgb(127 29 29 / 0.35);
+}
+
+.dark .text-red-600,
+.dark .text-red-700,
+.dark .text-red-800 {
+    color: rgb(252 165 165);
+}
+
+.dark .bg-amber-100 {
+    background-color: rgb(120 53 15 / 0.45);
+}
+
+.dark .text-amber-800 {
+    color: rgb(253 230 138);
 }
 
 .slider-peer::-webkit-slider-thumb {
@@ -20,19 +134,19 @@ body {
     appearance: none;
     width: 24px;
     height: 24px;
-    background: #712ae2;
+    background: rgb(var(--sl-secondary));
     cursor: pointer;
     border-radius: 9999px;
-    border: 2px solid white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgb(var(--sl-card));
+    box-shadow: 0 2px 4px rgb(0 0 0 / 0.2);
 }
 
 .slider-peer::-moz-range-thumb {
     width: 24px;
     height: 24px;
-    background: #712ae2;
+    background: rgb(var(--sl-secondary));
     cursor: pointer;
     border-radius: 9999px;
-    border: 2px solid white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgb(var(--sl-card));
+    box-shadow: 0 2px 4px rgb(0 0 0 / 0.2);
 }

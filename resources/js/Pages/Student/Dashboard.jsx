@@ -47,7 +47,7 @@ function CreateGroupForm({ projects }) {
     }
 
     return (
-        <div className="rounded-studentlink border border-primary-container/20 bg-white p-4">
+        <div className="rounded-studentlink border border-primary-container/20 bg-card p-4">
             <button
                 type="button"
                 onClick={() => setOpen(!open)}
@@ -231,13 +231,13 @@ export default function Dashboard({ groups, enrolledCourses, stats }) {
             <FlashMessage />
 
             <div className="mb-6 grid grid-cols-2 gap-3">
-                <div className="rounded-studentlink border border-primary-container/20 bg-white p-4">
+                <div className="rounded-studentlink border border-primary-container/20 bg-card p-4">
                     <p className="text-2xl font-bold text-primary-container">
                         {stats.groups}
                     </p>
                     <p className="text-xs text-on-surface/60">Mes groupes</p>
                 </div>
-                <div className="rounded-studentlink border border-secondary/20 bg-white p-4">
+                <div className="rounded-studentlink border border-secondary/20 bg-card p-4">
                     <p className="text-2xl font-bold text-secondary">
                         {stats.pendingEvaluations}
                     </p>
@@ -286,7 +286,7 @@ export default function Dashboard({ groups, enrolledCourses, stats }) {
                     groups.map((group) => (
                         <article
                             key={group.id}
-                            className="rounded-studentlink border border-primary-container/20 bg-white p-4"
+                            className="rounded-studentlink border border-primary-container/20 bg-card p-4"
                         >
                             <div className="flex items-start justify-between gap-2">
                                 <div>

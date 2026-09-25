@@ -4,7 +4,7 @@ import { Link } from '@inertiajs/react';
 export default function ProfessorLayout({ children, title }) {
     return (
         <div className="min-h-screen bg-surface">
-            <header className="border-b border-primary-container/15 bg-white">
+            <header className="border-b border-primary-container/15 bg-card">
                 <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4">
                     <div className="min-w-0">
                         <Link

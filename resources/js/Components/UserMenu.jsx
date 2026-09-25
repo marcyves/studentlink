@@ -1,5 +1,6 @@
 import Dropdown from '@/Components/Dropdown';
 import Icon from '@/Components/Icon';
+import ThemeToggle from '@/Components/ThemeToggle';
 import { usePage } from '@inertiajs/react';
 
 export default function UserMenu() {
@@ -10,11 +11,13 @@ export default function UserMenu() {
         'block w-full px-4 py-2.5 text-start text-sm text-on-surface transition hover:bg-surface-container';
 
     return (
-        <Dropdown>
+        <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Dropdown>
             <Dropdown.Trigger>
                 <button
                     type="button"
-                    className="inline-flex max-w-[10rem] items-center gap-1 rounded-studentlink border border-primary-container/20 bg-white px-3 py-2 text-sm font-medium text-on-surface sm:max-w-none"
+                    className="inline-flex max-w-[10rem] items-center gap-1 rounded-studentlink border border-primary-container/20 bg-card px-3 py-2 text-sm font-medium text-on-surface sm:max-w-none"
                 >
                     <span className="truncate">{auth.user.name}</span>
                     <Icon
@@ -25,7 +28,7 @@ export default function UserMenu() {
             </Dropdown.Trigger>
 
             <Dropdown.Content
-                contentClasses="overflow-hidden rounded-studentlink border border-primary-container/10 bg-white py-1 shadow-lg"
+                contentClasses="overflow-hidden rounded-studentlink border border-primary-container/10 bg-card py-1 shadow-lg"
             >
                 {!onProfile && (
                     <Dropdown.Link href={route('profile.edit')} className={linkClass}>
@@ -41,6 +44,7 @@ export default function UserMenu() {
                     Déconnexion
                 </Dropdown.Link>
             </Dropdown.Content>
-        </Dropdown>
+            </Dropdown>
+        </div>
     );
 }

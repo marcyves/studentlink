@@ -77,7 +77,7 @@ function CreateCourseForm({ initiallyOpen = false }) {
     return (
         <form
             onSubmit={submit}
-            className="mb-8 space-y-4 rounded-studentlink border border-primary-container/20 bg-white p-4"
+            className="mb-8 space-y-4 rounded-studentlink border border-primary-container/20 bg-card p-4"
         >
             <div>
                 <h2 className="text-sm font-semibold text-on-surface">Nouveau cours</h2>
@@ -205,7 +205,7 @@ function CreateProjectForm({ course, deliverableTypes, initiallyOpen = false }) 
             <button
                 type="button"
                 onClick={() => setOpen(true)}
-                className="mb-4 inline-flex items-center gap-2 rounded-studentlink border border-primary-container/30 bg-white px-3 py-2 text-sm font-medium text-primary-container"
+                className="mb-4 inline-flex items-center gap-2 rounded-studentlink border border-primary-container/30 bg-card px-3 py-2 text-sm font-medium text-primary-container"
             >
                 <Icon name="add" className="text-base" />
                 Nouveau projet
@@ -216,7 +216,7 @@ function CreateProjectForm({ course, deliverableTypes, initiallyOpen = false }) 
     return (
         <form
             onSubmit={submit}
-            className="mb-4 space-y-4 rounded-studentlink border border-dashed border-primary-container/30 bg-white p-4"
+            className="mb-4 space-y-4 rounded-studentlink border border-dashed border-primary-container/30 bg-card p-4"
         >
             <h3 className="text-sm font-semibold text-on-surface">Nouveau projet</h3>
 
@@ -343,7 +343,7 @@ function EditCourseForm({ course }) {
     return (
         <form
             onSubmit={submit}
-            className="mt-3 w-full space-y-3 rounded-studentlink border border-primary-container/20 bg-white p-4"
+            className="mt-3 w-full space-y-3 rounded-studentlink border border-primary-container/20 bg-card p-4"
         >
             <h3 className="text-sm font-semibold text-on-surface">Modifier le cours</h3>
             <div>
@@ -467,7 +467,7 @@ function DeleteCourseControl({ course }) {
                                     type="button"
                                     onClick={() => remove(false)}
                                     disabled={processing}
-                                    className="rounded-studentlink border border-red-300 bg-white px-3 py-2 text-sm font-medium text-red-700"
+                                    className="rounded-studentlink border border-red-300 bg-card px-3 py-2 text-sm font-medium text-red-700"
                                 >
                                     Effacer le cours seulement
                                 </button>
@@ -524,7 +524,7 @@ function EditProjectForm({ project, deliverableTypes }) {
     return (
         <form
             onSubmit={submit}
-            className="mt-3 w-full space-y-3 rounded-studentlink border border-primary-container/20 bg-white p-4"
+            className="mt-3 w-full space-y-3 rounded-studentlink border border-primary-container/20 bg-card p-4"
         >
             <h4 className="text-sm font-semibold text-on-surface">Modifier le projet</h4>
             <div>
@@ -726,7 +726,7 @@ export default function Dashboard({ courses, deliverableTypes }) {
                     {course.projects.map((project) => (
                         <div
                             key={project.id}
-                            className="mb-4 overflow-hidden rounded-studentlink border border-primary-container/20 bg-white"
+                            className="mb-4 overflow-hidden rounded-studentlink border border-primary-container/20 bg-card"
                         >
                             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-primary-container/10 bg-primary-container/5 px-4 py-3">
                                 <div>
@@ -765,7 +765,7 @@ export default function Dashboard({ courses, deliverableTypes }) {
                                 </Link>
                                 <a
                                     href={route('professor.grades.export', project.id)}
-                                    className="inline-flex items-center gap-1 rounded-studentlink border border-primary-container/30 bg-white px-3 py-2 text-sm font-medium text-primary-container"
+                                    className="inline-flex items-center gap-1 rounded-studentlink border border-primary-container/30 bg-card px-3 py-2 text-sm font-medium text-primary-container"
                                 >
                                     <Icon name="download" className="text-base" />
                                     Export CSV

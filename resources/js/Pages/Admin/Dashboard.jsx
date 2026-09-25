@@ -18,7 +18,7 @@ function statusClass(status) {
 
 function AccessRequestCard({ request }) {
     return (
-        <li className="rounded-studentlink border border-primary-container/15 bg-white p-4">
+        <li className="rounded-studentlink border border-primary-container/15 bg-card p-4">
             <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                     <p className="font-semibold text-on-surface">{request.name}</p>
@@ -74,7 +74,7 @@ function ProfessorCard({ professor }) {
     const [open, setOpen] = useState(false);
 
     return (
-        <li className="rounded-studentlink border border-primary-container/15 bg-white">
+        <li className="rounded-studentlink border border-primary-container/15 bg-card">
             <button
                 type="button"
                 onClick={() => setOpen(!open)}
@@ -173,7 +173,7 @@ export default function Dashboard({
             <div className="mb-6 flex justify-end">
                 <Link
                     href={route('admin.settings.edit')}
-                    className="inline-flex items-center justify-center rounded-studentlink border border-primary-container/25 bg-white p-2.5 text-primary-container transition hover:bg-surface-container/40"
+                    className="inline-flex items-center justify-center rounded-studentlink border border-primary-container/25 bg-card p-2.5 text-primary-container transition hover:bg-surface-container/40"
                     aria-label="Paramètres"
                     title="Paramètres"
                 >

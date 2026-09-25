@@ -17,7 +17,7 @@ export default function Index({ groups }) {
                         <li key={group.id}>
                             <Link
                                 href={route('student.chat.show', group.id)}
-                                className="flex items-center gap-3 rounded-studentlink border border-primary-container/20 bg-white p-4 transition hover:border-secondary/40"
+                                className="flex items-center gap-3 rounded-studentlink border border-primary-container/20 bg-card p-4 transition hover:border-secondary/40"
                             >
                                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/10 text-secondary">
                                     <Icon name="forum" />

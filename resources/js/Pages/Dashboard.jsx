@@ -18,7 +18,7 @@ export default function Dashboard() {
 
             <div className="py-8">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="overflow-hidden rounded-studentlink border border-primary-container/20 bg-white shadow-sm">
+                    <div className="overflow-hidden rounded-studentlink border border-primary-container/20 bg-card shadow-sm">
                         <div className="border-b border-primary-container/10 bg-primary-container/5 px-6 py-4">
                             <p className="text-sm font-medium text-secondary">
                                 StudentLink
