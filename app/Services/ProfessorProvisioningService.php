@@ -19,6 +19,8 @@ class ProfessorProvisioningService
 
         if ($existing) {
             if ($existing->isProfessor()) {
+                $this->markEmailVerified($existing);
+
                 return $existing;
             }
 
@@ -27,13 +29,25 @@ class ProfessorProvisioningService
             ]);
         }
 
-        return User::create([
+        $user = User::create([
             'name' => $accessRequest->name,
             'email' => $email,
             'password' => Hash::make(Str::password(16)),
             'role' => UserRole::Professor,
-            'email_verified_at' => now(),
         ]);
+
+        $this->markEmailVerified($user);
+
+        return $user;
+    }
+
+    private function markEmailVerified(User $user): void
+    {
+        if ($user->email_verified_at !== null) {
+            return;
+        }
+
+        $user->forceFill(['email_verified_at' => now()])->save();
     }
 
     public function accept(ProfessorAccessRequest $accessRequest): User
