@@ -2,20 +2,16 @@
 
 namespace App\Http\Controllers\Professor;
 
+use App\Enums\DeliverableType;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Group;
 use App\Models\Project;
-use App\Services\EmailDomainService;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    public function __construct(
-        private EmailDomainService $emailDomains,
-    ) {}
-
     public function index(): Response
     {
         $professor = auth()->user();
@@ -29,7 +25,7 @@ class DashboardController extends Controller
                 'projects.rubric.criteria',
             ])
             ->get()
-            ->map(function (Course $course) use ($professor) {
+            ->map(function (Course $course) {
                 $groups = $course->projects->flatMap->groups;
 
                 return [
@@ -38,19 +34,20 @@ class DashboardController extends Controller
                     'description' => $course->description,
                     'code' => $course->code,
                     'join_code' => $course->join_code,
-                    'allowed_email_domains' => $course->allowed_email_domains ?? [],
-                    'effective_email_domains' => $this->emailDomains
-                        ->effectiveDomainsForCourse($course),
-                    'default_professor_domain' => $this->emailDomains
-                        ->professorDefaultDomain($professor),
                     'students_count' => $course->students()->count(),
+                    'is_empty' => $course->projects->isEmpty(),
                     'projects' => $course->projects->map(fn (Project $project) => [
                         'id' => $project->id,
                         'title' => $project->title,
                         'description' => $project->description,
+                        'deliverable_type' => ($project->deliverable_type ?? DeliverableType::None)->value,
+                        'deliverable_label' => ($project->deliverable_type ?? DeliverableType::None)->label(),
                         'starts_at' => $project->starts_at?->format('d/m/Y'),
                         'ends_at' => $project->ends_at?->format('d/m/Y'),
+                        'starts_on' => $project->starts_at?->format('Y-m-d') ?? '',
+                        'ends_on' => $project->ends_at?->format('Y-m-d') ?? '',
                         'groups_count' => $project->groups->count(),
+                        'is_empty' => $project->groups->isEmpty(),
                         'rubric' => $project->rubric ? [
                             'id' => $project->rubric->id,
                             'name' => $project->rubric->name,
@@ -75,6 +72,7 @@ class DashboardController extends Controller
 
         return Inertia::render('Professor/Dashboard', [
             'courses' => $courses,
+            'deliverableTypes' => DeliverableType::options(),
         ]);
     }
 }

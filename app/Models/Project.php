@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DeliverableType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,6 +14,7 @@ class Project extends Model
         'course_id',
         'title',
         'description',
+        'deliverable_type',
         'starts_at',
         'ends_at',
     ];
@@ -20,6 +22,7 @@ class Project extends Model
     protected function casts(): array
     {
         return [
+            'deliverable_type' => DeliverableType::class,
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
         ];

@@ -1,5 +1,8 @@
+import DeliverablePreview from '@/Components/DeliverablePreview';
 import FlashMessage from '@/Components/FlashMessage';
 import Icon from '@/Components/Icon';
+import InputError from '@/Components/InputError';
+import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import StudentLayout from '@/Layouts/StudentLayout';
@@ -93,6 +96,103 @@ function CreateGroupForm({ projects }) {
                 </form>
             )}
         </div>
+    );
+}
+
+const deliverableHints = {
+    none: "Aucun contenu n'est demandé. Confirmez simplement le rendu.",
+    file: 'Déposez un fichier (10 Mo maximum).',
+    link: "Indiquez l'adresse du livrable.",
+    image: 'Déposez une image (8 Mo maximum).',
+    video: 'Déposez une vidéo (50 Mo maximum).',
+    youtube: "Collez l'URL d'une vidéo YouTube.",
+};
+
+function submitLabel(type, submitted) {
+    if (submitted && type !== 'none') {
+        return 'Remplacer le livrable';
+    }
+
+    return {
+        none: 'Marquer comme rendu',
+        file: 'Déposer le fichier',
+        link: 'Enregistrer le lien',
+        image: "Déposer l'image",
+        video: 'Déposer la vidéo',
+        youtube: 'Enregistrer la vidéo',
+    }[type];
+}
+
+function GroupSubmissionForm({ group }) {
+    const type = group.project.deliverable_type;
+    const submitted = group.submission?.status === 'submitted';
+    const uploads = type === 'file' || type === 'image' || type === 'video';
+    const { data, setData, post, processing, errors } = useForm({
+        url: '',
+        file: null,
+    });
+
+    if (type === 'none' && submitted) {
+        return null;
+    }
+
+    const submit = (e) => {
+        e.preventDefault();
+        post(route('student.groups.submission.store', group.id), {
+            preserveScroll: true,
+            forceFormData: uploads,
+        });
+    };
+
+    return (
+        <form onSubmit={submit} className="mt-4 space-y-3 border-t border-primary-container/10 pt-3">
+            <p className="text-xs text-on-surface/60">{deliverableHints[type]}</p>
+
+            {(type === 'link' || type === 'youtube') && (
+                <div>
+                    <InputLabel htmlFor={`deliverable-url-${group.id}`} value="Adresse" />
+                    <TextInput
+                        id={`deliverable-url-${group.id}`}
+                        type="url"
+                        value={data.url}
+                        onChange={(e) => setData('url', e.target.value)}
+                        placeholder={
+                            type === 'youtube'
+                                ? 'https://www.youtube.com/watch?v=...'
+                                : 'https://'
+                        }
+                        className="mt-1 block w-full"
+                        required
+                    />
+                    <InputError message={errors.url} className="mt-2" />
+                </div>
+            )}
+
+            {uploads && (
+                <div>
+                    <InputLabel htmlFor={`deliverable-file-${group.id}`} value="Fichier" />
+                    <input
+                        id={`deliverable-file-${group.id}`}
+                        type="file"
+                        accept={
+                            type === 'image'
+                                ? 'image/jpeg,image/png,image/gif,image/webp,image/bmp'
+                                : type === 'video'
+                                  ? 'video/*'
+                                  : undefined
+                        }
+                        onChange={(e) => setData('file', e.target.files?.[0] ?? null)}
+                        className="mt-1 block w-full text-sm text-on-surface/80"
+                        required
+                    />
+                    <InputError message={errors.file} className="mt-2" />
+                </div>
+            )}
+
+            <PrimaryButton disabled={processing}>
+                {submitLabel(type, submitted)}
+            </PrimaryButton>
+        </form>
     );
 }
 
@@ -196,6 +296,9 @@ export default function Dashboard({ groups, enrolledCourses, stats }) {
                                     <p className="text-sm text-on-surface/60">
                                         {group.project.title} · {group.project.course}
                                     </p>
+                                    <p className="mt-1 text-xs text-on-surface/50">
+                                        Livrable : {group.project.deliverable_label}
+                                    </p>
                                 </div>
                                 <span className="rounded-full bg-primary-container/10 px-2 py-1 text-xs font-medium text-primary-container">
                                     {group.submission?.label ?? '—'}
@@ -205,6 +308,12 @@ export default function Dashboard({ groups, enrolledCourses, stats }) {
                                 <span>{group.members_count} membres</span>
                                 <span>Code : {group.invite_code}</span>
                             </div>
+                            {group.deliverable?.submitted && (
+                                <div className="mt-3">
+                                    <DeliverablePreview deliverable={group.deliverable} />
+                                </div>
+                            )}
+                            <GroupSubmissionForm group={group} />
                         </article>
                     ))
                 )}

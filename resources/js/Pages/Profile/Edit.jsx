@@ -1,3 +1,5 @@
+import CourseDomainsForm from '@/Components/CourseDomainsForm';
+import FlashMessage from '@/Components/FlashMessage';
 import AdminLayout from '@/Layouts/AdminLayout';
 import ProfessorLayout from '@/Layouts/ProfessorLayout';
 import StudentLayout from '@/Layouts/StudentLayout';
@@ -14,7 +16,7 @@ function ProfileCard({ children }) {
     );
 }
 
-export default function Edit({ mustVerifyEmail, status }) {
+export default function Edit({ mustVerifyEmail, status, courses = [] }) {
     const { auth } = usePage().props;
     const Layout =
         auth.user.role === 'admin'
@@ -26,6 +28,7 @@ export default function Edit({ mustVerifyEmail, status }) {
     return (
         <Layout title="Mon profil">
             <Head title="Profil" />
+            <FlashMessage />
 
             <div className="space-y-4">
                 <ProfileCard>
@@ -38,6 +41,37 @@ export default function Edit({ mustVerifyEmail, status }) {
                 <ProfileCard>
                     <UpdatePasswordForm />
                 </ProfileCard>
+
+                {auth.user.role === 'professor' && (
+                    <ProfileCard>
+                        <header>
+                            <h2 className="text-lg font-semibold text-on-surface">
+                                Domaines e-mail des cours
+                            </h2>
+                            <p className="mt-1 text-sm text-on-surface/60">
+                                Chaque cours conserve ses domaines. Si aucun
+                                domaine n'est renseigné, le domaine de votre
+                                adresse e-mail s'applique.
+                            </p>
+                        </header>
+
+                        {courses.length === 0 ? (
+                            <p className="mt-4 text-sm text-on-surface/70">
+                                Aucun cours pour le moment. Les domaines se
+                                règlent ici dès qu'un cours existe.
+                            </p>
+                        ) : (
+                            <div className="mt-6 space-y-6">
+                                {courses.map((course) => (
+                                    <CourseDomainsForm
+                                        key={course.id}
+                                        course={course}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </ProfileCard>
+                )}
 
                 <ProfileCard>
                     <DeleteUserForm />

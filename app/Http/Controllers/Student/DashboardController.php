@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Enums\DeliverableType;
 use App\Enums\PeerEvaluationStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
@@ -9,6 +10,7 @@ use App\Models\Group;
 use App\Models\PeerEvaluation;
 use App\Models\Project;
 use App\Services\EmailDomainService;
+use App\Support\DeliverablePresenter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +22,7 @@ class DashboardController extends Controller
 {
     public function __construct(
         private EmailDomainService $emailDomains,
+        private DeliverablePresenter $deliverables,
     ) {}
 
     public function index(): Response
@@ -160,12 +163,15 @@ class DashboardController extends Controller
                 'id' => $group->project->id,
                 'title' => $group->project->title,
                 'course' => $group->project->course->title,
+                'deliverable_type' => ($group->project->deliverable_type ?? DeliverableType::None)->value,
+                'deliverable_label' => ($group->project->deliverable_type ?? DeliverableType::None)->label(),
             ],
             'members_count' => $group->members->count(),
             'submission' => $group->submission ? [
                 'status' => $group->submission->status->value,
                 'label' => $group->submission->status->label(),
             ] : null,
+            'deliverable' => $this->deliverables->present($group->project, $group->submission),
         ];
     }
 }

@@ -1,3 +1,4 @@
+import DeliverablePreview from '@/Components/DeliverablePreview';
 import FlashMessage from '@/Components/FlashMessage';
 import Icon from '@/Components/Icon';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -65,6 +66,15 @@ export default function Show({ evaluation }) {
                     </p>
                 )}
             </div>
+
+            {isInter && evaluation.deliverable && (
+                <section className="mb-6 rounded-studentlink border border-primary-container/20 bg-white p-4">
+                    <h3 className="mb-3 text-sm font-semibold text-on-surface">
+                        Livrable · {evaluation.deliverable.type_label}
+                    </h3>
+                    <DeliverablePreview deliverable={evaluation.deliverable} />
+                </section>
+            )}
 
             {isInter && (
                 <p className="mb-4 border-l-4 border-secondary pl-3 text-sm italic text-on-surface/70">

@@ -11,6 +11,9 @@ class Submission extends Model
     protected $fillable = [
         'group_id',
         'status',
+        'url',
+        'file_path',
+        'original_name',
         'submitted_at',
     ];
 
