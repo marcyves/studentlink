@@ -13,6 +13,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\GroupChatController;
 use App\Http\Controllers\Student\PeerEvaluationController;
+use App\Http\Controllers\Student\SubmissionController as StudentSubmissionController;
 use App\Services\EmailDomainService;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -38,6 +39,8 @@ Route::middleware(['auth', 'verified', 'student'])->prefix('student')->name('stu
     Route::post('/courses/join', [StudentDashboardController::class, 'joinCourse'])->name('courses.join');
     Route::post('/groups', [StudentDashboardController::class, 'storeGroup'])->name('groups.store');
     Route::post('/groups/join', [StudentDashboardController::class, 'joinGroup'])->name('groups.join');
+    Route::post('/groups/{group}/submission', [StudentSubmissionController::class, 'store'])
+        ->name('groups.submission.store');
     Route::get('/evaluations', [PeerEvaluationController::class, 'index'])->name('evaluations.index');
     Route::get('/evaluations/{evaluation}', [PeerEvaluationController::class, 'show'])->name('evaluations.show');
     Route::put('/evaluations/{evaluation}', [PeerEvaluationController::class, 'update'])->name('evaluations.update');
@@ -52,6 +55,8 @@ Route::middleware(['auth', 'verified', 'professor'])->prefix('professor')->name(
         ->name('courses.domains.update');
     Route::post('/courses/{course}/projects', [ProfessorProjectController::class, 'store'])
         ->name('courses.projects.store');
+    Route::put('/projects/{project}/deliverable', [ProfessorProjectController::class, 'updateDeliverable'])
+        ->name('projects.deliverable.update');
     Route::get('/projects/{project}/rubric', [ProfessorRubricController::class, 'edit'])->name('rubrics.edit');
     Route::put('/projects/{project}/rubric', [ProfessorRubricController::class, 'update'])->name('rubrics.update');
     Route::get('/projects/{project}/export', GradeExportController::class)->name('grades.export');

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Enums\EvaluationType;
 use App\Enums\PeerEvaluationStatus;
 use App\Http\Controllers\Controller;
 use App\Models\PeerEvaluation;
 use App\Services\PeerEvaluationSyncService;
+use App\Support\DeliverablePresenter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +18,7 @@ class PeerEvaluationController extends Controller
 {
     public function __construct(
         private PeerEvaluationSyncService $syncService,
+        private DeliverablePresenter $deliverables,
     ) {}
 
     public function index(): Response
@@ -123,7 +126,7 @@ class PeerEvaluationController extends Controller
 
     private function formatEvaluation(PeerEvaluation $evaluation, bool $includeCriteria = false): array
     {
-        $targetLabel = $evaluation->type === \App\Enums\EvaluationType::Inter
+        $targetLabel = $evaluation->type === EvaluationType::Inter
             ? $evaluation->revieweeGroup?->name
             : $evaluation->revieweeUser?->name;
 
@@ -153,6 +156,13 @@ class PeerEvaluationController extends Controller
                 'max_score' => $criterion->max_score,
                 'score' => $existingScores->get($criterion->id)?->score ?? $criterion->max_score,
             ])->values();
+
+            if ($evaluation->type === EvaluationType::Inter) {
+                $data['deliverable'] = $this->deliverables->present(
+                    $evaluation->project,
+                    $evaluation->revieweeGroup?->submission,
+                );
+            }
         }
 
         return $data;

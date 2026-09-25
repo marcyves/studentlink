@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Professor;
 
+use App\Enums\DeliverableType;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Group;
@@ -38,6 +39,8 @@ class DashboardController extends Controller
                         'id' => $project->id,
                         'title' => $project->title,
                         'description' => $project->description,
+                        'deliverable_type' => ($project->deliverable_type ?? DeliverableType::None)->value,
+                        'deliverable_label' => ($project->deliverable_type ?? DeliverableType::None)->label(),
                         'starts_at' => $project->starts_at?->format('d/m/Y'),
                         'ends_at' => $project->ends_at?->format('d/m/Y'),
                         'groups_count' => $project->groups->count(),
@@ -65,6 +68,7 @@ class DashboardController extends Controller
 
         return Inertia::render('Professor/Dashboard', [
             'courses' => $courses,
+            'deliverableTypes' => DeliverableType::options(),
         ]);
     }
 }

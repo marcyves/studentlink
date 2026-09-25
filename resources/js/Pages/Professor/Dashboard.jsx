@@ -132,15 +132,40 @@ function CreateCourseForm({ initiallyOpen = false }) {
     );
 }
 
-function CreateProjectForm({ course, initiallyOpen = false }) {
+function DeliverableTypeSelect({ id, value, onChange, types }) {
+    return (
+        <select
+            id={id}
+            value={value}
+            onChange={onChange}
+            className="mt-1 block w-full rounded-studentlink border-gray-300 shadow-sm focus:border-primary-container focus:ring-primary-container"
+            required
+        >
+            {types.map((type) => (
+                <option key={type.value} value={type.value}>
+                    {type.label}
+                </option>
+            ))}
+        </select>
+    );
+}
+
+function CreateProjectForm({ course, deliverableTypes, initiallyOpen = false }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         title: '',
         description: '',
+        deliverable_type: 'none',
         starts_at: '',
         ends_at: '',
     });
     const [open, setOpen] = useState(
-        () => initiallyOpen || Boolean(errors.starts_at || errors.ends_at),
+        () =>
+            initiallyOpen ||
+            Boolean(
+                errors.starts_at ||
+                    errors.ends_at ||
+                    errors.deliverable_type,
+            ),
     );
 
     const submit = (e) => {
@@ -201,6 +226,20 @@ function CreateProjectForm({ course, initiallyOpen = false }) {
                 <InputError message={errors.description} className="mt-2" />
             </div>
 
+            <div>
+                <InputLabel
+                    htmlFor={`project-deliverable-${course.id}`}
+                    value="Type de livrable"
+                />
+                <DeliverableTypeSelect
+                    id={`project-deliverable-${course.id}`}
+                    value={data.deliverable_type}
+                    types={deliverableTypes}
+                    onChange={(e) => setData('deliverable_type', e.target.value)}
+                />
+                <InputError message={errors.deliverable_type} className="mt-2" />
+            </div>
+
             <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                     <InputLabel htmlFor={`project-start-${course.id}`} value="Début" />
@@ -244,6 +283,38 @@ function CreateProjectForm({ course, initiallyOpen = false }) {
     );
 }
 
+function ProjectDeliverableForm({ project, deliverableTypes }) {
+    const { data, setData, put, processing, errors } = useForm({
+        deliverable_type: project.deliverable_type,
+    });
+
+    const submit = (e) => {
+        e.preventDefault();
+        put(route('professor.projects.deliverable.update', project.id), {
+            preserveScroll: true,
+        });
+    };
+
+    return (
+        <form onSubmit={submit} className="mt-3 flex flex-wrap items-end gap-3">
+            <div className="min-w-48 flex-1">
+                <InputLabel
+                    htmlFor={`deliverable-type-${project.id}`}
+                    value="Type de livrable"
+                />
+                <DeliverableTypeSelect
+                    id={`deliverable-type-${project.id}`}
+                    value={data.deliverable_type}
+                    types={deliverableTypes}
+                    onChange={(e) => setData('deliverable_type', e.target.value)}
+                />
+                <InputError message={errors.deliverable_type} className="mt-2" />
+            </div>
+            <PrimaryButton disabled={processing}>Enregistrer</PrimaryButton>
+        </form>
+    );
+}
+
 function projectPeriod(project) {
     if (project.starts_at && project.ends_at) {
         return `Du ${project.starts_at} au ${project.ends_at}`;
@@ -252,7 +323,7 @@ function projectPeriod(project) {
     return `Échéance ${project.ends_at ?? '—'}`;
 }
 
-export default function Dashboard({ courses }) {
+export default function Dashboard({ courses, deliverableTypes }) {
     return (
         <ProfessorLayout title="Vue d'ensemble">
             <Head title="Vue d'ensemble professeur" />
@@ -297,6 +368,7 @@ export default function Dashboard({ courses }) {
 
                     <CreateProjectForm
                         course={course}
+                        deliverableTypes={deliverableTypes}
                         initiallyOpen={course.projects.length === 0}
                     />
 
@@ -316,9 +388,14 @@ export default function Dashboard({ courses }) {
                                         </p>
                                     )}
                                     <p className="text-xs text-on-surface/60">
-                                        {projectPeriod(project)} · {project.groups_count}{' '}
+                                        {projectPeriod(project)} · Livrable :{' '}
+                                        {project.deliverable_label} · {project.groups_count}{' '}
                                         groupes
                                     </p>
+                                    <ProjectDeliverableForm
+                                        project={project}
+                                        deliverableTypes={deliverableTypes}
+                                    />
                                 </div>
                                 <Link
                                     href={route('professor.rubrics.edit', project.id)}

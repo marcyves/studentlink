@@ -84,6 +84,7 @@ class ProfessorCourseProjectTest extends TestCase
             ->post(route('professor.courses.projects.store', $course), [
                 'title' => 'Plateforme collaborative',
                 'description' => 'Évaluation entre pairs.',
+                'deliverable_type' => 'link',
                 'starts_at' => '2026-09-01',
                 'ends_at' => '2026-10-15',
             ])
@@ -102,7 +103,10 @@ class ProfessorCourseProjectTest extends TestCase
                 ->has('courses.0.projects', 1)
                 ->where('courses.0.projects.0.title', 'Plateforme collaborative')
                 ->where('courses.0.projects.0.description', 'Évaluation entre pairs.')
+                ->where('courses.0.projects.0.deliverable_type', 'link')
+                ->where('courses.0.projects.0.deliverable_label', 'Lien')
                 ->where('courses.0.projects.0.starts_at', '01/09/2026')
+                ->has('deliverableTypes', 6)
                 ->where('courses.0.projects.0.ends_at', '15/10/2026')
                 ->missing('courses.0.allowed_email_domains')
                 ->missing('courses.0.effective_email_domains')
