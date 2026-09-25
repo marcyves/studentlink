@@ -195,75 +195,80 @@ function CreateProjectForm({ course, deliverableTypes, initiallyOpen = false }) 
     return (
         <form
             onSubmit={submit}
-            className="mb-4 space-y-3 rounded-studentlink border border-dashed border-primary-container/30 bg-white p-4"
+            className="mb-4 space-y-4 rounded-studentlink border border-dashed border-primary-container/30 bg-white p-4"
         >
             <h3 className="text-sm font-semibold text-on-surface">Nouveau projet</h3>
 
-            <div>
-                <InputLabel htmlFor={`project-title-${course.id}`} value="Titre" />
-                <TextInput
-                    id={`project-title-${course.id}`}
-                    value={data.title}
-                    onChange={(e) => setData('title', e.target.value)}
-                    className="mt-1 block w-full"
-                    required
-                />
-                <InputError message={errors.title} className="mt-2" />
-            </div>
+            <div className="grid gap-4 lg:grid-cols-2 lg:gap-6">
+                <div className="space-y-3">
+                    <div>
+                        <InputLabel htmlFor={`project-title-${course.id}`} value="Titre" />
+                        <TextInput
+                            id={`project-title-${course.id}`}
+                            value={data.title}
+                            onChange={(e) => setData('title', e.target.value)}
+                            className="mt-1 block w-full"
+                            required
+                        />
+                        <InputError message={errors.title} className="mt-2" />
+                    </div>
 
-            <div>
-                <InputLabel
-                    htmlFor={`project-description-${course.id}`}
-                    value="Description"
-                />
-                <textarea
-                    id={`project-description-${course.id}`}
-                    value={data.description}
-                    onChange={(e) => setData('description', e.target.value)}
-                    rows={3}
-                    className="mt-1 block w-full rounded-studentlink border-gray-300 shadow-sm focus:border-primary-container focus:ring-primary-container"
-                />
-                <InputError message={errors.description} className="mt-2" />
-            </div>
-
-            <div>
-                <InputLabel
-                    htmlFor={`project-deliverable-${course.id}`}
-                    value="Type de livrable"
-                />
-                <DeliverableTypeSelect
-                    id={`project-deliverable-${course.id}`}
-                    value={data.deliverable_type}
-                    types={deliverableTypes}
-                    onChange={(e) => setData('deliverable_type', e.target.value)}
-                />
-                <InputError message={errors.deliverable_type} className="mt-2" />
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                    <InputLabel htmlFor={`project-start-${course.id}`} value="Début" />
-                    <TextInput
-                        id={`project-start-${course.id}`}
-                        type="date"
-                        value={data.starts_at}
-                        onChange={(e) => setData('starts_at', e.target.value)}
-                        className="mt-1 block w-full"
-                        required
-                    />
-                    <InputError message={errors.starts_at} className="mt-2" />
+                    <div>
+                        <InputLabel
+                            htmlFor={`project-description-${course.id}`}
+                            value="Description"
+                        />
+                        <textarea
+                            id={`project-description-${course.id}`}
+                            value={data.description}
+                            onChange={(e) => setData('description', e.target.value)}
+                            rows={3}
+                            className="mt-1 block w-full rounded-studentlink border-gray-300 shadow-sm focus:border-primary-container focus:ring-primary-container lg:min-h-48"
+                        />
+                        <InputError message={errors.description} className="mt-2" />
+                    </div>
                 </div>
-                <div>
-                    <InputLabel htmlFor={`project-end-${course.id}`} value="Fin" />
-                    <TextInput
-                        id={`project-end-${course.id}`}
-                        type="date"
-                        value={data.ends_at}
-                        onChange={(e) => setData('ends_at', e.target.value)}
-                        className="mt-1 block w-full"
-                        required
-                    />
-                    <InputError message={errors.ends_at} className="mt-2" />
+
+                <div className="space-y-3">
+                    <div>
+                        <InputLabel
+                            htmlFor={`project-deliverable-${course.id}`}
+                            value="Type de livrable"
+                        />
+                        <DeliverableTypeSelect
+                            id={`project-deliverable-${course.id}`}
+                            value={data.deliverable_type}
+                            types={deliverableTypes}
+                            onChange={(e) => setData('deliverable_type', e.target.value)}
+                        />
+                        <InputError message={errors.deliverable_type} className="mt-2" />
+                    </div>
+
+                    <div>
+                        <InputLabel htmlFor={`project-start-${course.id}`} value="Début" />
+                        <TextInput
+                            id={`project-start-${course.id}`}
+                            type="date"
+                            value={data.starts_at}
+                            onChange={(e) => setData('starts_at', e.target.value)}
+                            className="mt-1 block w-full"
+                            required
+                        />
+                        <InputError message={errors.starts_at} className="mt-2" />
+                    </div>
+
+                    <div>
+                        <InputLabel htmlFor={`project-end-${course.id}`} value="Fin" />
+                        <TextInput
+                            id={`project-end-${course.id}`}
+                            type="date"
+                            value={data.ends_at}
+                            onChange={(e) => setData('ends_at', e.target.value)}
+                            className="mt-1 block w-full"
+                            required
+                        />
+                        <InputError message={errors.ends_at} className="mt-2" />
+                    </div>
                 </div>
             </div>
 
