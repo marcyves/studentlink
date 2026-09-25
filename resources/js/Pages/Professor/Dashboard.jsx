@@ -2,11 +2,32 @@ import FlashMessage from '@/Components/FlashMessage';
 import Icon from '@/Components/Icon';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
+import Modal from '@/Components/Modal';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import ProfessorLayout from '@/Layouts/ProfessorLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
+
+function IconAction({ label, icon, onClick, disabled = false, tone = 'primary' }) {
+    const toneClass =
+        tone === 'danger'
+            ? 'text-red-700 hover:bg-red-50'
+            : 'text-primary-container hover:bg-primary-container/10';
+
+    return (
+        <button
+            type="button"
+            onClick={onClick}
+            disabled={disabled}
+            title={label}
+            aria-label={label}
+            className={`inline-flex h-9 w-9 items-center justify-center rounded-studentlink ${toneClass} disabled:opacity-40`}
+        >
+            <Icon name={icon} className="text-xl" />
+        </button>
+    );
+}
 
 function CreateCourseForm({ initiallyOpen = false }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -315,13 +336,7 @@ function EditCourseForm({ course }) {
 
     if (!open) {
         return (
-            <button
-                type="button"
-                onClick={() => setOpen(true)}
-                className="text-sm font-medium text-primary-container"
-            >
-                Modifier
-            </button>
+            <IconAction label="Modifier" icon="edit" onClick={() => setOpen(true)} />
         );
     }
 
@@ -407,67 +422,69 @@ function DeleteCourseControl({ course }) {
         transform(() => ({ delete_students: deleteStudents }));
         destroy(route('professor.courses.destroy', course.id), {
             preserveScroll: true,
+            onSuccess: () => setOpen(false),
         });
     };
 
-    if (!course.is_empty) {
-        return (
-            <button
-                type="button"
-                onClick={() => remove(false)}
-                disabled={processing}
-                className="text-sm font-medium text-red-700"
-            >
-                Effacer
-            </button>
-        );
-    }
-
-    if (!open) {
-        return (
-            <button
-                type="button"
-                onClick={() => setOpen(true)}
-                className="text-sm font-medium text-red-700"
-            >
-                Effacer
-            </button>
-        );
-    }
-
     return (
-        <div className="mt-3 w-full space-y-3 rounded-studentlink border border-red-200 bg-red-50 p-4">
-            <p className="text-sm text-on-surface">
-                Ce cours n&apos;a aucun projet. Faut-il aussi effacer les étudiants
-                inscrits ? Ceux qui sont aussi dans un autre cours sont conservés.
-            </p>
-            <InputError message={errors.delete_students} className="mt-2" />
-            <div className="flex flex-wrap items-center gap-3">
-                <button
-                    type="button"
-                    onClick={() => remove(false)}
-                    disabled={processing}
-                    className="rounded-studentlink border border-red-300 bg-white px-3 py-2 text-sm font-medium text-red-700"
-                >
-                    Effacer le cours seulement
-                </button>
-                <button
-                    type="button"
-                    onClick={() => remove(true)}
-                    disabled={processing}
-                    className="rounded-studentlink bg-red-700 px-3 py-2 text-sm font-medium text-white"
-                >
-                    Effacer le cours et les étudiants
-                </button>
-                <button
-                    type="button"
-                    onClick={() => setOpen(false)}
-                    className="text-sm text-on-surface/60"
-                >
-                    Annuler
-                </button>
-            </div>
-        </div>
+        <>
+            <IconAction
+                label="Effacer"
+                icon="delete"
+                tone="danger"
+                onClick={() => setOpen(true)}
+                disabled={processing}
+            />
+            <Modal show={open} maxWidth="md" onClose={() => setOpen(false)}>
+                <div className="p-6">
+                    <h2 className="text-lg font-medium text-on-surface">
+                        {course.is_empty ? 'Êtes-vous sûr ?' : 'Cours non vide'}
+                    </h2>
+                    {course.is_empty ? (
+                        <p className="mt-2 text-sm text-on-surface/70">
+                            Ce cours n&apos;a aucun projet. Faut-il aussi effacer
+                            les étudiants inscrits ? Ceux qui sont aussi dans un
+                            autre cours sont conservés.
+                        </p>
+                    ) : (
+                        <p className="mt-2 text-sm text-on-surface/70">
+                            Supprimez d&apos;abord les projets de ce cours. Rien
+                            n&apos;a été effacé.
+                        </p>
+                    )}
+                    <InputError message={errors.delete_students} className="mt-2" />
+                    <div className="mt-6 flex flex-wrap justify-end gap-3">
+                        <button
+                            type="button"
+                            onClick={() => setOpen(false)}
+                            className="text-sm text-on-surface/60"
+                        >
+                            Annuler
+                        </button>
+                        {course.is_empty && (
+                            <>
+                                <button
+                                    type="button"
+                                    onClick={() => remove(false)}
+                                    disabled={processing}
+                                    className="rounded-studentlink border border-red-300 bg-white px-3 py-2 text-sm font-medium text-red-700"
+                                >
+                                    Effacer le cours seulement
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => remove(true)}
+                                    disabled={processing}
+                                    className="rounded-studentlink bg-red-700 px-3 py-2 text-sm font-medium text-white"
+                                >
+                                    Effacer le cours et les étudiants
+                                </button>
+                            </>
+                        )}
+                    </div>
+                </div>
+            </Modal>
+        </>
     );
 }
 
@@ -500,13 +517,7 @@ function EditProjectForm({ project, deliverableTypes }) {
 
     if (!open) {
         return (
-            <button
-                type="button"
-                onClick={() => setOpen(true)}
-                className="text-sm font-medium text-primary-container"
-            >
-                Modifier
-            </button>
+            <IconAction label="Modifier" icon="edit" onClick={() => setOpen(true)} />
         );
     }
 
@@ -600,52 +611,54 @@ function DeleteProjectControl({ project }) {
     });
     const [open, setOpen] = useState(false);
 
-    const remove = (purge) => {
-        transform(() => ({ purge }));
+    const remove = () => {
+        transform(() => ({ purge: !project.is_empty }));
         destroy(route('professor.projects.destroy', project.id), {
             preserveScroll: true,
+            onSuccess: () => setOpen(false),
         });
     };
 
-    if (!open) {
-        return (
-            <button
-                type="button"
-                onClick={() => (project.is_empty ? remove(false) : setOpen(true))}
-                disabled={processing}
-                className="text-sm font-medium text-red-700"
-            >
-                Effacer
-            </button>
-        );
-    }
-
     return (
-        <div className="mt-3 w-full space-y-3 rounded-studentlink border border-red-200 bg-red-50 p-4">
-            <p className="text-sm text-on-surface">
-                Ce projet n&apos;est pas vide. Effacer le projet, ses groupes et ses
-                livrables ? Les étudiants restent inscrits au cours et dans les autres
-                projets.
-            </p>
-            <InputError message={errors.purge} className="mt-2" />
-            <div className="flex flex-wrap items-center gap-3">
-                <button
-                    type="button"
-                    onClick={() => remove(true)}
-                    disabled={processing}
-                    className="rounded-studentlink bg-red-700 px-3 py-2 text-sm font-medium text-white"
-                >
-                    Tout effacer
-                </button>
-                <button
-                    type="button"
-                    onClick={() => setOpen(false)}
-                    className="text-sm text-on-surface/60"
-                >
-                    Annuler
-                </button>
-            </div>
-        </div>
+        <>
+            <IconAction
+                label="Effacer"
+                icon="delete"
+                tone="danger"
+                onClick={() => setOpen(true)}
+                disabled={processing}
+            />
+            <Modal show={open} maxWidth="md" onClose={() => setOpen(false)}>
+                <div className="p-6">
+                    <h2 className="text-lg font-medium text-on-surface">
+                        Êtes-vous sûr ?
+                    </h2>
+                    <p className="mt-2 text-sm text-on-surface/70">
+                        {project.is_empty
+                            ? 'Ce projet sera effacé.'
+                            : 'Ce projet, ses groupes et ses livrables seront effacés. Les étudiants restent inscrits au cours et dans les autres projets.'}
+                    </p>
+                    <InputError message={errors.purge} className="mt-2" />
+                    <div className="mt-6 flex justify-end gap-3">
+                        <button
+                            type="button"
+                            onClick={() => setOpen(false)}
+                            className="text-sm text-on-surface/60"
+                        >
+                            Annuler
+                        </button>
+                        <button
+                            type="button"
+                            onClick={remove}
+                            disabled={processing}
+                            className="rounded-studentlink bg-red-700 px-3 py-2 text-sm font-medium text-white"
+                        >
+                            {project.is_empty ? 'Effacer' : 'Tout effacer'}
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+        </>
     );
 }
 
