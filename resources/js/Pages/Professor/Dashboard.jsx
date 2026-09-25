@@ -315,6 +315,367 @@ function ProjectDeliverableForm({ project, deliverableTypes }) {
     );
 }
 
+function EditCourseForm({ course }) {
+    const { data, setData, put, processing, errors } = useForm({
+        title: course.title,
+        description: course.description ?? '',
+        code: course.code,
+        join_code: course.join_code,
+    });
+    const [open, setOpen] = useState(
+        () =>
+            Boolean(
+                errors.title ||
+                    errors.description ||
+                    errors.code ||
+                    errors.join_code,
+            ),
+    );
+
+    const submit = (e) => {
+        e.preventDefault();
+        put(route('professor.courses.update', course.id), {
+            preserveScroll: true,
+            onSuccess: () => setOpen(false),
+        });
+    };
+
+    if (!open) {
+        return (
+            <button
+                type="button"
+                onClick={() => setOpen(true)}
+                className="text-sm font-medium text-primary-container"
+            >
+                Modifier
+            </button>
+        );
+    }
+
+    return (
+        <form
+            onSubmit={submit}
+            className="mt-3 w-full space-y-3 rounded-studentlink border border-primary-container/20 bg-white p-4"
+        >
+            <h3 className="text-sm font-semibold text-on-surface">Modifier le cours</h3>
+            <div>
+                <InputLabel htmlFor={`edit-course-title-${course.id}`} value="Titre" />
+                <TextInput
+                    id={`edit-course-title-${course.id}`}
+                    value={data.title}
+                    onChange={(e) => setData('title', e.target.value)}
+                    className="mt-1 block w-full"
+                    required
+                />
+                <InputError message={errors.title} className="mt-2" />
+            </div>
+            <div>
+                <InputLabel
+                    htmlFor={`edit-course-description-${course.id}`}
+                    value="Description"
+                />
+                <textarea
+                    id={`edit-course-description-${course.id}`}
+                    value={data.description}
+                    onChange={(e) => setData('description', e.target.value)}
+                    rows={3}
+                    className="mt-1 block w-full rounded-studentlink border-gray-300 shadow-sm focus:border-primary-container focus:ring-primary-container"
+                />
+                <InputError message={errors.description} className="mt-2" />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                    <InputLabel htmlFor={`edit-course-code-${course.id}`} value="Code du cours" />
+                    <TextInput
+                        id={`edit-course-code-${course.id}`}
+                        value={data.code}
+                        onChange={(e) => setData('code', e.target.value)}
+                        className="mt-1 block w-full"
+                        required
+                    />
+                    <InputError message={errors.code} className="mt-2" />
+                </div>
+                <div>
+                    <InputLabel
+                        htmlFor={`edit-course-join-${course.id}`}
+                        value="Code d'inscription"
+                    />
+                    <TextInput
+                        id={`edit-course-join-${course.id}`}
+                        value={data.join_code}
+                        onChange={(e) => setData('join_code', e.target.value)}
+                        className="mt-1 block w-full"
+                        required
+                    />
+                    <InputError message={errors.join_code} className="mt-2" />
+                </div>
+            </div>
+            <div className="flex items-center gap-3">
+                <PrimaryButton disabled={processing}>Enregistrer</PrimaryButton>
+                <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className="text-sm text-on-surface/60"
+                >
+                    Annuler
+                </button>
+            </div>
+        </form>
+    );
+}
+
+function DeleteCourseControl({ course }) {
+    const { delete: destroy, processing, errors, transform } = useForm({
+        delete_students: false,
+    });
+    const [open, setOpen] = useState(false);
+
+    const remove = (deleteStudents) => {
+        transform(() => ({ delete_students: deleteStudents }));
+        destroy(route('professor.courses.destroy', course.id), {
+            preserveScroll: true,
+        });
+    };
+
+    if (!course.is_empty) {
+        return (
+            <button
+                type="button"
+                onClick={() => remove(false)}
+                disabled={processing}
+                className="text-sm font-medium text-red-700"
+            >
+                Effacer
+            </button>
+        );
+    }
+
+    if (!open) {
+        return (
+            <button
+                type="button"
+                onClick={() => setOpen(true)}
+                className="text-sm font-medium text-red-700"
+            >
+                Effacer
+            </button>
+        );
+    }
+
+    return (
+        <div className="mt-3 w-full space-y-3 rounded-studentlink border border-red-200 bg-red-50 p-4">
+            <p className="text-sm text-on-surface">
+                Ce cours n&apos;a aucun projet. Faut-il aussi effacer les étudiants
+                inscrits ? Ceux qui sont aussi dans un autre cours sont conservés.
+            </p>
+            <InputError message={errors.delete_students} className="mt-2" />
+            <div className="flex flex-wrap items-center gap-3">
+                <button
+                    type="button"
+                    onClick={() => remove(false)}
+                    disabled={processing}
+                    className="rounded-studentlink border border-red-300 bg-white px-3 py-2 text-sm font-medium text-red-700"
+                >
+                    Effacer le cours seulement
+                </button>
+                <button
+                    type="button"
+                    onClick={() => remove(true)}
+                    disabled={processing}
+                    className="rounded-studentlink bg-red-700 px-3 py-2 text-sm font-medium text-white"
+                >
+                    Effacer le cours et les étudiants
+                </button>
+                <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className="text-sm text-on-surface/60"
+                >
+                    Annuler
+                </button>
+            </div>
+        </div>
+    );
+}
+
+function EditProjectForm({ project, deliverableTypes }) {
+    const { data, setData, put, processing, errors } = useForm({
+        title: project.title,
+        description: project.description ?? '',
+        deliverable_type: project.deliverable_type,
+        starts_at: project.starts_on,
+        ends_at: project.ends_on,
+    });
+    const [open, setOpen] = useState(
+        () =>
+            Boolean(
+                errors.title ||
+                    errors.description ||
+                    errors.deliverable_type ||
+                    errors.starts_at ||
+                    errors.ends_at,
+            ),
+    );
+
+    const submit = (e) => {
+        e.preventDefault();
+        put(route('professor.projects.update', project.id), {
+            preserveScroll: true,
+            onSuccess: () => setOpen(false),
+        });
+    };
+
+    if (!open) {
+        return (
+            <button
+                type="button"
+                onClick={() => setOpen(true)}
+                className="text-sm font-medium text-primary-container"
+            >
+                Modifier
+            </button>
+        );
+    }
+
+    return (
+        <form
+            onSubmit={submit}
+            className="mt-3 w-full space-y-3 rounded-studentlink border border-primary-container/20 bg-white p-4"
+        >
+            <h4 className="text-sm font-semibold text-on-surface">Modifier le projet</h4>
+            <div>
+                <InputLabel htmlFor={`edit-project-title-${project.id}`} value="Titre" />
+                <TextInput
+                    id={`edit-project-title-${project.id}`}
+                    value={data.title}
+                    onChange={(e) => setData('title', e.target.value)}
+                    className="mt-1 block w-full"
+                    required
+                />
+                <InputError message={errors.title} className="mt-2" />
+            </div>
+            <div>
+                <InputLabel
+                    htmlFor={`edit-project-description-${project.id}`}
+                    value="Description"
+                />
+                <textarea
+                    id={`edit-project-description-${project.id}`}
+                    value={data.description}
+                    onChange={(e) => setData('description', e.target.value)}
+                    rows={3}
+                    className="mt-1 block w-full rounded-studentlink border-gray-300 shadow-sm focus:border-primary-container focus:ring-primary-container"
+                />
+                <InputError message={errors.description} className="mt-2" />
+            </div>
+            <div>
+                <InputLabel
+                    htmlFor={`edit-project-deliverable-${project.id}`}
+                    value="Type de livrable"
+                />
+                <DeliverableTypeSelect
+                    id={`edit-project-deliverable-${project.id}`}
+                    value={data.deliverable_type}
+                    types={deliverableTypes}
+                    onChange={(e) => setData('deliverable_type', e.target.value)}
+                />
+                <InputError message={errors.deliverable_type} className="mt-2" />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                    <InputLabel htmlFor={`edit-project-start-${project.id}`} value="Début" />
+                    <TextInput
+                        id={`edit-project-start-${project.id}`}
+                        type="date"
+                        value={data.starts_at}
+                        onChange={(e) => setData('starts_at', e.target.value)}
+                        className="mt-1 block w-full"
+                        required
+                    />
+                    <InputError message={errors.starts_at} className="mt-2" />
+                </div>
+                <div>
+                    <InputLabel htmlFor={`edit-project-end-${project.id}`} value="Fin" />
+                    <TextInput
+                        id={`edit-project-end-${project.id}`}
+                        type="date"
+                        value={data.ends_at}
+                        onChange={(e) => setData('ends_at', e.target.value)}
+                        className="mt-1 block w-full"
+                        required
+                    />
+                    <InputError message={errors.ends_at} className="mt-2" />
+                </div>
+            </div>
+            <div className="flex items-center gap-3">
+                <PrimaryButton disabled={processing}>Enregistrer</PrimaryButton>
+                <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className="text-sm text-on-surface/60"
+                >
+                    Annuler
+                </button>
+            </div>
+        </form>
+    );
+}
+
+function DeleteProjectControl({ project }) {
+    const { delete: destroy, processing, errors, transform } = useForm({
+        purge: false,
+    });
+    const [open, setOpen] = useState(false);
+
+    const remove = (purge) => {
+        transform(() => ({ purge }));
+        destroy(route('professor.projects.destroy', project.id), {
+            preserveScroll: true,
+        });
+    };
+
+    if (!open) {
+        return (
+            <button
+                type="button"
+                onClick={() => (project.is_empty ? remove(false) : setOpen(true))}
+                disabled={processing}
+                className="text-sm font-medium text-red-700"
+            >
+                Effacer
+            </button>
+        );
+    }
+
+    return (
+        <div className="mt-3 w-full space-y-3 rounded-studentlink border border-red-200 bg-red-50 p-4">
+            <p className="text-sm text-on-surface">
+                Ce projet n&apos;est pas vide. Effacer le projet, ses groupes et ses
+                livrables ? Les étudiants restent inscrits au cours et dans les autres
+                projets.
+            </p>
+            <InputError message={errors.purge} className="mt-2" />
+            <div className="flex flex-wrap items-center gap-3">
+                <button
+                    type="button"
+                    onClick={() => remove(true)}
+                    disabled={processing}
+                    className="rounded-studentlink bg-red-700 px-3 py-2 text-sm font-medium text-white"
+                >
+                    Tout effacer
+                </button>
+                <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className="text-sm text-on-surface/60"
+                >
+                    Annuler
+                </button>
+            </div>
+        </div>
+    );
+}
+
 function projectPeriod(project) {
     if (project.starts_at && project.ends_at) {
         return `Du ${project.starts_at} au ${project.ends_at}`;
@@ -355,6 +716,10 @@ export default function Dashboard({ courses, deliverableTypes }) {
                                 code inscription :{' '}
                                 <strong>{course.join_code}</strong>
                             </p>
+                            <div className="mt-2 flex flex-wrap items-center gap-4">
+                                <EditCourseForm course={course} />
+                                <DeleteCourseControl course={course} />
+                            </div>
                         </div>
                         <div className="flex gap-4 text-sm">
                             <span>
@@ -396,6 +761,13 @@ export default function Dashboard({ courses, deliverableTypes }) {
                                         project={project}
                                         deliverableTypes={deliverableTypes}
                                     />
+                                    <div className="mt-2 flex flex-wrap items-center gap-4">
+                                        <EditProjectForm
+                                            project={project}
+                                            deliverableTypes={deliverableTypes}
+                                        />
+                                        <DeleteProjectControl project={project} />
+                                    </div>
                                 </div>
                                 <Link
                                     href={route('professor.rubrics.edit', project.id)}

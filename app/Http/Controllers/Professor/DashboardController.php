@@ -35,6 +35,7 @@ class DashboardController extends Controller
                     'code' => $course->code,
                     'join_code' => $course->join_code,
                     'students_count' => $course->students()->count(),
+                    'is_empty' => $course->projects->isEmpty(),
                     'projects' => $course->projects->map(fn (Project $project) => [
                         'id' => $project->id,
                         'title' => $project->title,
@@ -43,7 +44,10 @@ class DashboardController extends Controller
                         'deliverable_label' => ($project->deliverable_type ?? DeliverableType::None)->label(),
                         'starts_at' => $project->starts_at?->format('d/m/Y'),
                         'ends_at' => $project->ends_at?->format('d/m/Y'),
+                        'starts_on' => $project->starts_at?->format('Y-m-d') ?? '',
+                        'ends_on' => $project->ends_at?->format('Y-m-d') ?? '',
                         'groups_count' => $project->groups->count(),
+                        'is_empty' => $project->groups->isEmpty(),
                         'rubric' => $project->rubric ? [
                             'id' => $project->rubric->id,
                             'name' => $project->rubric->name,
