@@ -6,6 +6,7 @@ import Modal from '@/Components/Modal';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import ProfessorLayout from '@/Layouts/ProfessorLayout';
+import { useT } from '@/i18n';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -30,6 +31,7 @@ function IconAction({ label, icon, onClick, disabled = false, tone = 'primary' }
 }
 
 function CreateCourseForm({ initiallyOpen = false }) {
+    const t = useT();
     const { data, setData, post, processing, errors, reset } = useForm({
         title: '',
         description: '',
@@ -68,7 +70,7 @@ function CreateCourseForm({ initiallyOpen = false }) {
                     className="inline-flex items-center gap-2 rounded-studentlink bg-primary-container px-4 py-2 text-sm font-medium text-white"
                 >
                     <Icon name="add" className="text-base" />
-                    Nouveau cours
+                    {t('Nouveau cours')}
                 </button>
             </div>
         );
@@ -80,14 +82,14 @@ function CreateCourseForm({ initiallyOpen = false }) {
             className="mb-8 space-y-4 rounded-studentlink border border-primary-container/20 bg-card p-4"
         >
             <div>
-                <h2 className="text-sm font-semibold text-on-surface">Nouveau cours</h2>
+                <h2 className="text-sm font-semibold text-on-surface">{t('Nouveau cours')}</h2>
                 <p className="mt-1 text-xs text-on-surface/60">
-                    Les étudiants rejoignent le cours avec le code d'inscription.
+                    {t("Les étudiants rejoignent le cours avec le code d'inscription.")}
                 </p>
             </div>
 
             <div>
-                <InputLabel htmlFor="course-title" value="Titre" />
+                <InputLabel htmlFor="course-title" value={t('Titre')} />
                 <TextInput
                     id="course-title"
                     value={data.title}
@@ -99,7 +101,7 @@ function CreateCourseForm({ initiallyOpen = false }) {
             </div>
 
             <div>
-                <InputLabel htmlFor="course-description" value="Description" />
+                <InputLabel htmlFor="course-description" value={t('Description')} />
                 <textarea
                     id="course-description"
                     value={data.description}
@@ -112,7 +114,7 @@ function CreateCourseForm({ initiallyOpen = false }) {
 
             <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                    <InputLabel htmlFor="course-code" value="Code du cours" />
+                    <InputLabel htmlFor="course-code" value={t('Code du cours')} />
                     <TextInput
                         id="course-code"
                         value={data.code}
@@ -124,7 +126,7 @@ function CreateCourseForm({ initiallyOpen = false }) {
                     <InputError message={errors.code} className="mt-2" />
                 </div>
                 <div>
-                    <InputLabel htmlFor="course-join-code" value="Code d'inscription" />
+                    <InputLabel htmlFor="course-join-code" value={t("Code d'inscription")} />
                     <TextInput
                         id="course-join-code"
                         value={data.join_code}
@@ -138,14 +140,14 @@ function CreateCourseForm({ initiallyOpen = false }) {
             </div>
 
             <div className="flex items-center gap-3">
-                <PrimaryButton disabled={processing}>Créer le cours</PrimaryButton>
+                <PrimaryButton disabled={processing}>{t('Créer le cours')}</PrimaryButton>
                 {!initiallyOpen && (
                     <button
                         type="button"
                         onClick={() => setOpen(false)}
                         className="text-sm text-on-surface/60"
                     >
-                        Annuler
+                        {t('Annuler')}
                     </button>
                 )}
             </div>
@@ -172,6 +174,7 @@ function DeliverableTypeSelect({ id, value, onChange, types }) {
 }
 
 function CreateProjectForm({ course, deliverableTypes, initiallyOpen = false }) {
+    const t = useT();
     const { data, setData, post, processing, errors, reset } = useForm({
         title: '',
         description: '',
@@ -208,7 +211,7 @@ function CreateProjectForm({ course, deliverableTypes, initiallyOpen = false }) 
                 className="mb-4 inline-flex items-center gap-2 rounded-studentlink border border-primary-container/30 bg-card px-3 py-2 text-sm font-medium text-primary-container"
             >
                 <Icon name="add" className="text-base" />
-                Nouveau projet
+                {t('Nouveau projet')}
             </button>
         );
     }
@@ -218,12 +221,12 @@ function CreateProjectForm({ course, deliverableTypes, initiallyOpen = false }) 
             onSubmit={submit}
             className="mb-4 space-y-4 rounded-studentlink border border-dashed border-primary-container/30 bg-card p-4"
         >
-            <h3 className="text-sm font-semibold text-on-surface">Nouveau projet</h3>
+            <h3 className="text-sm font-semibold text-on-surface">{t('Nouveau projet')}</h3>
 
             <div className="grid gap-4 lg:grid-cols-2 lg:gap-6">
                 <div className="space-y-3">
                     <div>
-                        <InputLabel htmlFor={`project-title-${course.id}`} value="Titre" />
+                        <InputLabel htmlFor={`project-title-${course.id}`} value={t('Titre')} />
                         <TextInput
                             id={`project-title-${course.id}`}
                             value={data.title}
@@ -237,7 +240,7 @@ function CreateProjectForm({ course, deliverableTypes, initiallyOpen = false }) 
                     <div>
                         <InputLabel
                             htmlFor={`project-description-${course.id}`}
-                            value="Description"
+                            value={t('Description')}
                         />
                         <textarea
                             id={`project-description-${course.id}`}
@@ -254,7 +257,7 @@ function CreateProjectForm({ course, deliverableTypes, initiallyOpen = false }) 
                     <div>
                         <InputLabel
                             htmlFor={`project-deliverable-${course.id}`}
-                            value="Type de livrable"
+                            value={t('Type de livrable')}
                         />
                         <DeliverableTypeSelect
                             id={`project-deliverable-${course.id}`}
@@ -266,7 +269,7 @@ function CreateProjectForm({ course, deliverableTypes, initiallyOpen = false }) 
                     </div>
 
                     <div>
-                        <InputLabel htmlFor={`project-start-${course.id}`} value="Début" />
+                        <InputLabel htmlFor={`project-start-${course.id}`} value={t('Début')} />
                         <TextInput
                             id={`project-start-${course.id}`}
                             type="date"
@@ -279,7 +282,7 @@ function CreateProjectForm({ course, deliverableTypes, initiallyOpen = false }) 
                     </div>
 
                     <div>
-                        <InputLabel htmlFor={`project-end-${course.id}`} value="Fin" />
+                        <InputLabel htmlFor={`project-end-${course.id}`} value={t('Fin')} />
                         <TextInput
                             id={`project-end-${course.id}`}
                             type="date"
@@ -294,14 +297,14 @@ function CreateProjectForm({ course, deliverableTypes, initiallyOpen = false }) 
             </div>
 
             <div className="flex items-center gap-3">
-                <PrimaryButton disabled={processing}>Créer le projet</PrimaryButton>
+                <PrimaryButton disabled={processing}>{t('Créer le projet')}</PrimaryButton>
                 {!initiallyOpen && (
                     <button
                         type="button"
                         onClick={() => setOpen(false)}
                         className="text-sm text-on-surface/60"
                     >
-                        Annuler
+                        {t('Annuler')}
                     </button>
                 )}
             </div>
@@ -310,6 +313,7 @@ function CreateProjectForm({ course, deliverableTypes, initiallyOpen = false }) 
 }
 
 function EditCourseForm({ course }) {
+    const t = useT();
     const { data, setData, put, processing, errors } = useForm({
         title: course.title,
         description: course.description ?? '',
@@ -336,7 +340,7 @@ function EditCourseForm({ course }) {
 
     if (!open) {
         return (
-            <IconAction label="Modifier" icon="edit" onClick={() => setOpen(true)} />
+            <IconAction label={t('Modifier')} icon="edit" onClick={() => setOpen(true)} />
         );
     }
 
@@ -345,9 +349,9 @@ function EditCourseForm({ course }) {
             onSubmit={submit}
             className="mt-3 w-full space-y-3 rounded-studentlink border border-primary-container/20 bg-card p-4"
         >
-            <h3 className="text-sm font-semibold text-on-surface">Modifier le cours</h3>
+            <h3 className="text-sm font-semibold text-on-surface">{t('Modifier le cours')}</h3>
             <div>
-                <InputLabel htmlFor={`edit-course-title-${course.id}`} value="Titre" />
+                <InputLabel htmlFor={`edit-course-title-${course.id}`} value={t('Titre')} />
                 <TextInput
                     id={`edit-course-title-${course.id}`}
                     value={data.title}
@@ -360,7 +364,7 @@ function EditCourseForm({ course }) {
             <div>
                 <InputLabel
                     htmlFor={`edit-course-description-${course.id}`}
-                    value="Description"
+                    value={t('Description')}
                 />
                 <textarea
                     id={`edit-course-description-${course.id}`}
@@ -373,7 +377,7 @@ function EditCourseForm({ course }) {
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                    <InputLabel htmlFor={`edit-course-code-${course.id}`} value="Code du cours" />
+                    <InputLabel htmlFor={`edit-course-code-${course.id}`} value={t('Code du cours')} />
                     <TextInput
                         id={`edit-course-code-${course.id}`}
                         value={data.code}
@@ -386,7 +390,7 @@ function EditCourseForm({ course }) {
                 <div>
                     <InputLabel
                         htmlFor={`edit-course-join-${course.id}`}
-                        value="Code d'inscription"
+                        value={t("Code d'inscription")}
                     />
                     <TextInput
                         id={`edit-course-join-${course.id}`}
@@ -399,13 +403,13 @@ function EditCourseForm({ course }) {
                 </div>
             </div>
             <div className="flex items-center gap-3">
-                <PrimaryButton disabled={processing}>Enregistrer</PrimaryButton>
+                <PrimaryButton disabled={processing}>{t('Enregistrer')}</PrimaryButton>
                 <button
                     type="button"
                     onClick={() => setOpen(false)}
                     className="text-sm text-on-surface/60"
                 >
-                    Annuler
+                    {t('Annuler')}
                 </button>
             </div>
         </form>
@@ -413,6 +417,7 @@ function EditCourseForm({ course }) {
 }
 
 function DeleteCourseControl({ course }) {
+    const t = useT();
     const { delete: destroy, processing, errors, transform } = useForm({
         delete_students: false,
     });
@@ -429,7 +434,7 @@ function DeleteCourseControl({ course }) {
     return (
         <>
             <IconAction
-                label="Effacer"
+                label={t('Effacer')}
                 icon="delete"
                 tone="danger"
                 onClick={() => setOpen(true)}
@@ -438,18 +443,15 @@ function DeleteCourseControl({ course }) {
             <Modal show={open} maxWidth="md" onClose={() => setOpen(false)}>
                 <div className="p-6">
                     <h2 className="text-lg font-medium text-on-surface">
-                        {course.is_empty ? 'Êtes-vous sûr ?' : 'Cours non vide'}
+                        {course.is_empty ? t('Êtes-vous sûr ?') : t('Cours non vide')}
                     </h2>
                     {course.is_empty ? (
                         <p className="mt-2 text-sm text-on-surface/70">
-                            Ce cours n&apos;a aucun projet. Faut-il aussi effacer
-                            les étudiants inscrits ? Ceux qui sont aussi dans un
-                            autre cours sont conservés.
+                            {t("Ce cours n'a aucun projet. Faut-il aussi effacer les étudiants inscrits ? Ceux qui sont aussi dans un autre cours sont conservés.")}
                         </p>
                     ) : (
                         <p className="mt-2 text-sm text-on-surface/70">
-                            Supprimez d&apos;abord les projets de ce cours. Rien
-                            n&apos;a été effacé.
+                            {t("Supprimez d'abord les projets de ce cours. Rien n'a été effacé.")}
                         </p>
                     )}
                     <InputError message={errors.delete_students} className="mt-2" />
@@ -459,7 +461,7 @@ function DeleteCourseControl({ course }) {
                             onClick={() => setOpen(false)}
                             className="text-sm text-on-surface/60"
                         >
-                            Annuler
+                            {t('Annuler')}
                         </button>
                         {course.is_empty && (
                             <>
@@ -469,7 +471,7 @@ function DeleteCourseControl({ course }) {
                                     disabled={processing}
                                     className="rounded-studentlink border border-red-300 bg-card px-3 py-2 text-sm font-medium text-red-700"
                                 >
-                                    Effacer le cours seulement
+                                    {t('Effacer le cours seulement')}
                                 </button>
                                 <button
                                     type="button"
@@ -477,7 +479,7 @@ function DeleteCourseControl({ course }) {
                                     disabled={processing}
                                     className="rounded-studentlink bg-red-700 px-3 py-2 text-sm font-medium text-white"
                                 >
-                                    Effacer le cours et les étudiants
+                                    {t('Effacer le cours et les étudiants')}
                                 </button>
                             </>
                         )}
@@ -489,6 +491,7 @@ function DeleteCourseControl({ course }) {
 }
 
 function EditProjectForm({ project, deliverableTypes }) {
+    const t = useT();
     const { data, setData, put, processing, errors } = useForm({
         title: project.title,
         description: project.description ?? '',
@@ -517,7 +520,7 @@ function EditProjectForm({ project, deliverableTypes }) {
 
     if (!open) {
         return (
-            <IconAction label="Modifier" icon="edit" onClick={() => setOpen(true)} />
+            <IconAction label={t('Modifier')} icon="edit" onClick={() => setOpen(true)} />
         );
     }
 
@@ -526,9 +529,9 @@ function EditProjectForm({ project, deliverableTypes }) {
             onSubmit={submit}
             className="mt-3 w-full space-y-3 rounded-studentlink border border-primary-container/20 bg-card p-4"
         >
-            <h4 className="text-sm font-semibold text-on-surface">Modifier le projet</h4>
+            <h4 className="text-sm font-semibold text-on-surface">{t('Modifier le projet')}</h4>
             <div>
-                <InputLabel htmlFor={`edit-project-title-${project.id}`} value="Titre" />
+                <InputLabel htmlFor={`edit-project-title-${project.id}`} value={t('Titre')} />
                 <TextInput
                     id={`edit-project-title-${project.id}`}
                     value={data.title}
@@ -541,7 +544,7 @@ function EditProjectForm({ project, deliverableTypes }) {
             <div>
                 <InputLabel
                     htmlFor={`edit-project-description-${project.id}`}
-                    value="Description"
+                    value={t('Description')}
                 />
                 <textarea
                     id={`edit-project-description-${project.id}`}
@@ -555,7 +558,7 @@ function EditProjectForm({ project, deliverableTypes }) {
             <div>
                 <InputLabel
                     htmlFor={`edit-project-deliverable-${project.id}`}
-                    value="Type de livrable"
+                    value={t('Type de livrable')}
                 />
                 <DeliverableTypeSelect
                     id={`edit-project-deliverable-${project.id}`}
@@ -567,7 +570,7 @@ function EditProjectForm({ project, deliverableTypes }) {
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                    <InputLabel htmlFor={`edit-project-start-${project.id}`} value="Début" />
+                    <InputLabel htmlFor={`edit-project-start-${project.id}`} value={t('Début')} />
                     <TextInput
                         id={`edit-project-start-${project.id}`}
                         type="date"
@@ -579,7 +582,7 @@ function EditProjectForm({ project, deliverableTypes }) {
                     <InputError message={errors.starts_at} className="mt-2" />
                 </div>
                 <div>
-                    <InputLabel htmlFor={`edit-project-end-${project.id}`} value="Fin" />
+                    <InputLabel htmlFor={`edit-project-end-${project.id}`} value={t('Fin')} />
                     <TextInput
                         id={`edit-project-end-${project.id}`}
                         type="date"
@@ -592,13 +595,13 @@ function EditProjectForm({ project, deliverableTypes }) {
                 </div>
             </div>
             <div className="flex items-center gap-3">
-                <PrimaryButton disabled={processing}>Enregistrer</PrimaryButton>
+                <PrimaryButton disabled={processing}>{t('Enregistrer')}</PrimaryButton>
                 <button
                     type="button"
                     onClick={() => setOpen(false)}
                     className="text-sm text-on-surface/60"
                 >
-                    Annuler
+                    {t('Annuler')}
                 </button>
             </div>
         </form>
@@ -606,6 +609,7 @@ function EditProjectForm({ project, deliverableTypes }) {
 }
 
 function DeleteProjectControl({ project }) {
+    const t = useT();
     const { delete: destroy, processing, errors, transform } = useForm({
         purge: false,
     });
@@ -622,7 +626,7 @@ function DeleteProjectControl({ project }) {
     return (
         <>
             <IconAction
-                label="Effacer"
+                label={t('Effacer')}
                 icon="delete"
                 tone="danger"
                 onClick={() => setOpen(true)}
@@ -631,12 +635,12 @@ function DeleteProjectControl({ project }) {
             <Modal show={open} maxWidth="md" onClose={() => setOpen(false)}>
                 <div className="p-6">
                     <h2 className="text-lg font-medium text-on-surface">
-                        Êtes-vous sûr ?
+                        {t('Êtes-vous sûr ?')}
                     </h2>
                     <p className="mt-2 text-sm text-on-surface/70">
                         {project.is_empty
-                            ? 'Ce projet sera effacé.'
-                            : 'Ce projet, ses groupes et ses livrables seront effacés. Les étudiants restent inscrits au cours et dans les autres projets.'}
+                            ? t('Ce projet sera effacé.')
+                            : t('Ce projet, ses groupes et ses livrables seront effacés. Les étudiants restent inscrits au cours et dans les autres projets.')}
                     </p>
                     <InputError message={errors.purge} className="mt-2" />
                     <div className="mt-6 flex justify-end gap-3">
@@ -645,7 +649,7 @@ function DeleteProjectControl({ project }) {
                             onClick={() => setOpen(false)}
                             className="text-sm text-on-surface/60"
                         >
-                            Annuler
+                            {t('Annuler')}
                         </button>
                         <button
                             type="button"
@@ -653,7 +657,7 @@ function DeleteProjectControl({ project }) {
                             disabled={processing}
                             className="rounded-studentlink bg-red-700 px-3 py-2 text-sm font-medium text-white"
                         >
-                            {project.is_empty ? 'Effacer' : 'Tout effacer'}
+                            {project.is_empty ? t('Effacer') : t('Tout effacer')}
                         </button>
                     </div>
                 </div>
@@ -662,24 +666,27 @@ function DeleteProjectControl({ project }) {
     );
 }
 
-function projectPeriod(project) {
+function projectPeriod(project, t) {
     if (project.starts_at && project.ends_at) {
-        return `Du ${project.starts_at} au ${project.ends_at}`;
+        return t('Du :start au :end', {
+            start: project.starts_at,
+            end: project.ends_at,
+        });
     }
 
-    return `Échéance ${project.ends_at ?? '—'}`;
+    return t('Échéance :date', { date: project.ends_at ?? '—' });
 }
 
 export default function Dashboard({ courses, deliverableTypes }) {
+    const t = useT();
     return (
-        <ProfessorLayout title="Vue d'ensemble">
-            <Head title="Vue d'ensemble professeur" />
+        <ProfessorLayout title={t("Vue d'ensemble")}>
+            <Head title={t("Vue d'ensemble professeur")} />
             <FlashMessage />
 
             {courses.length === 0 && (
                 <p className="mb-4 text-sm text-on-surface/70">
-                    Aucun cours pour le moment. Créez le vôtre pour que les étudiants
-                    puissent s'inscrire.
+                    {t("Aucun cours pour le moment. Créez le vôtre pour que les étudiants puissent s'inscrire.")}
                 </p>
             )}
 
@@ -698,9 +705,17 @@ export default function Dashboard({ courses, deliverableTypes }) {
                                 </p>
                             )}
                             <p className="text-sm text-on-surface/60">
-                                {course.code} · {course.students_count} étudiants ·
-                                code inscription :{' '}
-                                <strong>{course.join_code}</strong>
+                                {course.students_count > 1
+                                    ? t(':code · :count étudiants · code inscription : :join', {
+                                        code: course.code,
+                                        count: course.students_count,
+                                        join: course.join_code,
+                                    })
+                                    : t(':code · :count étudiant · code inscription : :join', {
+                                        code: course.code,
+                                        count: course.students_count,
+                                        join: course.join_code,
+                                    })}
                             </p>
                             <div className="mt-2 flex flex-wrap items-center gap-4">
                                 <EditCourseForm course={course} />
@@ -709,10 +724,12 @@ export default function Dashboard({ courses, deliverableTypes }) {
                         </div>
                         <div className="flex gap-4 text-sm">
                             <span>
-                                <strong>{course.stats.groups}</strong> groupes
+                                <strong>{course.stats.groups}</strong>{' '}
+                                {course.stats.groups > 1 ? t('groupes') : t('groupe')}
                             </span>
                             <span>
-                                <strong>{course.stats.submitted}</strong> rendus
+                                <strong>{course.stats.submitted}</strong>{' '}
+                                {course.stats.submitted > 1 ? t('rendus') : t('rendu')}
                             </span>
                         </div>
                     </div>
@@ -739,9 +756,10 @@ export default function Dashboard({ courses, deliverableTypes }) {
                                         </p>
                                     )}
                                     <p className="text-xs text-on-surface/60">
-                                        {projectPeriod(project)} · Livrable :{' '}
-                                        {project.deliverable_label} · {project.groups_count}{' '}
-                                        groupes
+                                        {projectPeriod(project, t)} · {t('Livrable : :label', { label: project.deliverable_label })} ·{' '}
+                                        {project.groups_count > 1
+                                            ? t(':count groupes', { count: project.groups_count })
+                                            : t(':count groupe', { count: project.groups_count })}
                                     </p>
                                     <div className="mt-2 flex flex-wrap items-center gap-4">
                                         <EditProjectForm
@@ -756,10 +774,12 @@ export default function Dashboard({ courses, deliverableTypes }) {
                                     className="inline-flex items-center gap-1 rounded-studentlink bg-secondary px-3 py-2 text-sm font-medium text-white"
                                 >
                                     <Icon name="tune" className="text-base" />
-                                    Grille
+                                    {t('Grille')}
                                     {project.rubric && (
                                         <span className="opacity-80">
-                                            ({project.rubric.criteria_count} critères)
+                                            ({project.rubric.criteria_count > 1
+                                                ? t(':count critères', { count: project.rubric.criteria_count })
+                                                : t(':count critère', { count: project.rubric.criteria_count })})
                                         </span>
                                     )}
                                 </Link>
@@ -768,14 +788,14 @@ export default function Dashboard({ courses, deliverableTypes }) {
                                     className="inline-flex items-center gap-1 rounded-studentlink border border-primary-container/30 bg-card px-3 py-2 text-sm font-medium text-primary-container"
                                 >
                                     <Icon name="download" className="text-base" />
-                                    Export CSV
+                                    {t('Export CSV')}
                                 </a>
                             </div>
 
                             <div className="divide-y divide-primary-container/10">
                                 {project.groups.length === 0 ? (
                                     <p className="px-4 py-6 text-sm text-on-surface/50">
-                                        Aucun groupe constitué.
+                                        {t('Aucun groupe constitué.')}
                                     </p>
                                 ) : (
                                     project.groups.map((group) => (
@@ -788,7 +808,9 @@ export default function Dashboard({ courses, deliverableTypes }) {
                                                     {group.name}
                                                 </p>
                                                 <p className="text-on-surface/60">
-                                                    {group.members_count} membres
+                                                    {group.members_count > 1
+                                                        ? t(':count membres', { count: group.members_count })
+                                                        : t(':count membre', { count: group.members_count })}
                                                 </p>
                                             </div>
                                             <span

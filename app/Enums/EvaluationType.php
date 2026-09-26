@@ -10,8 +10,8 @@ enum EvaluationType: string
     public function label(): string
     {
         return match ($this) {
-            self::Inter => 'Inter-groupe',
-            self::Intra => 'Intra-groupe',
+            self::Inter => __('Inter-groupe'),
+            self::Intra => __('Intra-groupe'),
         };
     }
 }

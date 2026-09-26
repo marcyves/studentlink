@@ -11,9 +11,9 @@ enum AccessRequestStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::Pending => 'En attente',
-            self::Accepted => 'Acceptée',
-            self::Rejected => 'Rejetée',
+            self::Pending => __('En attente'),
+            self::Accepted => __('Acceptée'),
+            self::Rejected => __('Rejetée'),
         };
     }
 }

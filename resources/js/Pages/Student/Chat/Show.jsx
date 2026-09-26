@@ -2,11 +2,13 @@ import Icon from '@/Components/Icon';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import StudentLayout from '@/Layouts/StudentLayout';
+import { localeTags, useT } from '@/i18n';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 
 function MessageBubble({ message, isOwn }) {
-    const time = new Date(message.created_at).toLocaleTimeString('fr-FR', {
+    const { locale } = usePage().props;
+    const time = new Date(message.created_at).toLocaleTimeString(localeTags[locale] ?? 'fr-FR', {
         hour: '2-digit',
         minute: '2-digit',
     });
@@ -39,6 +41,7 @@ function MessageBubble({ message, isOwn }) {
 }
 
 export default function Show({ group, messages: initialMessages, members }) {
+    const t = useT();
     const { auth } = usePage().props;
     const reverbEnabled = Boolean(import.meta.env.VITE_REVERB_APP_KEY);
     const [messages, setMessages] = useState(initialMessages);
@@ -89,25 +92,28 @@ export default function Show({ group, messages: initialMessages, members }) {
 
     return (
         <StudentLayout title={group.name}>
-            <Head title={`Chat — ${group.name}`} />
+            <Head title={t('Chat — :name', { name: group.name })} />
 
             <Link
                 href={route('student.chat.index')}
                 className="mb-3 inline-flex items-center gap-1 text-sm text-primary-container"
             >
                 <Icon name="arrow_back" className="text-base" />
-                Groupes
+                {t('Groupes')}
             </Link>
 
             <p className="mb-4 text-xs text-on-surface/50">
-                {group.project} · {members.length} en ligne (membres :{' '}
-                {members.join(', ')})
+                {t(':project · :count en ligne (membres : :members)', {
+                    project: group.project,
+                    count: members.length,
+                    members: members.join(', '),
+                })}
             </p>
 
             <div className="mb-4 flex max-h-[55vh] min-h-[280px] flex-col gap-3 overflow-y-auto rounded-studentlink border border-primary-container/15 bg-surface-container/30 p-3">
                 {messages.length === 0 ? (
                     <p className="m-auto text-sm text-on-surface/50">
-                        Aucun message — lancez la conversation.
+                        {t('Aucun message — lancez la conversation.')}
                     </p>
                 ) : (
                     messages.map((message) => (
@@ -125,18 +131,18 @@ export default function Show({ group, messages: initialMessages, members }) {
                 <TextInput
                     value={data.body}
                     onChange={(e) => setData('body', e.target.value)}
-                    placeholder="Votre message…"
+                    placeholder={t('Votre message…')}
                     className="flex-1"
                     required
                 />
-                <PrimaryButton disabled={processing} aria-label="Envoyer">
+                <PrimaryButton disabled={processing} aria-label={t('Envoyer')}>
                     <Icon name="send" />
                 </PrimaryButton>
             </form>
 
             {!reverbEnabled && (
                 <p className="mt-2 text-xs text-on-surface/40">
-                    Temps réel désactivé — lancez Reverb pour le chat live.
+                    {t('Temps réel désactivé — lancez Reverb pour le chat live.')}
                 </p>
             )}
         </StudentLayout>

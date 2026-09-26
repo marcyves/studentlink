@@ -1,5 +1,6 @@
 import Icon from '@/Components/Icon';
 import UserMenu from '@/Components/UserMenu';
+import { useT } from '@/i18n';
 import { Link } from '@inertiajs/react';
 
 const navItems = [
@@ -10,6 +11,7 @@ const navItems = [
 ];
 
 export default function StudentLayout({ children, title }) {
+    const t = useT();
     return (
         <div className="min-h-screen bg-surface pb-24">
             <header className="border-b border-primary-container/15 bg-card px-4 py-4">
@@ -47,7 +49,7 @@ export default function StudentLayout({ children, title }) {
                             }`}
                         >
                             <Icon name={item.icon} className="text-xl" />
-                            {item.label}
+                            {t(item.label)}
                         </Link>
                     ))}
                 </div>

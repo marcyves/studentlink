@@ -26,7 +26,7 @@ class ProfessorAccessRequestController extends Controller
             ->exists();
 
         if ($pending) {
-            return back()->with('success', 'Votre demande est déjà en cours de traitement.');
+            return back()->with('success', __('Votre demande est déjà en cours de traitement.'));
         }
 
         $accessRequest = ProfessorAccessRequest::create($validated);
@@ -36,7 +36,7 @@ class ProfessorAccessRequestController extends Controller
 
         return back()->with(
             'success',
-            'Demande envoyée. Un administrateur vous contactera par e-mail.',
+            __('Demande envoyée. Un administrateur vous contactera par e-mail.'),
         );
     }
 }

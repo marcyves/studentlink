@@ -10,8 +10,8 @@ enum PeerEvaluationStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::Pending => 'À faire',
-            self::Completed => 'Terminée',
+            self::Pending => __('À faire'),
+            self::Completed => __('Terminée'),
         };
     }
 }

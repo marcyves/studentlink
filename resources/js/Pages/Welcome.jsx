@@ -3,6 +3,7 @@ import Icon from '@/Components/Icon';
 import ProfessorAccessForm from '@/Components/ProfessorAccessForm';
 import StudentLinkBrand from '@/Components/StudentLinkBrand';
 import ThemeToggle from '@/Components/ThemeToggle';
+import { useT } from '@/i18n';
 import { Head, Link } from '@inertiajs/react';
 
 const features = [
@@ -24,9 +25,10 @@ const features = [
 ];
 
 export default function Welcome({ auth, canLogin, canRegister, registrationHint }) {
+    const t = useT();
     return (
         <>
-            <Head title="Accueil" />
+            <Head title={t('Accueil')} />
 
             <div className="mesh-gradient flex min-h-screen flex-col">
                 <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-6 md:px-8">
@@ -48,7 +50,7 @@ export default function Welcome({ auth, canLogin, canRegister, registrationHint 
                                 href={route('dashboard')}
                                 className="rounded-studentlink bg-primary-container px-4 py-2 text-sm font-medium text-white transition hover:bg-primary"
                             >
-                                Mon espace
+                                {t('Mon espace')}
                             </Link>
                         ) : (
                             <>
@@ -57,7 +59,7 @@ export default function Welcome({ auth, canLogin, canRegister, registrationHint 
                                         href={route('login')}
                                         className="rounded-studentlink px-4 py-2 text-sm font-medium text-primary-container transition hover:bg-surface-container"
                                     >
-                                        Connexion
+                                        {t('Connexion')}
                                     </Link>
                                 )}
                                 {canRegister && (
@@ -65,7 +67,7 @@ export default function Welcome({ auth, canLogin, canRegister, registrationHint 
                                         href={route('register')}
                                         className="rounded-studentlink bg-secondary px-4 py-2 text-sm font-medium text-white transition hover:bg-secondary-container"
                                     >
-                                        Créer un compte
+                                        {t('Créer un compte')}
                                     </Link>
                                 )}
                             </>
@@ -79,9 +81,7 @@ export default function Welcome({ auth, canLogin, canRegister, registrationHint 
                         <StudentLinkBrand showTagline={false} />
 
                         <p className="mt-4 text-lg text-on-surface/70 md:text-xl">
-                            Plateforme de collaboration académique — autonomie
-                            étudiante, évaluation par les pairs, supervision
-                            enseignante.
+                            {t('Plateforme de collaboration académique — autonomie étudiante, évaluation par les pairs, supervision enseignante.')}
                         </p>
 
                         {!auth.user && (
@@ -92,7 +92,7 @@ export default function Welcome({ auth, canLogin, canRegister, registrationHint 
                                         className="inline-flex w-full items-center justify-center gap-2 rounded-studentlink bg-secondary px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-secondary-container sm:w-auto"
                                     >
                                         <Icon name="person_add" />
-                                        Commencer gratuitement
+                                        {t('Commencer gratuitement')}
                                     </Link>
                                 )}
                                 {canLogin && (
@@ -101,7 +101,7 @@ export default function Welcome({ auth, canLogin, canRegister, registrationHint 
                                         className="inline-flex w-full items-center justify-center gap-2 rounded-studentlink border border-primary-container/30 bg-card px-6 py-3 text-sm font-semibold text-primary-container transition hover:border-secondary/40 hover:bg-surface-container/50 sm:w-auto"
                                     >
                                         <Icon name="login" />
-                                        Se connecter
+                                        {t('Se connecter')}
                                     </Link>
                                 )}
                             </div>
@@ -118,10 +118,10 @@ export default function Welcome({ auth, canLogin, canRegister, registrationHint 
                                     <Icon name={feature.icon} />
                                 </div>
                                 <h2 className="text-lg font-semibold text-on-surface">
-                                    {feature.title}
+                                    {t(feature.title)}
                                 </h2>
                                 <p className="mt-2 text-sm leading-relaxed text-on-surface/60">
-                                    {feature.text}
+                                    {t(feature.text)}
                                 </p>
                             </article>
                         ))}
@@ -130,29 +130,25 @@ export default function Welcome({ auth, canLogin, canRegister, registrationHint 
                     {!auth.user && canLogin && canRegister && (
                         <section className="mt-16 rounded-studentlink border border-primary-container/15 bg-surface-container/40 p-8 text-center md:mt-24">
                             <h2 className="text-xl font-semibold text-on-surface">
-                                Prêt à rejoindre votre promotion ?
+                                {t('Prêt à rejoindre votre promotion ?')}
                             </h2>
                             <p className="mx-auto mt-2 max-w-lg text-sm text-on-surface/60">
-                                Inscrivez-vous avec votre adresse
-                                institutionnelle
-                                {registrationHint && (
-                                    <> ({registrationHint})</>
-                                )}
-                                , puis rejoignez un cours avec le code fourni par
-                                votre enseignant.
+                                {registrationHint
+                                    ? t('Inscrivez-vous avec votre adresse institutionnelle (:hint), puis rejoignez un cours avec le code fourni par votre enseignant.', { hint: registrationHint })
+                                    : t('Inscrivez-vous avec votre adresse institutionnelle, puis rejoignez un cours avec le code fourni par votre enseignant.')}
                             </p>
                             <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
                                 <Link
                                     href={route('register')}
                                     className="inline-flex items-center gap-2 rounded-studentlink bg-primary-container px-5 py-2.5 text-sm font-medium text-white transition hover:bg-primary"
                                 >
-                                    Créer un compte
+                                    {t('Créer un compte')}
                                 </Link>
                                 <Link
                                     href={route('login')}
                                     className="text-sm font-medium text-primary-container underline-offset-2 hover:underline"
                                 >
-                                    J&apos;ai déjà un compte
+                                    {t("J'ai déjà un compte")}
                                 </Link>
                             </div>
                         </section>
@@ -165,11 +161,10 @@ export default function Welcome({ auth, canLogin, canRegister, registrationHint 
                         >
                             <div className="mx-auto max-w-md">
                                 <h2 className="text-center text-xl font-semibold text-on-surface">
-                                    Vous êtes professeur ?
+                                    {t('Vous êtes professeur ?')}
                                 </h2>
                                 <p className="mt-2 text-center text-sm text-on-surface/60">
-                                    Les comptes enseignants sont créés par un
-                                    administrateur. Demandez un accès ci-dessous.
+                                    {t('Les comptes enseignants sont créés par un administrateur. Demandez un accès ci-dessous.')}
                                 </p>
                                 <div className="mt-6">
                                     <ProfessorAccessForm />

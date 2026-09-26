@@ -1,15 +1,17 @@
 import Icon from '@/Components/Icon';
 import StudentLayout from '@/Layouts/StudentLayout';
+import { useT } from '@/i18n';
 import { Head, Link } from '@inertiajs/react';
 
 export default function Index({ groups }) {
+    const t = useT();
     return (
-        <StudentLayout title="Chat de groupe">
-            <Head title="Chat" />
+        <StudentLayout title={t('Chat de groupe')}>
+            <Head title={t('Chat')} />
 
             {groups.length === 0 ? (
                 <p className="rounded-studentlink border border-dashed border-outline-variant/50 p-6 text-center text-sm text-on-surface/60">
-                    Rejoignez un groupe pour accéder au chat.
+                    {t('Rejoignez un groupe pour accéder au chat.')}
                 </p>
             ) : (
                 <ul className="space-y-3">

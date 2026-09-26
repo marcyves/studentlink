@@ -10,8 +10,8 @@ enum SubmissionStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::Pending => 'En cours',
-            self::Submitted => 'Rendu',
+            self::Pending => __('En cours'),
+            self::Submitted => __('Rendu'),
         };
     }
 }

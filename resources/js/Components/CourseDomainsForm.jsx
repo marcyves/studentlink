@@ -2,6 +2,7 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
+import { useT } from '@/i18n';
 import { router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -24,6 +25,7 @@ function fieldError(errors, name) {
 }
 
 export default function CourseDomainsForm({ course }) {
+    const t = useT();
     const { errors } = usePage().props;
     const placeholder =
         course.default_professor_domain ?? 'ipag.fr, etu.ipag.fr';
@@ -62,18 +64,19 @@ export default function CourseDomainsForm({ course }) {
                 {course.title}
             </h3>
             <p className="mt-1 text-xs text-on-surface/60">
-                {course.code} · laissez vide pour utiliser le domaine de votre
-                e-mail (
-                {course.default_professor_domain
-                    ? `@${course.default_professor_domain}`
-                    : '—'}
-                ). Domaines effectifs actuellement : {effectiveLabel}.
+                {t(':code · laissez vide pour utiliser le domaine de votre e-mail (:domain). Domaines effectifs actuellement : :effective.', {
+                    code: course.code,
+                    domain: course.default_professor_domain
+                        ? `@${course.default_professor_domain}`
+                        : '—',
+                    effective: effectiveLabel,
+                })}
             </p>
 
             <div className="mt-3">
                 <InputLabel
                     htmlFor={`domains-${course.id}`}
-                    value="Domaines e-mail autorisés (séparés par des virgules)"
+                    value={t('Domaines e-mail autorisés (séparés par des virgules)')}
                 />
                 <TextInput
                     id={`domains-${course.id}`}
@@ -89,7 +92,7 @@ export default function CourseDomainsForm({ course }) {
             </div>
 
             <PrimaryButton className="mt-3" disabled={processing}>
-                Enregistrer les domaines
+                {t('Enregistrer les domaines')}
             </PrimaryButton>
         </form>
     );

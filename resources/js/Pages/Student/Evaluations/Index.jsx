@@ -1,9 +1,11 @@
 import FlashMessage from '@/Components/FlashMessage';
 import Icon from '@/Components/Icon';
 import StudentLayout from '@/Layouts/StudentLayout';
+import { useT } from '@/i18n';
 import { Head, Link } from '@inertiajs/react';
 
 function EvaluationCard({ evaluation }) {
+    const t = useT();
     const isInter = evaluation.type === 'inter';
 
     return (
@@ -46,7 +48,7 @@ function EvaluationCard({ evaluation }) {
             </div>
             {evaluation.project.ends_at && (
                 <p className="mt-3 text-xs text-on-surface/50">
-                    Échéance : {evaluation.project.ends_at}
+                    {t('Échéance : :date', { date: evaluation.project.ends_at })}
                 </p>
             )}
         </Link>
@@ -54,30 +56,31 @@ function EvaluationCard({ evaluation }) {
 }
 
 export default function Index({ pending, completed, stats }) {
+    const t = useT();
     return (
-        <StudentLayout title="Évaluations par les pairs">
-            <Head title="Évaluations" />
+        <StudentLayout title={t('Évaluations par les pairs')}>
+            <Head title={t('Évaluations')} />
             <FlashMessage />
 
             <div className="mb-6 grid grid-cols-2 gap-3">
                 <div className="rounded-studentlink border border-secondary/20 bg-card p-4">
                     <p className="text-2xl font-bold text-secondary">{stats.pending}</p>
-                    <p className="text-xs text-on-surface/60">À faire</p>
+                    <p className="text-xs text-on-surface/60">{t('À faire')}</p>
                 </div>
                 <div className="rounded-studentlink border border-tertiary/20 bg-card p-4">
                     <p className="text-2xl font-bold text-tertiary">{stats.completed}</p>
-                    <p className="text-xs text-on-surface/60">Terminées</p>
+                    <p className="text-xs text-on-surface/60">{t('Terminées')}</p>
                 </div>
             </div>
 
             <section className="mb-8 space-y-3">
                 <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-on-surface/50">
                     <Icon name="pending_actions" className="text-base" />
-                    À compléter
+                    {t('À compléter')}
                 </h2>
                 {pending.length === 0 ? (
                     <p className="rounded-studentlink border border-dashed border-outline-variant/50 p-6 text-center text-sm text-on-surface/60">
-                        Aucune évaluation en attente.
+                        {t('Aucune évaluation en attente.')}
                     </p>
                 ) : (
                     pending.map((evaluation) => (
@@ -90,7 +93,7 @@ export default function Index({ pending, completed, stats }) {
                 <section className="space-y-3">
                     <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-on-surface/50">
                         <Icon name="check_circle" className="text-base" />
-                        Terminées
+                        {t('Terminées')}
                     </h2>
                     {completed.map((evaluation) => (
                         <EvaluationCard key={evaluation.id} evaluation={evaluation} />

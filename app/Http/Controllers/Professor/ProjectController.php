@@ -36,7 +36,7 @@ class ProjectController extends Controller
 
         return redirect()
             ->route('dashboard')
-            ->with('success', 'Projet créé.');
+            ->with('success', __('Projet créé.'));
     }
 
     public function update(Request $request, Project $project): RedirectResponse
@@ -56,7 +56,7 @@ class ProjectController extends Controller
             'ends_at' => $validated['ends_at'],
         ]);
 
-        return back()->with('success', 'Projet mis à jour.');
+        return back()->with('success', __('Projet mis à jour.'));
     }
 
     public function destroy(Request $request, Project $project): RedirectResponse
@@ -69,7 +69,7 @@ class ProjectController extends Controller
             $request->validate([
                 'purge' => ['accepted'],
             ], [
-                'purge.accepted' => 'Confirmez la suppression du projet et de ses livrables.',
+                'purge.accepted' => __('Confirmez la suppression du projet et de ses livrables.'),
             ]);
         }
 
@@ -80,7 +80,7 @@ class ProjectController extends Controller
 
         return back()->with(
             'success',
-            $hasGroups ? 'Projet et livrables effacés.' : 'Projet effacé.',
+            $hasGroups ? __('Projet et livrables effacés.') : __('Projet effacé.'),
         );
     }
 
@@ -95,14 +95,14 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'deliverable_type' => ['required', Rule::enum(DeliverableType::class)],
         ], [
-            'deliverable_type.required' => 'Choisissez un type de livrable.',
+            'deliverable_type.required' => __('Choisissez un type de livrable.'),
         ]);
 
         $project->update([
             'deliverable_type' => $validated['deliverable_type'],
         ]);
 
-        return back()->with('success', 'Type de livrable mis à jour.');
+        return back()->with('success', __('Type de livrable mis à jour.'));
     }
 
     private function ensureOwner(Request $request, Project $project): void
@@ -134,7 +134,7 @@ class ProjectController extends Controller
     private function projectMessages(): array
     {
         return [
-            'deliverable_type.required' => 'Choisissez un type de livrable.',
+            'deliverable_type.required' => __('Choisissez un type de livrable.'),
         ];
     }
 

@@ -25,7 +25,7 @@ class ProfessorProvisioningService
             }
 
             throw ValidationException::withMessages([
-                'email' => 'Un compte étudiant existe déjà avec cette adresse e-mail.',
+                'email' => __('Un compte étudiant existe déjà avec cette adresse e-mail.'),
             ]);
         }
 
@@ -54,7 +54,7 @@ class ProfessorProvisioningService
     {
         if ($accessRequest->status !== AccessRequestStatus::Pending->value) {
             throw ValidationException::withMessages([
-                'request' => 'Cette demande a déjà été traitée.',
+                'request' => __('Cette demande a déjà été traitée.'),
             ]);
         }
 
@@ -71,7 +71,7 @@ class ProfessorProvisioningService
     {
         if ($accessRequest->status !== AccessRequestStatus::Pending->value) {
             throw ValidationException::withMessages([
-                'request' => 'Cette demande a déjà été traitée.',
+                'request' => __('Cette demande a déjà été traitée.'),
             ]);
         }
 

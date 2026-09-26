@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\InterfaceLocale;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -43,6 +44,35 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
             ],
+            'locale' => fn () => app()->getLocale(),
+            'locales' => fn () => $request->user()?->isProfessor()
+                ? InterfaceLocale::options()
+                : [],
+            'translations' => fn () => $this->translations(),
         ];
+    }
+
+    /**
+     * French strings in the interface are the source keys.
+     *
+     * @return array<string, string>
+     */
+    private function translations(): array
+    {
+        $locale = app()->getLocale();
+
+        if ($locale === InterfaceLocale::French->value) {
+            return [];
+        }
+
+        $path = lang_path($locale.'.json');
+
+        if (! is_file($path)) {
+            return [];
+        }
+
+        $decoded = json_decode((string) file_get_contents($path), true);
+
+        return is_array($decoded) ? $decoded : [];
     }
 }

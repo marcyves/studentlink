@@ -1,7 +1,9 @@
 import UserMenu from '@/Components/UserMenu';
+import { useT } from '@/i18n';
 import { Link } from '@inertiajs/react';
 
 export default function ProfessorLayout({ children, title }) {
+    const t = useT();
     return (
         <div className="min-h-screen bg-surface">
             <header className="border-b border-primary-container/15 bg-card">
@@ -11,7 +13,7 @@ export default function ProfessorLayout({ children, title }) {
                             href={route('dashboard')}
                             className="text-xs font-semibold uppercase tracking-wide text-secondary"
                         >
-                            StudentLink · Professeur
+                            {t('StudentLink · Professeur')}
                         </Link>
                         {title && (
                             <h1 className="text-xl font-semibold text-on-surface">

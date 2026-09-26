@@ -39,20 +39,20 @@ class DeliverablePresenter
         ];
 
         if ($type === DeliverableType::None) {
-            $data['message'] = 'Aucun livrable n\'a été demandé.';
+            $data['message'] = __('Aucun livrable n\'a été demandé.');
 
             return $data;
         }
 
         if (! $submitted || $submission === null) {
-            $data['message'] = 'Ce groupe n\'a pas encore rendu son livrable.';
+            $data['message'] = __('Ce groupe n\'a pas encore rendu son livrable.');
 
             return $data;
         }
 
         if ($type === DeliverableType::Link) {
             if (! $this->isHttpUrl($submission->url)) {
-                $data['message'] = 'Le lien du livrable n\'est pas disponible.';
+                $data['message'] = __('Le lien du livrable n\'est pas disponible.');
 
                 return $data;
             }
@@ -66,7 +66,7 @@ class DeliverablePresenter
             $embed = YoutubeUrl::embedUrl($submission->url);
 
             if ($embed === null) {
-                $data['message'] = 'La vidéo YouTube n\'est pas disponible.';
+                $data['message'] = __('La vidéo YouTube n\'est pas disponible.');
 
                 return $data;
             }
@@ -79,7 +79,7 @@ class DeliverablePresenter
 
         if ($type->storesFile()) {
             if (! $submission->file_path || ! Storage::disk('public')->exists($submission->file_path)) {
-                $data['message'] = 'Le fichier du livrable n\'est pas disponible.';
+                $data['message'] = __('Le fichier du livrable n\'est pas disponible.');
 
                 return $data;
             }

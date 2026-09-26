@@ -3,9 +3,11 @@ import FlashMessage from '@/Components/FlashMessage';
 import Icon from '@/Components/Icon';
 import PrimaryButton from '@/Components/PrimaryButton';
 import AdminLayout from '@/Layouts/AdminLayout';
+import { useT } from '@/i18n';
 import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Settings({ settings }) {
+    const t = useT();
     const { data, setData, patch, processing } = useForm({
         require_registration_domain: settings.require_registration_domain,
     });
@@ -16,8 +18,8 @@ export default function Settings({ settings }) {
     };
 
     return (
-        <AdminLayout title="Paramètres">
-            <Head title="Paramètres · Admin" />
+        <AdminLayout title={t('Paramètres')}>
+            <Head title={t('Paramètres · Admin')} />
             <FlashMessage />
 
             <p className="mb-6">
@@ -26,19 +28,16 @@ export default function Settings({ settings }) {
                     className="inline-flex items-center gap-1 text-sm font-medium text-primary-container hover:underline"
                 >
                     <Icon name="arrow_back" className="text-base" />
-                    Retour à l&apos;administration
+                    {t("Retour à l'administration")}
                 </Link>
             </p>
 
             <section className="rounded-studentlink border border-primary-container/15 bg-card p-5">
                 <h2 className="text-lg font-semibold text-on-surface">
-                    Inscription étudiante
+                    {t('Inscription étudiante')}
                 </h2>
                 <p className="mt-1 text-sm text-on-surface/60">
-                    Si activé, seules les adresses dont le domaine correspond à
-                    un cours sont acceptées. Sans domaines explicites sur un
-                    cours, c&apos;est le domaine e-mail du professeur qui
-                    s&apos;applique.
+                    {t("Si activé, seules les adresses dont le domaine correspond à un cours sont acceptées. Sans domaines explicites sur un cours, c'est le domaine e-mail du professeur qui s'applique.")}
                 </p>
 
                 <form onSubmit={saveSettings} className="mt-4">
@@ -54,13 +53,12 @@ export default function Settings({ settings }) {
                             }
                         />
                         <span className="text-sm text-on-surface">
-                            Restreindre l&apos;inscription aux domaines e-mail
-                            autorisés
+                            {t("Restreindre l'inscription aux domaines e-mail autorisés")}
                         </span>
                     </label>
 
                     <PrimaryButton className="mt-4" disabled={processing}>
-                        Enregistrer
+                        {t('Enregistrer')}
                     </PrimaryButton>
                 </form>
             </section>

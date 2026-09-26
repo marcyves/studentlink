@@ -3,6 +3,7 @@ import FlashMessage from '@/Components/FlashMessage';
 import Icon from '@/Components/Icon';
 import PrimaryButton from '@/Components/PrimaryButton';
 import AdminLayout from '@/Layouts/AdminLayout';
+import { useT } from '@/i18n';
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -17,6 +18,7 @@ function statusClass(status) {
 }
 
 function AccessRequestCard({ request }) {
+    const t = useT();
     return (
         <li className="rounded-studentlink border border-primary-container/15 bg-card p-4">
             <div className="flex flex-wrap items-start justify-between gap-2">
@@ -50,7 +52,7 @@ function AccessRequestCard({ request }) {
                             )
                         }
                     >
-                        Accepter
+                        {t('Accepter')}
                     </PrimaryButton>
                     <DangerButton
                         type="button"
@@ -62,7 +64,7 @@ function AccessRequestCard({ request }) {
                             )
                         }
                     >
-                        Rejeter
+                        {t('Rejeter')}
                     </DangerButton>
                 </div>
             )}
@@ -71,6 +73,7 @@ function AccessRequestCard({ request }) {
 }
 
 function ProfessorCard({ professor }) {
+    const t = useT();
     const [open, setOpen] = useState(false);
 
     return (
@@ -84,9 +87,13 @@ function ProfessorCard({ professor }) {
                     <p className="font-semibold text-on-surface">{professor.name}</p>
                     <p className="text-sm text-on-surface/70">{professor.email}</p>
                     <p className="mt-1 text-xs text-on-surface/50">
-                        Domaine par défaut : @{professor.default_domain ?? '—'} ·{' '}
-                        {professor.courses_count} cours · {professor.students_count}{' '}
-                        étudiant{professor.students_count > 1 ? 's' : ''}
+                        {t('Domaine par défaut : @:domain', {
+                            domain: professor.default_domain ?? '—',
+                        })}{' '}
+                        · {t(':count cours', { count: professor.courses_count })}{' '}
+                        · {professor.students_count > 1
+                            ? t(':count étudiants', { count: professor.students_count })
+                            : t(':count étudiant', { count: professor.students_count })}
                     </p>
                 </div>
                 <span className="text-sm text-primary-container">
@@ -99,7 +106,7 @@ function ProfessorCard({ professor }) {
                     {professor.courses.length > 0 && (
                         <div className="mt-3">
                             <h4 className="text-xs font-semibold uppercase tracking-wide text-secondary">
-                                Cours
+                                {t('Cours')}
                             </h4>
                             <ul className="mt-2 space-y-2 text-sm">
                                 {professor.courses.map((course) => (
@@ -111,9 +118,11 @@ function ProfessorCard({ professor }) {
                                             {course.title}
                                         </p>
                                         <p className="text-xs text-on-surface/60">
-                                            Code {course.join_code} ·{' '}
-                                            {course.students_count} inscrits · domaines
-                                            effectifs :{' '}
+                                            {t('Code :code', { code: course.join_code })} ·{' '}
+                                            {course.students_count > 1
+                                                ? t(':count inscrits', { count: course.students_count })
+                                                : t(':count inscrit', { count: course.students_count })}{' '}
+                                            · {t('domaines effectifs :')}{' '}
                                             {course.effective_domains.length > 0
                                                 ? course.effective_domains
                                                       .map((d) => `@${d}`)
@@ -129,7 +138,7 @@ function ProfessorCard({ professor }) {
                     {professor.students.length > 0 ? (
                         <div className="mt-4">
                             <h4 className="text-xs font-semibold uppercase tracking-wide text-secondary">
-                                Étudiants
+                                {t('Étudiants')}
                             </h4>
                             <ul className="mt-2 divide-y divide-primary-container/10 rounded-studentlink border border-primary-container/10">
                                 {professor.students.map((student) => (
@@ -149,7 +158,7 @@ function ProfessorCard({ professor }) {
                         </div>
                     ) : (
                         <p className="mt-3 text-sm text-on-surface/50">
-                            Aucun étudiant inscrit pour le moment.
+                            {t('Aucun étudiant inscrit pour le moment.')}
                         </p>
                     )}
                 </div>
@@ -163,19 +172,20 @@ export default function Dashboard({
     accessRequests,
     adminEmail,
 }) {
+    const t = useT();
     const pendingCount = accessRequests.filter((r) => r.is_pending).length;
 
     return (
-        <AdminLayout title="Administration">
-            <Head title="Administration" />
+        <AdminLayout title={t('Administration')}>
+            <Head title={t('Administration')} />
             <FlashMessage />
 
             <div className="mb-6 flex justify-end">
                 <Link
                     href={route('admin.settings.edit')}
                     className="inline-flex items-center justify-center rounded-studentlink border border-primary-container/25 bg-card p-2.5 text-primary-container transition hover:bg-surface-container/40"
-                    aria-label="Paramètres"
-                    title="Paramètres"
+                    aria-label={t('Paramètres')}
+                    title={t('Paramètres')}
                 >
                     <Icon name="settings" className="text-xl" />
                 </Link>
@@ -183,18 +193,17 @@ export default function Dashboard({
 
             <section className="mb-8">
                 <h2 className="mb-2 text-lg font-semibold text-on-surface">
-                    Demandes reçues ({accessRequests.length}
-                    {pendingCount > 0 && ` · ${pendingCount} en attente`})
+                    {t('Demandes reçues (:count)', { count: accessRequests.length })}
+                    {pendingCount > 0 && ` · ${t(':count en attente', { count: pendingCount })}`}
                 </h2>
                 <p className="mb-4 text-sm text-on-surface/60">
-                    Accepter crée le compte professeur et envoie un e-mail de
-                    définition de mot de passe. Notifications copiées vers{' '}
+                    {t('Accepter crée le compte professeur et envoie un e-mail de définition de mot de passe. Notifications copiées vers')}{' '}
                     <strong className="text-on-surface">{adminEmail}</strong>.
                 </p>
 
                 {accessRequests.length === 0 ? (
                     <p className="rounded-studentlink border border-dashed border-primary-container/20 p-8 text-center text-sm text-on-surface/60">
-                        Aucune demande pour le moment.
+                        {t('Aucune demande pour le moment.')}
                     </p>
                 ) : (
                     <ul className="space-y-3">
@@ -210,12 +219,12 @@ export default function Dashboard({
 
             <section className="mb-8">
                 <h2 className="mb-4 text-lg font-semibold text-on-surface">
-                    Professeurs ({professors.length})
+                    {t('Professeurs (:count)', { count: professors.length })}
                 </h2>
 
                 {professors.length === 0 ? (
                     <p className="rounded-studentlink border border-dashed border-primary-container/20 p-8 text-center text-sm text-on-surface/60">
-                        Aucun professeur inscrit.
+                        {t('Aucun professeur inscrit.')}
                     </p>
                 ) : (
                     <ul className="space-y-3">

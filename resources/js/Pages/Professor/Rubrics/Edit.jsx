@@ -2,9 +2,11 @@ import FlashMessage from '@/Components/FlashMessage';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import ProfessorLayout from '@/Layouts/ProfessorLayout';
+import { useT } from '@/i18n';
 import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Edit({ project, rubric }) {
+    const t = useT();
     const { data, setData, put, processing, errors } = useForm({
         name: rubric.name,
         criteria: rubric.criteria.length
@@ -46,8 +48,8 @@ export default function Edit({ project, rubric }) {
         .filter(Boolean);
 
     return (
-        <ProfessorLayout title="Configuration des grilles">
-            <Head title="Configuration des grilles" />
+        <ProfessorLayout title={t('Configuration des grilles')}>
+            <Head title={t('Configuration des grilles')} />
             <FlashMessage />
 
             <p className="mb-6 text-sm text-on-surface/60">
@@ -66,7 +68,7 @@ export default function Edit({ project, rubric }) {
             >
                 <div>
                     <label className="text-sm font-medium text-on-surface">
-                        Nom de la grille
+                        {t('Nom de la grille')}
                     </label>
                     <TextInput
                         value={data.name}
@@ -77,7 +79,7 @@ export default function Edit({ project, rubric }) {
 
                 <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                        <h2 className="font-medium text-on-surface">Critères</h2>
+                        <h2 className="font-medium text-on-surface">{t('Critères')}</h2>
                         <p
                             className={`text-sm ${
                                 weightsAreValid
@@ -85,7 +87,7 @@ export default function Edit({ project, rubric }) {
                                     : 'text-red-600'
                             }`}
                         >
-                            Poids total : {totalWeight} %
+                            {t('Poids total : :total %', { total: totalWeight })}
                         </p>
                     </div>
 
@@ -99,7 +101,7 @@ export default function Edit({ project, rubric }) {
                                 onChange={(e) =>
                                     updateCriterion(index, 'label', e.target.value)
                                 }
-                                placeholder="Critère"
+                                placeholder={t('Critère')}
                             />
                             <TextInput
                                 type="number"
@@ -109,7 +111,7 @@ export default function Edit({ project, rubric }) {
                                 onChange={(e) =>
                                     updateCriterion(index, 'weight', e.target.value)
                                 }
-                                placeholder="Poids %"
+                                placeholder={t('Poids %')}
                             />
                             <TextInput
                                 type="number"
@@ -123,21 +125,21 @@ export default function Edit({ project, rubric }) {
                                         e.target.value,
                                     )
                                 }
-                                placeholder="Max"
+                                placeholder={t('Max')}
                             />
                             <button
                                 type="button"
                                 onClick={() => removeCriterion(index)}
                                 className="text-sm text-red-600"
                             >
-                                Suppr.
+                                {t('Suppr.')}
                             </button>
                         </div>
                     ))}
 
                     {!weightsAreValid && (
                         <p className="text-sm text-red-600">
-                            La somme des poids doit être égale à 100.
+                            {t('La somme des poids doit être égale à 100.')}
                         </p>
                     )}
 
@@ -157,19 +159,19 @@ export default function Edit({ project, rubric }) {
                         onClick={addCriterion}
                         className="text-sm font-medium text-primary-container"
                     >
-                        + Ajouter un critère
+                        {t('+ Ajouter un critère')}
                     </button>
                 </div>
 
                 <div className="flex gap-3">
                     <PrimaryButton disabled={processing || !weightsAreValid}>
-                        Enregistrer
+                        {t('Enregistrer')}
                     </PrimaryButton>
                     <Link
                         href={route('dashboard')}
                         className="inline-flex items-center rounded-studentlink border border-outline-variant/40 px-4 py-2 text-sm text-on-surface"
                     >
-                        Annuler
+                        {t('Annuler')}
                     </Link>
                 </div>
             </form>

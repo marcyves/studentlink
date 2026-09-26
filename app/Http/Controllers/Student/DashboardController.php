@@ -79,7 +79,7 @@ class DashboardController extends Controller
 
         $request->user()->courses()->syncWithoutDetaching([$course->id]);
 
-        return back()->with('success', "Inscrit au cours « {$course->title} ».");
+        return back()->with('success', __('Inscrit au cours « :title ».', ['title' => $course->title]));
     }
 
     public function storeGroup(Request $request): RedirectResponse
@@ -93,7 +93,7 @@ class DashboardController extends Controller
         $project = Project::with('course')->findOrFail($validated['project_id']);
 
         if (! $user->courses()->where('courses.id', $project->course_id)->exists()) {
-            abort(403, 'Inscrivez-vous au cours avant de créer un groupe.');
+            abort(403, __('Inscrivez-vous au cours avant de créer un groupe.'));
         }
 
         DB::transaction(function () use ($user, $project, $validated) {
@@ -107,7 +107,7 @@ class DashboardController extends Controller
             $group->submission()->create(['status' => 'pending']);
         });
 
-        return back()->with('success', 'Groupe créé.');
+        return back()->with('success', __('Groupe créé.'));
     }
 
     public function joinGroup(Request $request): RedirectResponse
@@ -135,7 +135,7 @@ class DashboardController extends Controller
             $group->submission()->create(['status' => 'pending']);
         }
 
-        return back()->with('success', "Vous avez rejoint « {$group->name} ».");
+        return back()->with('success', __('Vous avez rejoint « :name ».', ['name' => $group->name]));
     }
 
     private function ensureEmailAllowedForCourse(string $email, Course $course): void
@@ -149,7 +149,9 @@ class DashboardController extends Controller
             ->implode(', ');
 
         throw ValidationException::withMessages([
-            'join_code' => "Adresse non autorisée pour ce cours. Domaines acceptés : {$domains}.",
+            'join_code' => __('Adresse non autorisée pour ce cours. Domaines acceptés : :domains.', [
+                'domains' => $domains,
+            ]),
         ]);
     }
 

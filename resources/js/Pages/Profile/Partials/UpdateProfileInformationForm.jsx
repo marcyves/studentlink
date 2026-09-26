@@ -3,6 +3,7 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Transition } from '@headlessui/react';
+import { useT } from '@/i18n';
 import { Link, useForm, usePage } from '@inertiajs/react';
 
 export default function UpdateProfileInformation({
@@ -10,6 +11,7 @@ export default function UpdateProfileInformation({
     status,
     className = '',
 }) {
+    const t = useT();
     const user = usePage().props.auth.user;
 
     const { data, setData, patch, errors, processing, recentlySuccessful } =
@@ -28,17 +30,17 @@ export default function UpdateProfileInformation({
         <section className={className}>
             <header>
                 <h2 className="text-lg font-semibold text-on-surface">
-                    Informations du compte
+                    {t('Informations du compte')}
                 </h2>
 
                 <p className="mt-1 text-sm text-on-surface/60">
-                    Mettez à jour votre nom et votre adresse e-mail.
+                    {t('Mettez à jour votre nom et votre adresse e-mail.')}
                 </p>
             </header>
 
             <form onSubmit={submit} className="mt-6 space-y-6">
                 <div>
-                    <InputLabel htmlFor="name" value="Nom" />
+                    <InputLabel htmlFor="name" value={t('Nom')} />
 
                     <TextInput
                         id="name"
@@ -54,7 +56,7 @@ export default function UpdateProfileInformation({
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
+                    <InputLabel htmlFor="email" value={t('Email')} />
 
                     <TextInput
                         id="email"
@@ -72,28 +74,27 @@ export default function UpdateProfileInformation({
                 {mustVerifyEmail && user.email_verified_at === null && (
                     <div>
                         <p className="mt-2 text-sm text-gray-800">
-                            Your email address is unverified.
+                            {t('Votre adresse e-mail n’est pas vérifiée.')}{' '}
                             <Link
                                 href={route('verification.send')}
                                 method="post"
                                 as="button"
                                 className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             >
-                                Click here to re-send the verification email.
+                                {t('Cliquez ici pour renvoyer l’e-mail de vérification.')}
                             </Link>
                         </p>
 
                         {status === 'verification-link-sent' && (
                             <div className="mt-2 text-sm font-medium text-green-600">
-                                A new verification link has been sent to your
-                                email address.
+                                {t('Un nouveau lien de vérification a été envoyé à votre adresse e-mail.')}
                             </div>
                         )}
                     </div>
                 )}
 
                 <div className="flex items-center gap-4">
-                    <PrimaryButton disabled={processing}>Enregistrer</PrimaryButton>
+                    <PrimaryButton disabled={processing}>{t('Enregistrer')}</PrimaryButton>
 
                     <Transition
                         show={recentlySuccessful}
@@ -103,7 +104,7 @@ export default function UpdateProfileInformation({
                         leaveTo="opacity-0"
                     >
                         <p className="text-sm text-on-surface/60">
-                            Enregistré.
+                            {t('Enregistré.')}
                         </p>
                     </Transition>
                 </div>

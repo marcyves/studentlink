@@ -6,10 +6,12 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import StudentLayout from '@/Layouts/StudentLayout';
+import { useT } from '@/i18n';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
 function JoinCourseForm() {
+    const t = useT();
     const { data, setData, post, processing, reset } = useForm({
         join_code: '',
     });
@@ -27,15 +29,16 @@ function JoinCourseForm() {
             <TextInput
                 value={data.join_code}
                 onChange={(e) => setData('join_code', e.target.value)}
-                placeholder="Code cours"
+                placeholder={t('Code cours')}
                 className="flex-1"
             />
-            <PrimaryButton disabled={processing}>Rejoindre</PrimaryButton>
+            <PrimaryButton disabled={processing}>{t('Rejoindre')}</PrimaryButton>
         </form>
     );
 }
 
 function CreateGroupForm({ projects }) {
+    const t = useT();
     const [open, setOpen] = useState(false);
     const { data, setData, post, processing, reset, errors } = useForm({
         project_id: projects[0]?.id ?? '',
@@ -55,7 +58,7 @@ function CreateGroupForm({ projects }) {
             >
                 <span className="flex items-center gap-2">
                     <Icon name="group_add" className="text-primary-container" />
-                    Créer un groupe
+                    {t('Créer un groupe')}
                 </span>
                 <Icon name={open ? 'expand_less' : 'expand_more'} />
             </button>
@@ -86,13 +89,13 @@ function CreateGroupForm({ projects }) {
                     <TextInput
                         value={data.name}
                         onChange={(e) => setData('name', e.target.value)}
-                        placeholder="Nom du groupe"
+                        placeholder={t('Nom du groupe')}
                         required
                     />
                     {errors.name && (
                         <p className="text-sm text-red-600">{errors.name}</p>
                     )}
-                    <PrimaryButton disabled={processing}>Créer</PrimaryButton>
+                    <PrimaryButton disabled={processing}>{t('Créer')}</PrimaryButton>
                 </form>
             )}
         </div>
@@ -108,22 +111,23 @@ const deliverableHints = {
     youtube: "Collez l'URL d'une vidéo YouTube.",
 };
 
-function submitLabel(type, submitted) {
+function submitLabel(type, submitted, t) {
     if (submitted && type !== 'none') {
-        return 'Remplacer le livrable';
+        return t('Remplacer le livrable');
     }
 
-    return {
+    return t({
         none: 'Marquer comme rendu',
         file: 'Déposer le fichier',
         link: 'Enregistrer le lien',
         image: "Déposer l'image",
         video: 'Déposer la vidéo',
         youtube: 'Enregistrer la vidéo',
-    }[type];
+    }[type]);
 }
 
 function GroupSubmissionForm({ group }) {
+    const t = useT();
     const type = group.project.deliverable_type;
     const submitted = group.submission?.status === 'submitted';
     const uploads = type === 'file' || type === 'image' || type === 'video';
@@ -146,11 +150,11 @@ function GroupSubmissionForm({ group }) {
 
     return (
         <form onSubmit={submit} className="mt-4 space-y-3 border-t border-primary-container/10 pt-3">
-            <p className="text-xs text-on-surface/60">{deliverableHints[type]}</p>
+            <p className="text-xs text-on-surface/60">{t(deliverableHints[type])}</p>
 
             {(type === 'link' || type === 'youtube') && (
                 <div>
-                    <InputLabel htmlFor={`deliverable-url-${group.id}`} value="Adresse" />
+                    <InputLabel htmlFor={`deliverable-url-${group.id}`} value={t('Adresse')} />
                     <TextInput
                         id={`deliverable-url-${group.id}`}
                         type="url"
@@ -170,7 +174,7 @@ function GroupSubmissionForm({ group }) {
 
             {uploads && (
                 <div>
-                    <InputLabel htmlFor={`deliverable-file-${group.id}`} value="Fichier" />
+                    <InputLabel htmlFor={`deliverable-file-${group.id}`} value={t('Fichier')} />
                     <input
                         id={`deliverable-file-${group.id}`}
                         type="file"
@@ -190,13 +194,14 @@ function GroupSubmissionForm({ group }) {
             )}
 
             <PrimaryButton disabled={processing}>
-                {submitLabel(type, submitted)}
+                {submitLabel(type, submitted, t)}
             </PrimaryButton>
         </form>
     );
 }
 
 function JoinGroupForm() {
+    const t = useT();
     const { data, setData, post, processing, reset } = useForm({
         invite_code: '',
     });
@@ -214,20 +219,21 @@ function JoinGroupForm() {
             <TextInput
                 value={data.invite_code}
                 onChange={(e) => setData('invite_code', e.target.value)}
-                placeholder="Code groupe"
+                placeholder={t('Code groupe')}
                 className="flex-1"
             />
-            <PrimaryButton disabled={processing}>Rejoindre</PrimaryButton>
+            <PrimaryButton disabled={processing}>{t('Rejoindre')}</PrimaryButton>
         </form>
     );
 }
 
 export default function Dashboard({ groups, enrolledCourses, stats }) {
+    const t = useT();
     const allProjects = enrolledCourses.flatMap((c) => c.projects);
 
     return (
-        <StudentLayout title="Tableau de bord">
-            <Head title="Tableau de bord" />
+        <StudentLayout title={t('Tableau de bord')}>
+            <Head title={t('Tableau de bord')} />
             <FlashMessage />
 
             <div className="mb-6 grid grid-cols-2 gap-3">
@@ -235,29 +241,29 @@ export default function Dashboard({ groups, enrolledCourses, stats }) {
                     <p className="text-2xl font-bold text-primary-container">
                         {stats.groups}
                     </p>
-                    <p className="text-xs text-on-surface/60">Mes groupes</p>
+                    <p className="text-xs text-on-surface/60">{t('Mes groupes')}</p>
                 </div>
                 <div className="rounded-studentlink border border-secondary/20 bg-card p-4">
                     <p className="text-2xl font-bold text-secondary">
                         {stats.pendingEvaluations}
                     </p>
-                    <p className="text-xs text-on-surface/60">Évaluations à faire</p>
+                    <p className="text-xs text-on-surface/60">{t('Évaluations à faire')}</p>
                 </div>
             </div>
 
             <section className="mb-6 space-y-3">
                 <h2 className="text-sm font-semibold uppercase tracking-wide text-on-surface/50">
-                    Rejoindre un cours
+                    {t('Rejoindre un cours')}
                 </h2>
                 <JoinCourseForm />
                 <p className="text-xs text-on-surface/50">
-                    Démo : code <strong>JOIN2026</strong>
+                    {t('Démo : code')} <strong>JOIN2026</strong>
                 </p>
             </section>
 
             <section className="mb-6 space-y-3">
                 <h2 className="text-sm font-semibold uppercase tracking-wide text-on-surface/50">
-                    Groupes
+                    {t('Groupes')}
                 </h2>
                 <CreateGroupForm projects={allProjects} />
                 <JoinGroupForm />
@@ -266,21 +272,23 @@ export default function Dashboard({ groups, enrolledCourses, stats }) {
             <section className="space-y-3">
                 <div className="flex items-center justify-between">
                     <h2 className="text-sm font-semibold uppercase tracking-wide text-on-surface/50">
-                        Mes groupes
+                        {t('Mes groupes')}
                     </h2>
                     {stats.pendingEvaluations > 0 && (
                         <Link
                             href={route('student.evaluations.index')}
                             className="text-xs font-medium text-secondary"
                         >
-                            {stats.pendingEvaluations} évaluation
-                            {stats.pendingEvaluations > 1 ? 's' : ''} à faire →
+                            {stats.pendingEvaluations > 1
+                                ? t(':count évaluations à faire', { count: stats.pendingEvaluations })
+                                : t(':count évaluation à faire', { count: stats.pendingEvaluations })}{' '}
+                            →
                         </Link>
                     )}
                 </div>
                 {groups.length === 0 ? (
                     <p className="rounded-studentlink border border-dashed border-outline-variant/50 p-6 text-center text-sm text-on-surface/60">
-                        Aucun groupe pour l&apos;instant.
+                        {t("Aucun groupe pour l'instant.")}
                     </p>
                 ) : (
                     groups.map((group) => (
@@ -297,7 +305,7 @@ export default function Dashboard({ groups, enrolledCourses, stats }) {
                                         {group.project.title} · {group.project.course}
                                     </p>
                                     <p className="mt-1 text-xs text-on-surface/50">
-                                        Livrable : {group.project.deliverable_label}
+                                        {t('Livrable : :label', { label: group.project.deliverable_label })}
                                     </p>
                                 </div>
                                 <span className="rounded-full bg-primary-container/10 px-2 py-1 text-xs font-medium text-primary-container">
@@ -305,8 +313,12 @@ export default function Dashboard({ groups, enrolledCourses, stats }) {
                                 </span>
                             </div>
                             <div className="mt-3 flex items-center justify-between text-xs text-on-surface/50">
-                                <span>{group.members_count} membres</span>
-                                <span>Code : {group.invite_code}</span>
+                                <span>
+                                    {group.members_count > 1
+                                        ? t(':count membres', { count: group.members_count })
+                                        : t(':count membre', { count: group.members_count })}
+                                </span>
+                                <span>{t('Code : :code', { code: group.invite_code })}</span>
                             </div>
                             {group.deliverable?.submitted && (
                                 <div className="mt-3">

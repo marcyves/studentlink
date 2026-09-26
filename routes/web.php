@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Professor\CourseController as ProfessorCourseController;
 use App\Http\Controllers\Professor\GradeExportController;
+use App\Http\Controllers\Professor\LocaleController as ProfessorLocaleController;
 use App\Http\Controllers\Professor\ProjectController as ProfessorProjectController;
 use App\Http\Controllers\Professor\RubricController as ProfessorRubricController;
 use App\Http\Controllers\ProfessorAccessRequestController;
@@ -50,6 +51,7 @@ Route::middleware(['auth', 'verified', 'student'])->prefix('student')->name('stu
 });
 
 Route::middleware(['auth', 'verified', 'professor'])->prefix('professor')->name('professor.')->group(function () {
+    Route::patch('/locale', [ProfessorLocaleController::class, 'update'])->name('locale.update');
     Route::post('/courses', [ProfessorCourseController::class, 'store'])->name('courses.store');
     Route::put('/courses/{course}', [ProfessorCourseController::class, 'update'])->name('courses.update');
     Route::delete('/courses/{course}', [ProfessorCourseController::class, 'destroy'])->name('courses.destroy');

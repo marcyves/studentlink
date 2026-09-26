@@ -11,7 +11,7 @@ class YoutubeUrl implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (! is_string($value) || Youtube::id($value) === null) {
-            $fail('Indiquez une URL YouTube valide.');
+            $fail(__('Indiquez une URL YouTube valide.'));
         }
     }
 }

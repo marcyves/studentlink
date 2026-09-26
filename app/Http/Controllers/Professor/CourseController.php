@@ -43,7 +43,7 @@ class CourseController extends Controller
 
         return redirect()
             ->route('dashboard')
-            ->with('success', 'Cours créé.');
+            ->with('success', __('Cours créé.'));
     }
 
     public function update(Request $request, Course $course): RedirectResponse
@@ -81,7 +81,7 @@ class CourseController extends Controller
             'join_code' => $validated['join_code'],
         ]);
 
-        return back()->with('success', 'Cours mis à jour.');
+        return back()->with('success', __('Cours mis à jour.'));
     }
 
     public function destroy(Request $request, Course $course): RedirectResponse
@@ -89,13 +89,13 @@ class CourseController extends Controller
         $this->ensureOwner($request, $course);
 
         if ($course->projects()->exists()) {
-            return back()->with('error', 'Supprimez d\'abord les projets de ce cours.');
+            return back()->with('error', __('Supprimez d\'abord les projets de ce cours.'));
         }
 
         $validated = $request->validate([
             'delete_students' => ['required', 'boolean'],
         ], [
-            'delete_students.required' => 'Indiquez si les étudiants doivent aussi être effacés.',
+            'delete_students.required' => __('Indiquez si les étudiants doivent aussi être effacés.'),
         ]);
 
         $removedStudents = false;
@@ -116,8 +116,8 @@ class CourseController extends Controller
         return back()->with(
             'success',
             $removedStudents
-                ? 'Cours effacé. Les étudiants qui n\'étaient inscrits qu\'à ce cours ont aussi été effacés.'
-                : 'Cours effacé.',
+                ? __('Cours effacé. Les étudiants qui n\'étaient inscrits qu\'à ce cours ont aussi été effacés.')
+                : __('Cours effacé.'),
         );
     }
 
@@ -146,7 +146,7 @@ class CourseController extends Controller
             ),
         ]);
 
-        return back()->with('success', 'Domaines e-mail mis à jour.');
+        return back()->with('success', __('Domaines e-mail mis à jour.'));
     }
 
     /**

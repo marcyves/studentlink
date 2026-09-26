@@ -24,17 +24,17 @@ class GradeExportService
             $handle = fopen('php://output', 'w');
 
             fputcsv($handle, [
-                'Groupe',
-                'Étudiant',
-                'Email',
-                'Type évaluation',
-                'Cible',
-                'Critère',
-                'Score',
-                'Max',
-                'Poids %',
-                'Évaluateur',
-                'Date',
+                __('Groupe'),
+                __('Étudiant'),
+                __('Email'),
+                __('Type évaluation'),
+                __('Cible'),
+                __('Critère'),
+                __('Score'),
+                __('Max'),
+                __('Poids %'),
+                __('Évaluateur'),
+                __('Date'),
             ], ';');
 
             $evaluations = PeerEvaluation::query()
@@ -128,13 +128,13 @@ class GradeExportService
     private function writeWeightedSummaries($handle, Project $project, Collection $evaluations): void
     {
         fwrite($handle, "\n");
-        fputcsv($handle, ['Moyenne pondérée par étudiant (intra-groupe)'], ';');
+        fputcsv($handle, [__('Moyenne pondérée par étudiant (intra-groupe)')], ';');
         fputcsv($handle, [
-            'Groupe',
-            'Étudiant',
-            'Email',
-            'Note pondérée (/100)',
-            'Nombre d\'évaluations',
+            __('Groupe'),
+            __('Étudiant'),
+            __('Email'),
+            __('Note pondérée (/100)'),
+            __('Nombre d\'évaluations'),
         ], ';');
 
         $evaluations
@@ -164,11 +164,11 @@ class GradeExportService
             ->each(fn (array $row) => fputcsv($handle, $row, ';'));
 
         fwrite($handle, "\n");
-        fputcsv($handle, ['Moyenne pondérée par groupe (inter-groupe)'], ';');
+        fputcsv($handle, [__('Moyenne pondérée par groupe (inter-groupe)')], ';');
         fputcsv($handle, [
-            'Groupe',
-            'Note pondérée (/100)',
-            'Nombre d\'évaluations',
+            __('Groupe'),
+            __('Note pondérée (/100)'),
+            __('Nombre d\'évaluations'),
         ], ';');
 
         $evaluations

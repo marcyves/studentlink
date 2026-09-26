@@ -4,10 +4,12 @@ import InputLabel from '@/Components/InputLabel';
 import Modal from '@/Components/Modal';
 import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
+import { useT } from '@/i18n';
 import { useForm } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 
 export default function DeleteUserForm({ className = '' }) {
+    const t = useT();
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
     const passwordInput = useRef();
 
@@ -49,36 +51,32 @@ export default function DeleteUserForm({ className = '' }) {
         <section className={`space-y-6 ${className}`}>
             <header>
                 <h2 className="text-lg font-semibold text-on-surface">
-                    Supprimer le compte
+                    {t('Supprimer le compte')}
                 </h2>
 
                 <p className="mt-1 text-sm text-on-surface/60">
-                    Cette action est définitive. Toutes vos données seront
-                    effacées.
+                    {t('Cette action est définitive. Toutes vos données seront effacées.')}
                 </p>
             </header>
 
             <DangerButton onClick={confirmUserDeletion}>
-                Supprimer mon compte
+                {t('Supprimer mon compte')}
             </DangerButton>
 
             <Modal show={confirmingUserDeletion} onClose={closeModal}>
                 <form onSubmit={deleteUser} className="p-6">
                     <h2 className="text-lg font-medium text-gray-900">
-                        Are you sure you want to delete your account?
+                        {t('Êtes-vous sûr de vouloir supprimer votre compte ?')}
                     </h2>
 
                     <p className="mt-1 text-sm text-gray-600">
-                        Once your account is deleted, all of its resources and
-                        data will be permanently deleted. Please enter your
-                        password to confirm you would like to permanently delete
-                        your account.
+                        {t('Une fois le compte supprimé, toutes ses données le sont aussi. Saisissez votre mot de passe pour confirmer.')}
                     </p>
 
                     <div className="mt-6">
                         <InputLabel
                             htmlFor="password"
-                            value="Password"
+                            value={t('Mot de passe')}
                             className="sr-only"
                         />
 
@@ -93,7 +91,7 @@ export default function DeleteUserForm({ className = '' }) {
                             }
                             className="mt-1 block w-3/4"
                             isFocused
-                            placeholder="Password"
+                            placeholder={t('Mot de passe')}
                         />
 
                         <InputError
@@ -104,11 +102,11 @@ export default function DeleteUserForm({ className = '' }) {
 
                     <div className="mt-6 flex justify-end">
                         <SecondaryButton onClick={closeModal}>
-                            Cancel
+                            {t('Annuler')}
                         </SecondaryButton>
 
                         <DangerButton className="ms-3" disabled={processing}>
-                            Delete Account
+                            {t('Supprimer le compte')}
                         </DangerButton>
                     </div>
                 </form>

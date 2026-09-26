@@ -22,7 +22,7 @@ class RubricController extends Controller
         $project->load(['course', 'rubric.criteria']);
 
         $rubric = $project->rubric ?? $project->rubric()->create([
-            'name' => 'Grille d\'évaluation',
+            'name' => __('Grille d\'évaluation'),
         ]);
 
         $rubric->load('criteria');
@@ -59,18 +59,18 @@ class RubricController extends Controller
             'criteria.*.weight' => ['required', 'integer', 'min:1', 'max:100'],
             'criteria.*.max_score' => ['required', 'integer', 'min:1', 'max:10'],
         ], [
-            'name.required' => 'Le nom de la grille est obligatoire.',
-            'criteria.required' => 'Ajoutez au moins un critère.',
-            'criteria.min' => 'Ajoutez au moins un critère.',
-            'criteria.*.label.required' => 'Chaque critère doit avoir un libellé.',
-            'criteria.*.weight.required' => 'Chaque critère doit avoir un poids.',
-            'criteria.*.weight.integer' => 'Chaque poids doit être un nombre entier.',
-            'criteria.*.weight.min' => 'Chaque poids doit être compris entre 1 et 100.',
-            'criteria.*.weight.max' => 'Chaque poids doit être compris entre 1 et 100.',
-            'criteria.*.max_score.required' => 'Chaque critère doit avoir une note maximale.',
-            'criteria.*.max_score.integer' => 'Chaque note maximale doit être un nombre entier.',
-            'criteria.*.max_score.min' => 'Chaque note maximale doit être comprise entre 1 et 10.',
-            'criteria.*.max_score.max' => 'Chaque note maximale doit être comprise entre 1 et 10.',
+            'name.required' => __('Le nom de la grille est obligatoire.'),
+            'criteria.required' => __('Ajoutez au moins un critère.'),
+            'criteria.min' => __('Ajoutez au moins un critère.'),
+            'criteria.*.label.required' => __('Chaque critère doit avoir un libellé.'),
+            'criteria.*.weight.required' => __('Chaque critère doit avoir un poids.'),
+            'criteria.*.weight.integer' => __('Chaque poids doit être un nombre entier.'),
+            'criteria.*.weight.min' => __('Chaque poids doit être compris entre 1 et 100.'),
+            'criteria.*.weight.max' => __('Chaque poids doit être compris entre 1 et 100.'),
+            'criteria.*.max_score.required' => __('Chaque critère doit avoir une note maximale.'),
+            'criteria.*.max_score.integer' => __('Chaque note maximale doit être un nombre entier.'),
+            'criteria.*.max_score.min' => __('Chaque note maximale doit être comprise entre 1 et 10.'),
+            'criteria.*.max_score.max' => __('Chaque note maximale doit être comprise entre 1 et 10.'),
         ]);
 
         $validator->after(function ($validator): void {
@@ -84,7 +84,7 @@ class RubricController extends Controller
             if ($sum !== 100) {
                 $validator->errors()->add(
                     'criteria',
-                    'La somme des poids doit être égale à 100.',
+                    __('La somme des poids doit être égale à 100.'),
                 );
             }
         });
@@ -102,7 +102,7 @@ class RubricController extends Controller
 
         return redirect()
             ->route('dashboard')
-            ->with('success', 'Grille enregistrée.');
+            ->with('success', __('Grille enregistrée.'));
     }
 
     /**
@@ -121,7 +121,7 @@ class RubricController extends Controller
 
             if ($id !== null && ! $existing->has($id)) {
                 throw ValidationException::withMessages([
-                    'criteria' => 'Un critère indiqué n\'appartient pas à cette grille.',
+                    'criteria' => __('Un critère indiqué n\'appartient pas à cette grille.'),
                 ]);
             }
         }

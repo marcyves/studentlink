@@ -73,14 +73,14 @@ class PeerEvaluationController extends Controller
         $this->authorizeEvaluation($evaluation);
 
         if (! $evaluation->isPending()) {
-            return back()->with('success', 'Cette évaluation est déjà enregistrée.');
+            return back()->with('success', __('Cette évaluation est déjà enregistrée.'));
         }
 
         $evaluation->load('project.rubric.criteria');
         $criteria = $evaluation->project->rubric?->criteria ?? collect();
 
         if ($criteria->isEmpty()) {
-            abort(422, 'Aucune grille de notation configurée pour ce projet.');
+            abort(422, __('Aucune grille de notation configurée pour ce projet.'));
         }
 
         $rules = [
@@ -114,7 +114,7 @@ class PeerEvaluationController extends Controller
 
         return redirect()
             ->route('student.evaluations.index')
-            ->with('success', 'Évaluation enregistrée.');
+            ->with('success', __('Évaluation enregistrée.'));
     }
 
     private function authorizeEvaluation(PeerEvaluation $evaluation): void

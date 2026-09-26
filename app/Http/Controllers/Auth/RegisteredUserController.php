@@ -42,8 +42,8 @@ class RegisteredUserController extends Controller
 
             throw ValidationException::withMessages([
                 'email' => $hint
-                    ? "Utilisez une adresse institutionnelle ({$hint})."
-                    : 'Inscription réservée aux adresses e-mail autorisées par votre établissement.',
+                    ? __('Utilisez une adresse institutionnelle (:hint).', ['hint' => $hint])
+                    : __('Inscription réservée aux adresses e-mail autorisées par votre établissement.'),
             ]);
         }
 

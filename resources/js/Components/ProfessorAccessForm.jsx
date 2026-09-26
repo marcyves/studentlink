@@ -2,9 +2,11 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
+import { useT } from '@/i18n';
 import { useForm } from '@inertiajs/react';
 
 export default function ProfessorAccessForm() {
+    const t = useT();
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -24,7 +26,7 @@ export default function ProfessorAccessForm() {
     return (
         <form onSubmit={submit} className="space-y-4 text-left">
             <div>
-                <InputLabel htmlFor="prof-name" value="Nom complet" />
+                <InputLabel htmlFor="prof-name" value={t('Nom complet')} />
                 <TextInput
                     id="prof-name"
                     value={data.name}
@@ -36,7 +38,7 @@ export default function ProfessorAccessForm() {
             </div>
 
             <div>
-                <InputLabel htmlFor="prof-email" value="E-mail professionnel" />
+                <InputLabel htmlFor="prof-email" value={t('E-mail professionnel')} />
                 <TextInput
                     id="prof-email"
                     type="email"
@@ -49,7 +51,7 @@ export default function ProfessorAccessForm() {
             </div>
 
             <div>
-                <InputLabel htmlFor="prof-institution" value="Établissement" />
+                <InputLabel htmlFor="prof-institution" value={t('Établissement')} />
                 <TextInput
                     id="prof-institution"
                     value={data.institution}
@@ -60,7 +62,7 @@ export default function ProfessorAccessForm() {
             </div>
 
             <div>
-                <InputLabel htmlFor="prof-message" value="Message (optionnel)" />
+                <InputLabel htmlFor="prof-message" value={t('Message (optionnel)')} />
                 <textarea
                     id="prof-message"
                     value={data.message}
@@ -72,7 +74,7 @@ export default function ProfessorAccessForm() {
             </div>
 
             <PrimaryButton disabled={processing} className="w-full justify-center">
-                Envoyer la demande
+                {t('Envoyer la demande')}
             </PrimaryButton>
         </form>
     );

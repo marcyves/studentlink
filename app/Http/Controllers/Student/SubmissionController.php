@@ -36,7 +36,7 @@ class SubmissionController extends Controller
         $submission->submitted_at = now();
         $submission->save();
 
-        return back()->with('success', 'Livrable enregistré.');
+        return back()->with('success', __('Livrable enregistré.'));
     }
 
     /**
@@ -45,14 +45,14 @@ class SubmissionController extends Controller
     private function validateForType(Request $request, DeliverableType $type): array
     {
         $messages = [
-            'file.required' => 'Déposez un fichier.',
-            'file.file' => 'Déposez un fichier valide.',
-            'file.image' => 'Le fichier doit être une image.',
-            'file.mimetypes' => 'Le fichier doit être une vidéo.',
-            'file.max' => 'Le fichier dépasse la taille autorisée.',
-            'url.required' => 'Indiquez une adresse.',
-            'url.url' => 'Indiquez une adresse http ou https valide.',
-            'url.max' => 'Cette adresse est trop longue.',
+            'file.required' => __('Déposez un fichier.'),
+            'file.file' => __('Déposez un fichier valide.'),
+            'file.image' => __('Le fichier doit être une image.'),
+            'file.mimetypes' => __('Le fichier doit être une vidéo.'),
+            'file.max' => __('Le fichier dépasse la taille autorisée.'),
+            'url.required' => __('Indiquez une adresse.'),
+            'url.url' => __('Indiquez une adresse http ou https valide.'),
+            'url.max' => __('Cette adresse est trop longue.'),
         ];
 
         $rules = match ($type) {

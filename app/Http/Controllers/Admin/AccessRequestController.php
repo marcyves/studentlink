@@ -23,7 +23,9 @@ class AccessRequestController extends Controller
 
         return back()->with(
             'success',
-            "Demande acceptée — compte professeur créé pour {$user->name}. Un e-mail de définition de mot de passe a été envoyé.",
+            __('Demande acceptée — compte professeur créé pour :name. Un e-mail de définition de mot de passe a été envoyé.', [
+                'name' => $user->name,
+            ]),
         );
     }
 
@@ -33,7 +35,7 @@ class AccessRequestController extends Controller
 
         return back()->with(
             'success',
-            "Demande de {$accessRequest->name} rejetée.",
+            __('Demande de :name rejetée.', ['name' => $accessRequest->name]),
         );
     }
 }

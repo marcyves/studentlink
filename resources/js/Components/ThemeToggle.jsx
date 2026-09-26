@@ -1,4 +1,5 @@
 import Icon from '@/Components/Icon';
+import { useT } from '@/i18n';
 import { useState } from 'react';
 
 function isDark() {
@@ -6,6 +7,7 @@ function isDark() {
 }
 
 export default function ThemeToggle() {
+    const t = useT();
     const [dark, setDark] = useState(isDark);
 
     const toggle = () => {
@@ -19,8 +21,8 @@ export default function ThemeToggle() {
         <button
             type="button"
             onClick={toggle}
-            title={dark ? 'Mode clair' : 'Mode sombre'}
-            aria-label={dark ? 'Mode clair' : 'Mode sombre'}
+            title={dark ? t('Mode clair') : t('Mode sombre')}
+            aria-label={dark ? t('Mode clair') : t('Mode sombre')}
             className="inline-flex h-9 w-9 items-center justify-center rounded-studentlink border border-primary-container/20 bg-card text-on-surface transition hover:bg-surface-container"
         >
             <Icon name={dark ? 'light_mode' : 'dark_mode'} className="text-xl" />

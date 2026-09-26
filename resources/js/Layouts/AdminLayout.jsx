@@ -1,7 +1,9 @@
 import UserMenu from '@/Components/UserMenu';
+import { useT } from '@/i18n';
 import { Link } from '@inertiajs/react';
 
 export default function AdminLayout({ children, title }) {
+    const t = useT();
     return (
         <div className="min-h-screen bg-surface">
             <header className="border-b border-primary-container/15 bg-card">
@@ -11,7 +13,7 @@ export default function AdminLayout({ children, title }) {
                             href={route('admin.dashboard')}
                             className="text-xs font-semibold uppercase tracking-wide text-secondary"
                         >
-                            StudentLink · Admin
+                            {t('StudentLink · Admin')}
                         </Link>
                         {title && (
                             <h1 className="text-xl font-semibold text-on-surface">

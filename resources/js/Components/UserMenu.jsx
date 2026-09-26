@@ -1,17 +1,41 @@
 import Dropdown from '@/Components/Dropdown';
 import Icon from '@/Components/Icon';
 import ThemeToggle from '@/Components/ThemeToggle';
-import { usePage } from '@inertiajs/react';
+import { useT } from '@/i18n';
+import { router, usePage } from '@inertiajs/react';
 
 export default function UserMenu() {
-    const { auth } = usePage().props;
+    const { auth, locale, locales = [] } = usePage().props;
+    const t = useT();
     const onProfile = route().current('profile.edit');
 
     const linkClass =
         'block w-full px-4 py-2.5 text-start text-sm text-on-surface transition hover:bg-surface-container';
 
+    const changeLocale = (event) => {
+        router.patch(
+            route('professor.locale.update'),
+            { locale: event.target.value },
+            { preserveScroll: true },
+        );
+    };
+
     return (
         <div className="flex items-center gap-2">
+            {locales.length > 0 && (
+                <select
+                    aria-label={t('Langue')}
+                    value={locale}
+                    onChange={changeLocale}
+                    className="h-9 rounded-studentlink border border-primary-container/20 bg-card px-2 text-sm text-on-surface"
+                >
+                    {locales.map((item) => (
+                        <option key={item.value} value={item.value}>
+                            {item.label}
+                        </option>
+                    ))}
+                </select>
+            )}
             <ThemeToggle />
             <Dropdown>
             <Dropdown.Trigger>
@@ -32,7 +56,7 @@ export default function UserMenu() {
             >
                 {!onProfile && (
                     <Dropdown.Link href={route('profile.edit')} className={linkClass}>
-                        Profil
+                        {t('Profil')}
                     </Dropdown.Link>
                 )}
                 <Dropdown.Link
@@ -41,7 +65,7 @@ export default function UserMenu() {
                     as="button"
                     className={`${linkClass} text-red-600 hover:bg-red-50`}
                 >
-                    Déconnexion
+                    {t('Déconnexion')}
                 </Dropdown.Link>
             </Dropdown.Content>
             </Dropdown>

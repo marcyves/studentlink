@@ -4,9 +4,11 @@ import Icon from '@/Components/Icon';
 import PrimaryButton from '@/Components/PrimaryButton';
 import ScoreSlider from '@/Components/ScoreSlider';
 import StudentLayout from '@/Layouts/StudentLayout';
+import { useT } from '@/i18n';
 import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Show({ evaluation }) {
+    const t = useT();
     const initialScores = Object.fromEntries(
         evaluation.criteria.map((c) => [c.id, c.score]),
     );
@@ -28,8 +30,8 @@ export default function Show({ evaluation }) {
     };
 
     return (
-        <StudentLayout title="Évaluation">
-            <Head title={`Évaluer ${evaluation.target_label}`} />
+        <StudentLayout title={t('Évaluation')}>
+            <Head title={t('Évaluer :target', { target: evaluation.target_label })} />
             <FlashMessage />
 
             <Link
@@ -37,7 +39,7 @@ export default function Show({ evaluation }) {
                 className="mb-4 inline-flex items-center gap-1 text-sm text-primary-container"
             >
                 <Icon name="arrow_back" className="text-base" />
-                Retour
+                {t('Retour')}
             </Link>
 
             <div className="mb-6 rounded-studentlink border border-primary-container/20 bg-card p-4">
@@ -62,7 +64,7 @@ export default function Show({ evaluation }) {
                 {evaluation.project.ends_at && (
                     <p className="mt-2 flex items-center gap-1 text-xs text-on-surface/50">
                         <Icon name="schedule" className="text-sm" />
-                        Échéance : {evaluation.project.ends_at}
+                        {t('Échéance : :date', { date: evaluation.project.ends_at })}
                     </p>
                 )}
             </div>
@@ -70,7 +72,7 @@ export default function Show({ evaluation }) {
             {isInter && evaluation.deliverable && (
                 <section className="mb-6 rounded-studentlink border border-primary-container/20 bg-card p-4">
                     <h3 className="mb-3 text-sm font-semibold text-on-surface">
-                        Livrable · {evaluation.deliverable.type_label}
+                        {t('Livrable · :label', { label: evaluation.deliverable.type_label })}
                     </h3>
                     <DeliverablePreview deliverable={evaluation.deliverable} />
                 </section>
@@ -78,14 +80,13 @@ export default function Show({ evaluation }) {
 
             {isInter && (
                 <p className="mb-4 border-l-4 border-secondary pl-3 text-sm italic text-on-surface/70">
-                    Notez la qualité du travail produit par ce groupe. Soyez constructif
-                    et objectif.
+                    {t('Notez la qualité du travail produit par ce groupe. Soyez constructif et objectif.')}
                 </p>
             )}
 
             {!isInter && (
                 <p className="mb-4 border-l-4 border-primary-container pl-3 text-sm italic text-on-surface/70">
-                    Évaluez l&apos;implication de ce coéquipier au sein de votre groupe.
+                    {t("Évaluez l'implication de ce coéquipier au sein de votre groupe.")}
                 </p>
             )}
 
@@ -98,7 +99,7 @@ export default function Show({ evaluation }) {
                         <ScoreSlider
                             id={`criterion-${criterion.id}`}
                             label={criterion.label}
-                            hint={`Poids ${criterion.weight} %`}
+                            hint={t('Poids :weight %', { weight: criterion.weight })}
                             max={criterion.max_score}
                             value={data.scores[criterion.id]}
                             onChange={(value) => setScore(criterion.id, value)}
@@ -114,13 +115,13 @@ export default function Show({ evaluation }) {
 
                 {!readOnly && (
                     <PrimaryButton disabled={processing} className="w-full justify-center">
-                        Enregistrer l&apos;évaluation
+                        {t("Enregistrer l'évaluation")}
                     </PrimaryButton>
                 )}
 
                 {readOnly && (
                     <p className="text-center text-sm text-tertiary">
-                        Évaluation déjà enregistrée.
+                        {t('Évaluation déjà enregistrée.')}
                     </p>
                 )}
             </form>

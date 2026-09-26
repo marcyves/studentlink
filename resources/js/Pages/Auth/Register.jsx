@@ -3,9 +3,11 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
+import { useT } from '@/i18n';
 import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Register({ registrationHint }) {
+    const t = useT();
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -23,20 +25,18 @@ export default function Register({ registrationHint }) {
 
     return (
         <GuestLayout>
-            <Head title="Inscription étudiant" />
+            <Head title={t('Inscription étudiant')} />
 
             <p className="mb-4 text-sm text-on-surface/60">
-                Inscription réservée aux étudiants.
-                {registrationHint ? (
-                    <> Adresse institutionnelle requise ({registrationHint}).</>
-                ) : (
-                    <> Utilisez votre adresse de votre établissement.</>
-                )}
+                {t('Inscription réservée aux étudiants.')}{' '}
+                {registrationHint
+                    ? t('Adresse institutionnelle requise (:hint).', { hint: registrationHint })
+                    : t('Utilisez l’adresse de votre établissement.')}
             </p>
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="name" value="Nom" />
+                    <InputLabel htmlFor="name" value={t('Nom')} />
 
                     <TextInput
                         id="name"
@@ -53,7 +53,7 @@ export default function Register({ registrationHint }) {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="email" value="E-mail institutionnel" />
+                    <InputLabel htmlFor="email" value={t('E-mail institutionnel')} />
 
                     <TextInput
                         id="email"
@@ -70,7 +70,7 @@ export default function Register({ registrationHint }) {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Mot de passe" />
+                    <InputLabel htmlFor="password" value={t('Mot de passe')} />
 
                     <TextInput
                         id="password"
@@ -89,7 +89,7 @@ export default function Register({ registrationHint }) {
                 <div className="mt-4">
                     <InputLabel
                         htmlFor="password_confirmation"
-                        value="Confirmer le mot de passe"
+                        value={t('Confirmer le mot de passe')}
                     />
 
                     <TextInput
@@ -116,21 +116,21 @@ export default function Register({ registrationHint }) {
                         href={route('login')}
                         className="text-sm text-on-surface/60 underline hover:text-on-surface"
                     >
-                        Déjà inscrit ?
+                        {t('Déjà inscrit ?')}
                     </Link>
 
                     <PrimaryButton disabled={processing}>
-                        S&apos;inscrire
+                        {t("S'inscrire")}
                     </PrimaryButton>
                 </div>
 
                 <p className="mt-4 text-center text-xs text-on-surface/50">
-                    Enseignant ?{' '}
+                    {t('Enseignant ?')}{' '}
                     <Link
                         href="/#professor-access"
                         className="text-primary-container underline"
                     >
-                        Demandez un accès
+                        {t('Demandez un accès')}
                     </Link>
                 </p>
             </form>

@@ -30,6 +30,6 @@ class SettingsController extends Controller
 
         StudentLinkSetting::current()->update($validated);
 
-        return back()->with('success', 'Paramètres enregistrés.');
+        return back()->with('success', __('Paramètres enregistrés.'));
     }
 }

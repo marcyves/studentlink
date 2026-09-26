@@ -14,12 +14,12 @@ enum DeliverableType: string
     public function label(): string
     {
         return match ($this) {
-            self::None => 'Rien',
-            self::File => 'Fichier',
-            self::Link => 'Lien',
-            self::Image => 'Image',
-            self::Video => 'Vidéo',
-            self::Youtube => 'Vidéo YouTube',
+            self::None => __('Rien'),
+            self::File => __('Fichier'),
+            self::Link => __('Lien'),
+            self::Image => __('Image'),
+            self::Video => __('Vidéo'),
+            self::Youtube => __('Vidéo YouTube'),
         };
     }
 
