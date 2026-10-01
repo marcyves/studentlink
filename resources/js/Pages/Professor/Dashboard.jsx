@@ -718,6 +718,13 @@ export default function Dashboard({ courses, deliverableTypes }) {
                                     })}
                             </p>
                             <div className="mt-2 flex flex-wrap items-center gap-4">
+                                <Link
+                                    href={route('professor.courses.activity', course.id)}
+                                    className="inline-flex items-center gap-1 text-sm font-medium text-primary-container hover:underline"
+                                >
+                                    <Icon name="monitoring" className="text-base" />
+                                    {t('Activité de la classe')}
+                                </Link>
                                 <EditCourseForm course={course} />
                                 <DeleteCourseControl course={course} />
                             </div>

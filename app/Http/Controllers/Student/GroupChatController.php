@@ -2,19 +2,23 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Enums\CourseActivityAction;
 use App\Events\GroupMessageSent;
 use App\Http\Controllers\Controller;
 use App\Models\Group;
 use App\Models\GroupMessage;
+use App\Services\CourseActivityRecorder;
 use Illuminate\Broadcasting\BroadcastException;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class GroupChatController extends Controller
 {
+    public function __construct(private CourseActivityRecorder $activities) {}
+
     public function index(): Response
     {
         $groups = auth()->user()
@@ -70,6 +74,14 @@ class GroupChatController extends Controller
             'user_id' => $request->user()->id,
             'body' => trim($validated['body']),
         ]);
+
+        $group->loadMissing('project.course');
+        $this->activities->record(
+            $request->user(),
+            $group->project->course,
+            CourseActivityAction::PostedMessage,
+            $group->name,
+        );
 
         $this->broadcastMessage($message);
 

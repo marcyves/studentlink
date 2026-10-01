@@ -7,7 +7,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import StudentLayout from '@/Layouts/StudentLayout';
 import { useT } from '@/i18n';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
 function JoinCourseForm() {
@@ -312,13 +312,34 @@ export default function Dashboard({ groups, enrolledCourses, stats }) {
                                     {group.submission?.label ?? '—'}
                                 </span>
                             </div>
-                            <div className="mt-3 flex items-center justify-between text-xs text-on-surface/50">
+                            <div className="mt-3 flex items-center justify-between gap-3 text-xs text-on-surface/50">
                                 <span>
                                     {group.members_count > 1
                                         ? t(':count membres', { count: group.members_count })
                                         : t(':count membre', { count: group.members_count })}
                                 </span>
                                 <span>{t('Code : :code', { code: group.invite_code })}</span>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        if (
+                                            window.confirm(
+                                                t('Quitter le groupe « :name » ?', {
+                                                    name: group.name,
+                                                }),
+                                            )
+                                        ) {
+                                            router.post(
+                                                route('student.groups.leave', group.id),
+                                                {},
+                                                { preserveScroll: true },
+                                            );
+                                        }
+                                    }}
+                                    className="font-medium text-red-700 hover:underline"
+                                >
+                                    {t('Quitter le groupe')}
+                                </button>
                             </div>
                             {group.deliverable?.submitted && (
                                 <div className="mt-3">

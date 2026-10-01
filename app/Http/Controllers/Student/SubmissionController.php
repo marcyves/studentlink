@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Enums\CourseActivityAction;
 use App\Enums\DeliverableType;
 use App\Enums\SubmissionStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Group;
 use App\Models\Submission;
 use App\Rules\YoutubeUrl;
+use App\Services\CourseActivityRecorder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -15,6 +17,8 @@ use Illuminate\Support\Facades\Storage;
 
 class SubmissionController extends Controller
 {
+    public function __construct(private CourseActivityRecorder $activities) {}
+
     public function store(Request $request, Group $group): RedirectResponse
     {
         $group->load('project', 'submission');
@@ -35,6 +39,14 @@ class SubmissionController extends Controller
         $submission->status = SubmissionStatus::Submitted;
         $submission->submitted_at = now();
         $submission->save();
+
+        $group->loadMissing('project.course');
+        $this->activities->record(
+            $request->user(),
+            $group->project->course,
+            CourseActivityAction::SubmittedDeliverable,
+            $group->project->title,
+        );
 
         return back()->with('success', __('Livrable enregistré.'));
     }
