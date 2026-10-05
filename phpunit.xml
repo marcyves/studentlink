@@ -35,5 +35,6 @@
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
         <env name="STUDENTLINK_ADMIN_EMAIL" value="admin@test.com"/>
+        <env name="STUDENTLINK_GEOLOCATE" value="false"/>
     </php>
 </phpunit>

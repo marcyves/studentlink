@@ -180,7 +180,14 @@ export default function Dashboard({
             <Head title={t('Administration')} />
             <FlashMessage />
 
-            <div className="mb-6 flex justify-end">
+            <div className="mb-6 flex items-center justify-end gap-2">
+                <Link
+                    href={route('admin.connections.index')}
+                    className="inline-flex items-center gap-2 rounded-studentlink border border-primary-container/25 bg-card px-3 py-2 text-sm font-medium text-primary-container transition hover:bg-surface-container/40"
+                >
+                    <Icon name="monitoring" className="text-xl" />
+                    {t('Connexions')}
+                </Link>
                 <Link
                     href={route('admin.settings.edit')}
                     className="inline-flex items-center justify-center rounded-studentlink border border-primary-container/25 bg-card p-2.5 text-primary-container transition hover:bg-surface-container/40"

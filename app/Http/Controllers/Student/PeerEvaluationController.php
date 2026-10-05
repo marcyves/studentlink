@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Enums\CourseActivityAction;
 use App\Enums\EvaluationType;
 use App\Enums\PeerEvaluationStatus;
 use App\Http\Controllers\Controller;
 use App\Models\PeerEvaluation;
+use App\Services\CourseActivityRecorder;
 use App\Services\PeerEvaluationSyncService;
 use App\Support\DeliverablePresenter;
 use Illuminate\Http\RedirectResponse;
@@ -19,6 +21,7 @@ class PeerEvaluationController extends Controller
     public function __construct(
         private PeerEvaluationSyncService $syncService,
         private DeliverablePresenter $deliverables,
+        private CourseActivityRecorder $activities,
     ) {}
 
     public function index(): Response
@@ -111,6 +114,14 @@ class PeerEvaluationController extends Controller
                 'submitted_at' => now(),
             ]);
         });
+
+        $evaluation->loadMissing('project.course');
+        $this->activities->record(
+            $request->user(),
+            $evaluation->project->course,
+            CourseActivityAction::SentEvaluation,
+            $evaluation->project->title,
+        );
 
         return redirect()
             ->route('student.evaluations.index')

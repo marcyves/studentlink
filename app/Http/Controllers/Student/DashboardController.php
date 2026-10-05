@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Enums\CourseActivityAction;
 use App\Enums\DeliverableType;
 use App\Enums\PeerEvaluationStatus;
 use App\Http\Controllers\Controller;
@@ -9,6 +10,7 @@ use App\Models\Course;
 use App\Models\Group;
 use App\Models\PeerEvaluation;
 use App\Models\Project;
+use App\Services\CourseActivityRecorder;
 use App\Services\EmailDomainService;
 use App\Support\DeliverablePresenter;
 use Illuminate\Http\RedirectResponse;
@@ -23,6 +25,7 @@ class DashboardController extends Controller
     public function __construct(
         private EmailDomainService $emailDomains,
         private DeliverablePresenter $deliverables,
+        private CourseActivityRecorder $activities,
     ) {}
 
     public function index(): Response
@@ -77,7 +80,12 @@ class DashboardController extends Controller
 
         $this->ensureEmailAllowedForCourse($request->user()->email, $course);
 
+        $alreadyEnrolled = $request->user()->courses()->where('courses.id', $course->id)->exists();
         $request->user()->courses()->syncWithoutDetaching([$course->id]);
+
+        if (! $alreadyEnrolled) {
+            $this->activities->record($request->user(), $course, CourseActivityAction::JoinedCourse);
+        }
 
         return back()->with('success', __('Inscrit au cours « :title ».', ['title' => $course->title]));
     }
@@ -105,6 +113,8 @@ class DashboardController extends Controller
 
             $group->members()->attach($user->id, ['is_leader' => true]);
             $group->submission()->create(['status' => 'pending']);
+
+            $this->activities->record($user, $project->course, CourseActivityAction::JoinedGroup, $group->name);
         });
 
         return back()->with('success', __('Groupe créé.'));
@@ -123,19 +133,49 @@ class DashboardController extends Controller
 
         $user = $request->user();
         $course = $group->project->course;
+        $alreadyEnrolled = $user->courses()->where('courses.id', $course->id)->exists();
+        $alreadyMember = $group->members()->where('users.id', $user->id)->exists();
 
-        if (! $user->courses()->where('courses.id', $course->id)->exists()) {
+        if (! $alreadyEnrolled) {
             $this->ensureEmailAllowedForCourse($user->email, $course);
             $user->courses()->attach($course->id);
+            $this->activities->record($user, $course, CourseActivityAction::JoinedCourse);
         }
 
         $group->members()->syncWithoutDetaching([$user->id => ['is_leader' => false]]);
+
+        if (! $alreadyMember) {
+            $this->activities->record($user, $course, CourseActivityAction::JoinedGroup, $group->name);
+        }
 
         if (! $group->submission) {
             $group->submission()->create(['status' => 'pending']);
         }
 
         return back()->with('success', __('Vous avez rejoint « :name ».', ['name' => $group->name]));
+    }
+
+    public function leaveGroup(Request $request, Group $group): RedirectResponse
+    {
+        $user = $request->user();
+
+        if (! $group->members()->where('users.id', $user->id)->exists()) {
+            abort(403);
+        }
+
+        $group->loadMissing('project.course');
+
+        DB::transaction(function () use ($user, $group) {
+            $group->members()->detach($user->id);
+            $this->activities->record(
+                $user,
+                $group->project->course,
+                CourseActivityAction::LeftGroup,
+                $group->name,
+            );
+        });
+
+        return back()->with('success', __('Vous avez quitté « :name ».', ['name' => $group->name]));
     }
 
     private function ensureEmailAllowedForCourse(string $email, Course $course): void

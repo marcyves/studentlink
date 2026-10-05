@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Admin\AccessRequestController as AdminAccessRequestController;
+use App\Http\Controllers\Admin\ConnectionStatisticsController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Professor\CourseActivityController;
 use App\Http\Controllers\Professor\CourseController as ProfessorCourseController;
 use App\Http\Controllers\Professor\GradeExportController;
 use App\Http\Controllers\Professor\LocaleController as ProfessorLocaleController;
@@ -40,6 +42,7 @@ Route::middleware(['auth', 'verified', 'student'])->prefix('student')->name('stu
     Route::post('/courses/join', [StudentDashboardController::class, 'joinCourse'])->name('courses.join');
     Route::post('/groups', [StudentDashboardController::class, 'storeGroup'])->name('groups.store');
     Route::post('/groups/join', [StudentDashboardController::class, 'joinGroup'])->name('groups.join');
+    Route::post('/groups/{group}/leave', [StudentDashboardController::class, 'leaveGroup'])->name('groups.leave');
     Route::post('/groups/{group}/submission', [StudentSubmissionController::class, 'store'])
         ->name('groups.submission.store');
     Route::get('/evaluations', [PeerEvaluationController::class, 'index'])->name('evaluations.index');
@@ -52,6 +55,7 @@ Route::middleware(['auth', 'verified', 'student'])->prefix('student')->name('stu
 
 Route::middleware(['auth', 'verified', 'professor'])->prefix('professor')->name('professor.')->group(function () {
     Route::patch('/locale', [ProfessorLocaleController::class, 'update'])->name('locale.update');
+    Route::get('/courses/{course}/activity', [CourseActivityController::class, 'show'])->name('courses.activity');
     Route::post('/courses', [ProfessorCourseController::class, 'store'])->name('courses.store');
     Route::put('/courses/{course}', [ProfessorCourseController::class, 'update'])->name('courses.update');
     Route::delete('/courses/{course}', [ProfessorCourseController::class, 'destroy'])->name('courses.destroy');
@@ -70,6 +74,7 @@ Route::middleware(['auth', 'verified', 'professor'])->prefix('professor')->name(
 
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/connections', [ConnectionStatisticsController::class, 'index'])->name('connections.index');
     Route::get('/settings', [AdminSettingsController::class, 'edit'])->name('settings.edit');
     Route::patch('/settings', [AdminSettingsController::class, 'update'])->name('settings.update');
     Route::post('/access-requests/{accessRequest}/accept', [AdminAccessRequestController::class, 'accept'])
