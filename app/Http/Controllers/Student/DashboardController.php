@@ -38,26 +38,45 @@ class DashboardController extends Controller
                 'members',
                 'submission',
             ])
-            ->get()
-            ->map(fn (Group $group) => $this->formatGroup($group));
+            ->get();
 
-        $enrolledCourses = $user->courses()
+        $projectIdsWithGroup = $groups->pluck('project_id');
+
+        $courses = $user->courses()
             ->with(['projects' => fn ($q) => $q->orderBy('ends_at')])
-            ->get()
-            ->map(fn (Course $course) => [
-                'id' => $course->id,
-                'title' => $course->title,
-                'code' => $course->code,
-                'projects' => $course->projects->map(fn (Project $project) => [
-                    'id' => $project->id,
-                    'title' => $project->title,
-                    'ends_at' => $project->ends_at?->toIso8601String(),
-                ]),
-            ]);
+            ->orderBy('title')
+            ->get();
+
+        $openProjects = $courses
+            ->flatMap(function (Course $course) use ($projectIdsWithGroup) {
+                return $course->projects
+                    ->reject(fn (Project $project) => $projectIdsWithGroup->contains($project->id))
+                    ->map(fn (Project $project) => [
+                        'id' => $project->id,
+                        'title' => $project->title,
+                        'course' => $course->title,
+                        'ends_at' => $project->ends_at?->toIso8601String(),
+                    ]);
+            })
+            ->values();
+
+        $enrolledCourses = $courses->map(fn (Course $course) => [
+            'id' => $course->id,
+            'title' => $course->title,
+            'code' => $course->code,
+            'projects' => $course->projects->map(fn (Project $project) => [
+                'id' => $project->id,
+                'title' => $project->title,
+                'ends_at' => $project->ends_at?->toIso8601String(),
+            ])->values(),
+        ])->values();
 
         return Inertia::render('Student/Dashboard', [
-            'groups' => $groups,
+            'groups' => $groups->map(fn (Group $group) => $this->formatGroup($group))->values(),
             'enrolledCourses' => $enrolledCourses,
+            'openProjects' => $openProjects,
+            'showJoinCourse' => $enrolledCourses->isEmpty(),
+            'showCreateOrJoinGroup' => $openProjects->isNotEmpty(),
             'stats' => [
                 'groups' => $groups->count(),
                 'pendingEvaluations' => PeerEvaluation::query()
