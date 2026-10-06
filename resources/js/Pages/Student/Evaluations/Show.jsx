@@ -7,10 +7,30 @@ import StudentLayout from '@/Layouts/StudentLayout';
 import { useT } from '@/i18n';
 import { Head, Link, useForm } from '@inertiajs/react';
 
+function errorText(errors) {
+    return Object.values(errors)
+        .flatMap((error) => (Array.isArray(error) ? error : [error]))
+        .filter((error) => typeof error === 'string' && error !== '')
+        .join(' ');
+}
+
 export default function Show({ evaluation }) {
     const t = useT();
+    const targets = evaluation.targets ?? [];
+    const criteria = evaluation.criteria ?? [];
+    const editableTargets = targets.filter((target) => !target.read_only);
+    const readOnly = editableTargets.length === 0;
+
     const initialScores = Object.fromEntries(
-        evaluation.criteria.map((c) => [c.id, c.score]),
+        editableTargets.map((target) => [
+            target.id,
+            Object.fromEntries(
+                criteria.map((criterion) => [
+                    criterion.id,
+                    target.scores?.[criterion.id] ?? 0,
+                ]),
+            ),
+        ]),
     );
 
     const { data, setData, put, processing, errors } = useForm({
@@ -18,20 +38,50 @@ export default function Show({ evaluation }) {
     });
 
     const isInter = evaluation.type === 'inter';
-    const readOnly = evaluation.status === 'completed';
+    const pageTitle = isInter
+        ? t('Évaluer les autres groupes')
+        : t('Évaluer vos coéquipiers');
 
-    const setScore = (criterionId, value) => {
-        setData('scores', { ...data.scores, [criterionId]: value });
+    const scoreOf = (target, criterionId) => {
+        if (target.read_only) {
+            return Number(target.scores?.[criterionId] ?? 0);
+        }
+
+        return Number(data.scores[target.id]?.[criterionId] ?? 0);
+    };
+
+    const used = (criterionId) =>
+        targets.reduce((sum, target) => sum + scoreOf(target, criterionId), 0);
+
+    const overBudget = criteria.some(
+        (criterion) => used(criterion.id) > criterion.pool,
+    );
+
+    const setScore = (targetId, criterionId, value) => {
+        setData('scores', {
+            ...data.scores,
+            [targetId]: {
+                ...data.scores[targetId],
+                [criterionId]: value,
+            },
+        });
     };
 
     const submit = (e) => {
         e.preventDefault();
+
+        if (readOnly || overBudget) {
+            return;
+        }
+
         put(route('student.evaluations.update', evaluation.id));
     };
 
+    const budgetError = errorText(errors);
+
     return (
         <StudentLayout title={t('Évaluation')}>
-            <Head title={t('Évaluer :target', { target: evaluation.target_label })} />
+            <Head title={pageTitle} />
             <FlashMessage />
 
             <Link
@@ -58,7 +108,7 @@ export default function Show({ evaluation }) {
                     {evaluation.type_label}
                 </span>
                 <h2 className="mt-2 text-lg font-semibold text-on-surface">
-                    {evaluation.target_label}
+                    {pageTitle}
                 </h2>
                 <p className="text-sm text-on-surface/60">{evaluation.project.title}</p>
                 {evaluation.project.ends_at && (
@@ -69,52 +119,110 @@ export default function Show({ evaluation }) {
                 )}
             </div>
 
-            {isInter && evaluation.deliverable && (
-                <section className="mb-6 rounded-studentlink border border-primary-container/20 bg-card p-4">
-                    <h3 className="mb-3 text-sm font-semibold text-on-surface">
-                        {t('Livrable · :label', { label: evaluation.deliverable.type_label })}
-                    </h3>
-                    <DeliverablePreview deliverable={evaluation.deliverable} />
-                </section>
-            )}
-
             {isInter && (
                 <p className="mb-4 border-l-4 border-secondary pl-3 text-sm italic text-on-surface/70">
-                    {t('Notez la qualité du travail produit par ce groupe. Soyez constructif et objectif.')}
+                    {t('Notez la qualité du travail produit par les autres groupes. Soyez constructif et objectif.')}
                 </p>
             )}
 
             {!isInter && (
                 <p className="mb-4 border-l-4 border-primary-container pl-3 text-sm italic text-on-surface/70">
-                    {t("Évaluez l'implication de ce coéquipier au sein de votre groupe.")}
+                    {t("Évaluez l'implication de chaque coéquipier au sein de votre groupe.")}
                 </p>
             )}
 
+            {isInter && targets.some((target) => target.deliverable) && (
+                <section className="mb-6 space-y-4">
+                    {targets.map((target) => (
+                        <div
+                            key={target.id}
+                            className="rounded-studentlink border border-primary-container/20 bg-card p-4"
+                        >
+                            <h3 className="mb-3 text-sm font-semibold text-on-surface">
+                                {t('Livrable · :label', {
+                                    label: target.deliverable?.type_label
+                                        ? `${target.label} · ${target.deliverable.type_label}`
+                                        : target.label,
+                                })}
+                            </h3>
+                            {target.deliverable && (
+                                <DeliverablePreview deliverable={target.deliverable} />
+                            )}
+                        </div>
+                    ))}
+                </section>
+            )}
+
             <form onSubmit={submit} className="space-y-6">
-                {evaluation.criteria.map((criterion) => (
-                    <div
-                        key={criterion.id}
-                        className="rounded-studentlink border border-outline-variant/30 bg-card p-4"
-                    >
-                        <ScoreSlider
-                            id={`criterion-${criterion.id}`}
-                            label={criterion.label}
-                            hint={t('Poids :weight %', { weight: criterion.weight })}
-                            max={criterion.max_score}
-                            value={data.scores[criterion.id]}
-                            onChange={(value) => setScore(criterion.id, value)}
-                            disabled={readOnly}
-                        />
-                        {errors[`scores.${criterion.id}`] && (
-                            <p className="mt-2 text-sm text-red-600">
-                                {errors[`scores.${criterion.id}`]}
-                            </p>
+                {criteria.map((criterion) => {
+                    const left = criterion.pool - used(criterion.id);
+
+                    return (
+                        <div
+                            key={criterion.id}
+                            className="space-y-5 rounded-studentlink border border-outline-variant/30 bg-card p-4"
+                        >
+                            <div className="flex items-start justify-between gap-4">
+                                <div>
+                                    <h3 className="text-sm font-semibold text-on-surface">
+                                        {criterion.label}
+                                    </h3>
+                                    <p className="text-xs text-on-surface/60">
+                                        {t('Poids :weight %', { weight: criterion.weight })}
+                                    </p>
+                                    <p className="mt-1 text-xs text-on-surface/70">
+                                        {t(
+                                            'Répartissez :pool points. Chaque note est un entier de 0 à :max.',
+                                            {
+                                                pool: criterion.pool,
+                                                max: criterion.max_score,
+                                            },
+                                        )}
+                                    </p>
+                                </div>
+                                <p
+                                    className={`shrink-0 text-sm font-semibold ${
+                                        left < 0 ? 'text-red-600' : 'text-secondary'
+                                    }`}
+                                >
+                                    {t('Points restants : :count', { count: left })}
+                                </p>
+                            </div>
+
+                            {targets.map((target) => (
+                                <ScoreSlider
+                                    key={`${criterion.id}-${target.id}`}
+                                    id={`criterion-${criterion.id}-target-${target.id}`}
+                                    label={target.label}
+                                    max={criterion.max_score}
+                                    value={scoreOf(target, criterion.id)}
+                                    onChange={(value) =>
+                                        setScore(target.id, criterion.id, value)
+                                    }
+                                    disabled={target.read_only}
+                                />
+                            ))}
+                        </div>
+                    );
+                })}
+
+                {budgetError && (
+                    <p className="text-sm text-red-600">{budgetError}</p>
+                )}
+
+                {overBudget && (
+                    <p className="text-sm text-red-600">
+                        {t(
+                            "Budget dépassé : baissez des notes avant d'enregistrer.",
                         )}
-                    </div>
-                ))}
+                    </p>
+                )}
 
                 {!readOnly && (
-                    <PrimaryButton disabled={processing} className="w-full justify-center">
+                    <PrimaryButton
+                        disabled={processing || overBudget}
+                        className="w-full justify-center"
+                    >
                         {t("Enregistrer l'évaluation")}
                     </PrimaryButton>
                 )}

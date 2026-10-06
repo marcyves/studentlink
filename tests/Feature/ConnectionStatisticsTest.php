@@ -429,7 +429,9 @@ class ConnectionStatisticsTest extends TestCase
 
         $this->actingAs($student)
             ->put(route('student.evaluations.update', $evaluation), [
-                'scores' => [$criterion->id => 4],
+                'scores' => [
+                    $evaluation->id => [$criterion->id => 2],
+                ],
             ])
             ->assertRedirect();
 

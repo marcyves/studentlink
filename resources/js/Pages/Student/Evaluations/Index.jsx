@@ -4,9 +4,16 @@ import StudentLayout from '@/Layouts/StudentLayout';
 import { useT } from '@/i18n';
 import { Head, Link } from '@inertiajs/react';
 
-function EvaluationCard({ evaluation }) {
+function SetCard({ evaluation }) {
     const t = useT();
     const isInter = evaluation.type === 'inter';
+    const countLabel = isInter
+        ? evaluation.target_count > 1
+            ? t(':count groupes', { count: evaluation.target_count })
+            : t(':count groupe', { count: evaluation.target_count })
+        : evaluation.target_count > 1
+          ? t(':count coéquipiers', { count: evaluation.target_count })
+          : t(':count coéquipier', { count: evaluation.target_count });
 
     return (
         <Link
@@ -30,11 +37,12 @@ function EvaluationCard({ evaluation }) {
                         {evaluation.type_label}
                     </span>
                     <h3 className="mt-2 font-semibold text-on-surface">
-                        {evaluation.target_label}
+                        {evaluation.project.title}
                     </h3>
                     <p className="text-sm text-on-surface/60">
-                        {evaluation.project.title}
+                        {(evaluation.targets ?? []).join(' · ')}
                     </p>
+                    <p className="mt-1 text-xs text-on-surface/50">{countLabel}</p>
                 </div>
                 <span
                     className={`shrink-0 rounded-full px-2 py-1 text-xs font-medium ${
@@ -84,7 +92,7 @@ export default function Index({ pending, completed, stats }) {
                     </p>
                 ) : (
                     pending.map((evaluation) => (
-                        <EvaluationCard key={evaluation.id} evaluation={evaluation} />
+                        <SetCard key={`${evaluation.type}-${evaluation.id}`} evaluation={evaluation} />
                     ))
                 )}
             </section>
@@ -96,7 +104,7 @@ export default function Index({ pending, completed, stats }) {
                         {t('Terminées')}
                     </h2>
                     {completed.map((evaluation) => (
-                        <EvaluationCard key={evaluation.id} evaluation={evaluation} />
+                        <SetCard key={`${evaluation.type}-${evaluation.id}`} evaluation={evaluation} />
                     ))}
                 </section>
             )}
