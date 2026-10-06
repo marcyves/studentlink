@@ -8,7 +8,6 @@ import TextInput from '@/Components/TextInput';
 import StudentLayout from '@/Layouts/StudentLayout';
 import { useT } from '@/i18n';
 import { Head, Link, router, useForm } from '@inertiajs/react';
-import { useState } from 'react';
 
 function JoinCourseForm() {
     const t = useT();
@@ -42,7 +41,6 @@ function JoinCourseForm() {
 
 function CreateGroupForm({ projects }) {
     const t = useT();
-    const [open, setOpen] = useState(false);
     const { data, setData, post, processing, reset, errors } = useForm({
         project_id: projects[0]?.id ?? '',
         name: '',
@@ -53,55 +51,39 @@ function CreateGroupForm({ projects }) {
     }
 
     return (
-        <div className="rounded-studentlink border border-primary-container/20 bg-card p-4">
-            <button
-                type="button"
-                onClick={() => setOpen(!open)}
-                className="flex w-full items-center justify-between text-left font-medium text-on-surface"
+        <form
+            onSubmit={(e) => {
+                e.preventDefault();
+                post(route('student.groups.store'), {
+                    onSuccess: () => reset('name'),
+                });
+            }}
+            className="space-y-3"
+        >
+            <p className="flex items-center gap-2 text-sm font-medium text-on-surface">
+                <Icon name="group_add" className="text-primary-container" />
+                {t('Créer un groupe')}
+            </p>
+            <select
+                value={data.project_id}
+                onChange={(e) => setData('project_id', e.target.value)}
+                className="w-full rounded-studentlink border-gray-300 shadow-sm focus:border-primary-container focus:ring-primary-container"
             >
-                <span className="flex items-center gap-2">
-                    <Icon name="group_add" className="text-primary-container" />
-                    {t('Créer un groupe')}
-                </span>
-                <Icon name={open ? 'expand_less' : 'expand_more'} />
-            </button>
-            {open && (
-                <form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        post(route('student.groups.store'), {
-                            onSuccess: () => {
-                                reset('name');
-                                setOpen(false);
-                            },
-                        });
-                    }}
-                    className="mt-4 space-y-3"
-                >
-                    <select
-                        value={data.project_id}
-                        onChange={(e) => setData('project_id', e.target.value)}
-                        className="w-full rounded-studentlink border-gray-300 shadow-sm focus:border-primary-container focus:ring-primary-container"
-                    >
-                        {projects.map((p) => (
-                            <option key={p.id} value={p.id}>
-                                {p.title}
-                            </option>
-                        ))}
-                    </select>
-                    <TextInput
-                        value={data.name}
-                        onChange={(e) => setData('name', e.target.value)}
-                        placeholder={t('Nom du groupe')}
-                        required
-                    />
-                    {errors.name && (
-                        <p className="text-sm text-red-600">{errors.name}</p>
-                    )}
-                    <PrimaryButton disabled={processing}>{t('Créer')}</PrimaryButton>
-                </form>
-            )}
-        </div>
+                {projects.map((p) => (
+                    <option key={p.id} value={p.id}>
+                        {p.course ? `${p.course} — ${p.title}` : p.title}
+                    </option>
+                ))}
+            </select>
+            <TextInput
+                value={data.name}
+                onChange={(e) => setData('name', e.target.value)}
+                placeholder={t('Nom du groupe')}
+                required
+            />
+            {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
+            <PrimaryButton disabled={processing}>{t('Créer')}</PrimaryButton>
+        </form>
     );
 }
 
@@ -233,9 +215,15 @@ function JoinGroupForm() {
     );
 }
 
-export default function Dashboard({ groups, enrolledCourses, stats }) {
+export default function Dashboard({
+    groups,
+    enrolledCourses,
+    openProjects,
+    showJoinCourse,
+    showCreateOrJoinGroup,
+    stats,
+}) {
     const t = useT();
-    const allProjects = enrolledCourses.flatMap((c) => c.projects);
 
     return (
         <StudentLayout title={t('Tableau de bord')}>
@@ -257,23 +245,46 @@ export default function Dashboard({ groups, enrolledCourses, stats }) {
                 </div>
             </div>
 
-            <section className="mb-6 space-y-3">
-                <h2 className="text-sm font-semibold uppercase tracking-wide text-on-surface/50">
-                    {t('Rejoindre un cours')}
-                </h2>
-                <JoinCourseForm />
-                <p className="text-xs text-on-surface/50">
-                    {t('Démo : code')} <strong>JOIN2026</strong>
-                </p>
-            </section>
+            {showJoinCourse && (
+                <section className="mb-6 space-y-3">
+                    <h2 className="text-sm font-semibold uppercase tracking-wide text-on-surface/50">
+                        {t('Rejoindre un cours')}
+                    </h2>
+                    <JoinCourseForm />
+                    <p className="text-xs text-on-surface/50">
+                        {t('Démo : code')} <strong>JOIN2026</strong>
+                    </p>
+                </section>
+            )}
 
-            <section className="mb-6 space-y-3">
-                <h2 className="text-sm font-semibold uppercase tracking-wide text-on-surface/50">
-                    {t('Groupes')}
-                </h2>
-                <CreateGroupForm projects={allProjects} />
-                <JoinGroupForm />
-            </section>
+            {enrolledCourses.length > 0 && (
+                <section className="mb-6 space-y-3">
+                    <h2 className="text-sm font-semibold uppercase tracking-wide text-on-surface/50">
+                        {t('Mes cours')}
+                    </h2>
+                    {enrolledCourses.map((course) => (
+                        <article
+                            key={course.id}
+                            className="rounded-studentlink border border-primary-container/20 bg-card p-4"
+                        >
+                            <h3 className="font-semibold text-on-surface">{course.title}</h3>
+                            {course.code && (
+                                <p className="text-sm text-on-surface/60">{course.code}</p>
+                            )}
+                        </article>
+                    ))}
+                </section>
+            )}
+
+            {showCreateOrJoinGroup && (
+                <section className="mb-6 space-y-4 rounded-studentlink border border-primary-container/20 bg-card p-4">
+                    <h2 className="text-sm font-semibold uppercase tracking-wide text-on-surface/50">
+                        {t('Créer ou rejoindre un groupe')}
+                    </h2>
+                    <CreateGroupForm projects={openProjects} />
+                    <JoinGroupForm />
+                </section>
+            )}
 
             <section className="space-y-3">
                 <div className="flex items-center justify-between">
