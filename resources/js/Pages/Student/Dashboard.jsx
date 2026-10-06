@@ -12,7 +12,7 @@ import { useState } from 'react';
 
 function JoinCourseForm() {
     const t = useT();
-    const { data, setData, post, processing, reset } = useForm({
+    const { data, setData, post, processing, reset, errors } = useForm({
         join_code: '',
     });
 
@@ -24,15 +24,18 @@ function JoinCourseForm() {
                     onSuccess: () => reset('join_code'),
                 });
             }}
-            className="flex gap-2"
+            className="space-y-2"
         >
-            <TextInput
-                value={data.join_code}
-                onChange={(e) => setData('join_code', e.target.value)}
-                placeholder={t('Code cours')}
-                className="flex-1"
-            />
-            <PrimaryButton disabled={processing}>{t('Rejoindre')}</PrimaryButton>
+            <div className="flex gap-2">
+                <TextInput
+                    value={data.join_code}
+                    onChange={(e) => setData('join_code', e.target.value)}
+                    placeholder={t('Code cours')}
+                    className="flex-1"
+                />
+                <PrimaryButton disabled={processing}>{t('Rejoindre')}</PrimaryButton>
+            </div>
+            <InputError message={errors.join_code} />
         </form>
     );
 }
@@ -202,7 +205,7 @@ function GroupSubmissionForm({ group }) {
 
 function JoinGroupForm() {
     const t = useT();
-    const { data, setData, post, processing, reset } = useForm({
+    const { data, setData, post, processing, reset, errors } = useForm({
         invite_code: '',
     });
 
@@ -214,15 +217,18 @@ function JoinGroupForm() {
                     onSuccess: () => reset('invite_code'),
                 });
             }}
-            className="flex gap-2"
+            className="space-y-2"
         >
-            <TextInput
-                value={data.invite_code}
-                onChange={(e) => setData('invite_code', e.target.value)}
-                placeholder={t('Code groupe')}
-                className="flex-1"
-            />
-            <PrimaryButton disabled={processing}>{t('Rejoindre')}</PrimaryButton>
+            <div className="flex gap-2">
+                <TextInput
+                    value={data.invite_code}
+                    onChange={(e) => setData('invite_code', e.target.value)}
+                    placeholder={t('Code groupe')}
+                    className="flex-1"
+                />
+                <PrimaryButton disabled={processing}>{t('Rejoindre')}</PrimaryButton>
+            </div>
+            <InputError message={errors.invite_code} />
         </form>
     );
 }
