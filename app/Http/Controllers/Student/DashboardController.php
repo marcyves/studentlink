@@ -76,16 +76,24 @@ class DashboardController extends Controller
 
         $course = Course::query()
             ->where('join_code', strtoupper(trim($validated['join_code'])))
-            ->firstOrFail();
+            ->first();
+
+        if ($course === null) {
+            throw ValidationException::withMessages([
+                'join_code' => __('Aucun cours ne correspond à ce code.'),
+            ]);
+        }
+
+        if ($request->user()->courses()->where('courses.id', $course->id)->exists()) {
+            throw ValidationException::withMessages([
+                'join_code' => __('Vous êtes déjà inscrit à ce cours.'),
+            ]);
+        }
 
         $this->ensureEmailAllowedForCourse($request->user()->email, $course);
 
-        $alreadyEnrolled = $request->user()->courses()->where('courses.id', $course->id)->exists();
-        $request->user()->courses()->syncWithoutDetaching([$course->id]);
-
-        if (! $alreadyEnrolled) {
-            $this->activities->record($request->user(), $course, CourseActivityAction::JoinedCourse);
-        }
+        $request->user()->courses()->attach($course->id);
+        $this->activities->record($request->user(), $course, CourseActivityAction::JoinedCourse);
 
         return back()->with('success', __('Inscrit au cours « :title ».', ['title' => $course->title]));
     }
@@ -129,12 +137,24 @@ class DashboardController extends Controller
         $group = Group::query()
             ->with('project.course')
             ->where('invite_code', strtoupper(trim($validated['invite_code'])))
-            ->firstOrFail();
+            ->first();
+
+        if ($group === null) {
+            throw ValidationException::withMessages([
+                'invite_code' => __('Aucun groupe ne correspond à ce code.'),
+            ]);
+        }
 
         $user = $request->user();
+
+        if ($group->members()->where('users.id', $user->id)->exists()) {
+            throw ValidationException::withMessages([
+                'invite_code' => __('Vous faites déjà partie de ce groupe.'),
+            ]);
+        }
+
         $course = $group->project->course;
         $alreadyEnrolled = $user->courses()->where('courses.id', $course->id)->exists();
-        $alreadyMember = $group->members()->where('users.id', $user->id)->exists();
 
         if (! $alreadyEnrolled) {
             $this->ensureEmailAllowedForCourse($user->email, $course);
@@ -142,11 +162,8 @@ class DashboardController extends Controller
             $this->activities->record($user, $course, CourseActivityAction::JoinedCourse);
         }
 
-        $group->members()->syncWithoutDetaching([$user->id => ['is_leader' => false]]);
-
-        if (! $alreadyMember) {
-            $this->activities->record($user, $course, CourseActivityAction::JoinedGroup, $group->name);
-        }
+        $group->members()->attach($user->id, ['is_leader' => false]);
+        $this->activities->record($user, $course, CourseActivityAction::JoinedGroup, $group->name);
 
         if (! $group->submission) {
             $group->submission()->create(['status' => 'pending']);
