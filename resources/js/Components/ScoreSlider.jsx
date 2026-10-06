@@ -15,12 +15,13 @@ export default function ScoreSlider({ id, label, hint, max, value, onChange, dis
             <input
                 id={id}
                 type="range"
-                min={1}
+                min={0}
                 max={max}
+                step={1}
                 value={value}
                 disabled={disabled}
                 onChange={(e) => onChange(Number(e.target.value))}
-                className="slider-peer h-2 w-full cursor-pointer appearance-none rounded-full bg-secondary/20 accent-secondary"
+                className="slider-peer h-2 w-full cursor-pointer appearance-none rounded-full bg-secondary/20 accent-secondary disabled:cursor-not-allowed"
             />
         </div>
     );
