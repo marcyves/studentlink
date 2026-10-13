@@ -271,6 +271,25 @@ export default function Dashboard({
                             {course.code && (
                                 <p className="text-sm text-on-surface/60">{course.code}</p>
                             )}
+                            {course.projects.length > 0 && (
+                                <ul className="mt-3 space-y-1 text-sm text-on-surface/80">
+                                    {course.projects.map((project) => (
+                                        <li key={project.id}>
+                                            <span className="font-medium">{project.title}</span>
+                                            {' · '}
+                                            {t('Livrable : :label', {
+                                                label: project.deliverable_label,
+                                            })}
+                                            {project.group_name && (
+                                                <>
+                                                    {' · '}
+                                                    {project.submission_label ?? '—'}
+                                                </>
+                                            )}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </article>
                     ))}
                 </section>
@@ -358,7 +377,7 @@ export default function Dashboard({
                                     {t('Quitter le groupe')}
                                 </button>
                             </div>
-                            {group.deliverable?.submitted && (
+                            {group.deliverable && (
                                 <div className="mt-3">
                                     <DeliverablePreview deliverable={group.deliverable} />
                                 </div>
@@ -366,12 +385,19 @@ export default function Dashboard({
                             {group.can_submit ? (
                                 <GroupSubmissionForm group={group} />
                             ) : (
-                                <p className="mt-3 text-xs text-on-surface/60">
-                                    {t(
-                                        'Seul :name peut déposer le livrable. Vous pouvez le vérifier ici.',
-                                        { name: group.creator_name },
-                                    )}
-                                </p>
+                                group.project.deliverable_type !== 'none' && (
+                                    <p className="mt-3 text-xs text-on-surface/60">
+                                        {group.deliverable?.submitted
+                                            ? t(
+                                                'Le livrable est déposé. Seul :name peut le remplacer.',
+                                                { name: group.creator_name },
+                                            )
+                                            : t(
+                                                'Un livrable est attendu. Seul :name peut le déposer.',
+                                                { name: group.creator_name },
+                                            )}
+                                    </p>
+                                )
                             )}
                         </article>
                     ))
