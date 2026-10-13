@@ -365,5 +365,7 @@
     "Quitter le groupe": "Lascia il gruppo",
     "Quitter le groupe « :name » ?": "Lasciare il gruppo « :name »?",
     "Vous avez quitté « :name ».": "Hai lasciato « :name ».",
-    "Suivez qui s'est connecté et ce que les étudiants ont fait dans ce cours.": "Vedi chi si è connesso e che cosa hanno fatto gli studenti in questo corso."
+    "Suivez qui s'est connecté et ce que les étudiants ont fait dans ce cours.": "Vedi chi si è connesso e che cosa hanno fatto gli studenti in questo corso.",
+    "Seul le créateur du groupe peut déposer le livrable.": "Solo chi ha creato il gruppo può consegnare l'elaborato.",
+    "Seul :name peut déposer le livrable. Vous pouvez le vérifier ici.": "Solo :name può consegnare l'elaborato. Puoi verificarlo qui."
 }

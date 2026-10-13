@@ -365,5 +365,7 @@
     "Quitter le groupe": "Leave the group",
     "Quitter le groupe « :name » ?": "Leave the group “:name”?",
     "Vous avez quitté « :name ».": "You left “:name”.",
-    "Suivez qui s'est connecté et ce que les étudiants ont fait dans ce cours.": "See who has logged in and what students have done in this course."
+    "Suivez qui s'est connecté et ce que les étudiants ont fait dans ce cours.": "See who has logged in and what students have done in this course.",
+    "Seul le créateur du groupe peut déposer le livrable.": "Only the student who created the group can submit the deliverable.",
+    "Seul :name peut déposer le livrable. Vous pouvez le vérifier ici.": "Only :name can submit the deliverable. You can check it here."
 }
