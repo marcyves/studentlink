@@ -365,5 +365,10 @@
     "Quitter le groupe": "Leave the group",
     "Quitter le groupe « :name » ?": "Leave the group “:name”?",
     "Vous avez quitté « :name ».": "You left “:name”.",
-    "Suivez qui s'est connecté et ce que les étudiants ont fait dans ce cours.": "See who has logged in and what students have done in this course."
+    "Suivez qui s'est connecté et ce que les étudiants ont fait dans ce cours.": "See who has logged in and what students have done in this course.",
+    "Écarts avec les autres évaluateurs": "Gaps with the other reviewers",
+    "Comparaison des notes déjà envoyées. La moyenne du projet n'est pas modifiée.": "Comparison of submitted scores. The project average is left unchanged.",
+    ":name note en moyenne :gap points au-dessus des autres (:type, :targets cibles).": ":name scores :gap points above the others on average (:type, :targets targets).",
+    ":name note en moyenne :gap points en dessous des autres (:type, :targets cibles).": ":name scores :gap points below the others on average (:type, :targets targets).",
+    ":name ne classe pas les cibles comme les autres (:type, :targets cibles).": ":name does not rank the targets like the others (:type, :targets targets)."
 }

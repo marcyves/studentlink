@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\EvaluationType;
 use App\Models\PeerEvaluation;
 use App\Models\Project;
+use App\Support\PeerWeightedNote;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -61,29 +62,9 @@ class GradeExportService
         ]);
     }
 
-    /**
-     * Note on a 100-point scale: each scored criterion contributes
-     * (score / max) × weight. Weights of a saved rubric sum to 100,
-     * so a fully scored evaluation at the maximum is 100.
-     * A criterion with no score contributes 0.
-     */
     private function weightedNote(PeerEvaluation $evaluation): ?float
     {
-        $total = 0.0;
-        $used = 0;
-
-        foreach ($evaluation->scores as $score) {
-            $criterion = $score->criterion;
-
-            if ($criterion === null || $criterion->max_score < 1) {
-                continue;
-            }
-
-            $total += ($score->score / $criterion->max_score) * $criterion->weight;
-            $used++;
-        }
-
-        return $used === 0 ? null : $total;
+        return PeerWeightedNote::of($evaluation);
     }
 
     private function formatNote(float $note): string
