@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Enums\CourseActivityAction;
 use App\Enums\DeliverableType;
 use App\Enums\PeerEvaluationStatus;
+use App\Enums\SubmissionStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Group;
@@ -16,6 +17,7 @@ use App\Services\EmailDomainService;
 use App\Support\DeliverablePresenter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -44,6 +46,8 @@ class DashboardController extends Controller
 
         $projectIdsWithGroup = $groups->pluck('project_id');
 
+        $this->enrollInGroupCourses($user, $groups);
+
         $courses = $user->courses()
             ->with(['projects' => fn ($q) => $q->orderBy('ends_at')])
             ->orderBy('title')
@@ -62,15 +66,25 @@ class DashboardController extends Controller
             })
             ->values();
 
+        $groupsByProject = $groups->keyBy('project_id');
+
         $enrolledCourses = $courses->map(fn (Course $course) => [
             'id' => $course->id,
             'title' => $course->title,
             'code' => $course->code,
-            'projects' => $course->projects->map(fn (Project $project) => [
-                'id' => $project->id,
-                'title' => $project->title,
-                'ends_at' => $project->ends_at?->toIso8601String(),
-            ])->values(),
+            'projects' => $course->projects->map(function (Project $project) use ($groupsByProject) {
+                $group = $groupsByProject->get($project->id);
+
+                return [
+                    'id' => $project->id,
+                    'title' => $project->title,
+                    'ends_at' => $project->ends_at?->toIso8601String(),
+                    'deliverable_label' => ($project->deliverable_type ?? DeliverableType::None)->label(),
+                    'group_name' => $group?->name,
+                    'submission_label' => $group?->submission?->status->label(),
+                    'submitted' => $group?->submission?->status === SubmissionStatus::Submitted,
+                ];
+            })->values(),
         ])->values();
 
         return Inertia::render('Student/Dashboard', [
@@ -214,6 +228,31 @@ class DashboardController extends Controller
         });
 
         return back()->with('success', __('Vous avez quitté « :name ».', ['name' => $group->name]));
+    }
+
+    /**
+     * @param  Collection<int, Group>  $groups
+     */
+    private function enrollInGroupCourses(User $user, Collection $groups): void
+    {
+        $courseIds = $groups
+            ->map(fn (Group $group) => $group->project?->course_id)
+            ->filter()
+            ->unique()
+            ->values();
+
+        if ($courseIds->isEmpty()) {
+            return;
+        }
+
+        $enrolled = $user->courses()->whereIn('courses.id', $courseIds)->pluck('courses.id');
+        $missing = $courseIds->diff($enrolled);
+
+        if ($missing->isEmpty()) {
+            return;
+        }
+
+        $user->courses()->syncWithoutDetaching($missing->all());
     }
 
     private function ensureEmailAllowedForCourse(string $email, Course $course): void

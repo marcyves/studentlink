@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Enums\DeliverableType;
+use App\Enums\SubmissionStatus;
 use App\Models\Course;
 use App\Models\Group;
 use App\Models\Project;
@@ -274,6 +276,86 @@ class StudentDashboardTest extends TestCase
                 ->has('openProjects', 0));
     }
 
+    public function test_every_group_member_sees_the_course_and_the_deliverable_status(): void
+    {
+        $professor = User::factory()->professor()->create();
+        $creator = User::factory()->create(['name' => 'Léa']);
+        $member = User::factory()->create(['name' => 'Camille']);
+        $course = $this->makeCourse($professor, "Systèmes d'information", 'ISM-1', 'ISM001');
+        $project = $course->projects()->create([
+            'title' => 'Étude de cas',
+            'deliverable_type' => DeliverableType::Link,
+        ]);
+        $creator->courses()->attach($course->id);
+        $group = Group::create([
+            'project_id' => $project->id,
+            'created_by' => $creator->id,
+            'name' => 'Groupe Test',
+        ]);
+        $group->members()->attach($creator->id, ['is_leader' => true]);
+        $group->members()->attach($member->id, ['is_leader' => false]);
+        $group->submission()->create(['status' => SubmissionStatus::Pending]);
+
+        $this->assertFalse($member->courses()->where('courses.id', $course->id)->exists());
+
+        $pending = "Ce groupe n'a pas encore rendu son livrable.";
+
+        $this->actingAs($member)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('showJoinCourse', false)
+                ->has('enrolledCourses', 1)
+                ->where('enrolledCourses.0.title', "Systèmes d'information")
+                ->where('enrolledCourses.0.projects.0.title', 'Étude de cas')
+                ->where('enrolledCourses.0.projects.0.group_name', 'Groupe Test')
+                ->where('enrolledCourses.0.projects.0.submitted', false)
+                ->where('enrolledCourses.0.projects.0.submission_label', 'En cours')
+                ->where('groups.0.can_submit', false)
+                ->where('groups.0.creator_name', 'Léa')
+                ->where('groups.0.project.course', "Systèmes d'information")
+                ->where('groups.0.deliverable.submitted', false)
+                ->where('groups.0.deliverable.message', $pending));
+
+        $this->assertTrue($member->fresh()->courses()->where('courses.id', $course->id)->exists());
+
+        $this->actingAs($creator)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('enrolledCourses.0.title', "Systèmes d'information")
+                ->where('enrolledCourses.0.projects.0.title', 'Étude de cas')
+                ->where('enrolledCourses.0.projects.0.submitted', false)
+                ->where('enrolledCourses.0.projects.0.submission_label', 'En cours')
+                ->where('groups.0.can_submit', true)
+                ->where('groups.0.deliverable.message', $pending));
+
+        $group->submission->update([
+            'status' => SubmissionStatus::Submitted,
+            'url' => 'https://example.com/livrable',
+        ]);
+
+        $this->actingAs($member)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('enrolledCourses.0.projects.0.submitted', true)
+                ->where('enrolledCourses.0.projects.0.submission_label', 'Rendu')
+                ->where('groups.0.can_submit', false)
+                ->where('groups.0.deliverable.submitted', true)
+                ->where('groups.0.deliverable.link', 'https://example.com/livrable')
+                ->where('groups.0.deliverable.message', null));
+
+        $this->actingAs($creator)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('enrolledCourses.0.projects.0.submitted', true)
+                ->where('enrolledCourses.0.projects.0.submission_label', 'Rendu')
+                ->where('groups.0.can_submit', true)
+                ->where('groups.0.deliverable.link', 'https://example.com/livrable'));
+    }
+
     public function test_enrolled_course_without_projects_hides_the_group_box(): void
     {
         $professor = User::factory()->professor()->create();
@@ -299,6 +381,8 @@ class StudentDashboardTest extends TestCase
             $this->assertIsArray($translations);
             $this->assertArrayHasKey('Créer ou rejoindre un groupe', $translations);
             $this->assertArrayHasKey('Mes cours', $translations);
+            $this->assertArrayHasKey('Un livrable est attendu. Seul :name peut le déposer.', $translations);
+            $this->assertArrayHasKey('Le livrable est déposé. Seul :name peut le remplacer.', $translations);
             $this->assertNotSame('', $translations['Créer ou rejoindre un groupe']);
             $this->assertNotSame('', $translations['Mes cours']);
         }
