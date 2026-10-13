@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Group;
 use App\Models\Project;
+use App\Support\PeerScoreSignal;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -24,8 +25,14 @@ class DashboardController extends Controller
                 'projects.groups.submission',
                 'projects.rubric.criteria',
             ])
-            ->get()
-            ->map(function (Course $course) {
+            ->get();
+
+        $signals = PeerScoreSignal::forProjects(
+            $courses->flatMap(fn (Course $course) => $course->projects->pluck('id')),
+        );
+
+        $courses = $courses
+            ->map(function (Course $course) use ($signals) {
                 $groups = $course->projects->flatMap->groups;
 
                 return [
@@ -60,6 +67,7 @@ class DashboardController extends Controller
                             'submission_status' => $group->submission?->status->value,
                             'submission_label' => $group->submission?->status->label(),
                         ]),
+                        'score_signals' => $signals[$project->id] ?? [],
                     ]),
                     'stats' => [
                         'groups' => $groups->count(),

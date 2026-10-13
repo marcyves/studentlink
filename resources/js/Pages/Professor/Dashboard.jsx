@@ -666,6 +666,26 @@ function DeleteProjectControl({ project }) {
     );
 }
 
+function signalSentence(signal, t) {
+    const type = signal.type === 'intra' ? t('Intra-groupe') : t('Inter-groupe');
+    const values = {
+        name: signal.reviewer_name,
+        gap: signal.gap,
+        type,
+        targets: signal.targets,
+    };
+
+    if (signal.kind === 'high') {
+        return t(':name note en moyenne :gap points au-dessus des autres (:type, :targets cibles).', values);
+    }
+
+    if (signal.kind === 'low') {
+        return t(':name note en moyenne :gap points en dessous des autres (:type, :targets cibles).', values);
+    }
+
+    return t(':name ne classe pas les cibles comme les autres (:type, :targets cibles).', values);
+}
+
 function projectPeriod(project, t) {
     if (project.starts_at && project.ends_at) {
         return t('Du :start au :end', {
@@ -798,6 +818,25 @@ export default function Dashboard({ courses, deliverableTypes }) {
                                     {t('Export CSV')}
                                 </a>
                             </div>
+
+                            {project.score_signals.length > 0 && (
+                                <div className="border-b border-amber-200 bg-amber-100 px-4 py-3 text-sm text-amber-800">
+                                    <p className="flex items-center gap-1 font-medium">
+                                        <Icon name="compare_arrows" className="text-base" />
+                                        {t('Écarts avec les autres évaluateurs')}
+                                    </p>
+                                    <p className="mt-1 text-xs">
+                                        {t("Comparaison des notes déjà envoyées. La moyenne du projet n'est pas modifiée.")}
+                                    </p>
+                                    <ul className="mt-2 space-y-1">
+                                        {project.score_signals.map((signal) => (
+                                            <li key={`${signal.type}-${signal.reviewer_id}-${signal.kind}`}>
+                                                {signalSentence(signal, t)}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
 
                             <div className="divide-y divide-primary-container/10">
                                 {project.groups.length === 0 ? (
