@@ -368,4 +368,9 @@
     "Suivez qui s'est connecté et ce que les étudiants ont fait dans ce cours.": "Mira quién se ha conectado y qué han hecho los estudiantes en este curso.",
     "Seul le créateur du groupe peut déposer le livrable.": "Solo quien creó el grupo puede entregar el trabajo.",
     "Seul :name peut déposer le livrable. Vous pouvez le vérifier ici.": "Solo :name puede entregar el trabajo. Puedes verificarlo aquí."
+    "Écarts avec les autres évaluateurs": "Desviaciones respecto a los demás evaluadores",
+    "Comparaison des notes déjà envoyées. La moyenne du projet n'est pas modifiée.": "Comparación de las notas ya enviadas. La media del proyecto no cambia.",
+    ":name note en moyenne :gap points au-dessus des autres (:type, :targets cibles).": ":name puntúa de media :gap puntos por encima de los demás (:type, :targets objetivos).",
+    ":name note en moyenne :gap points en dessous des autres (:type, :targets cibles).": ":name puntúa de media :gap puntos por debajo de los demás (:type, :targets objetivos).",
+    ":name ne classe pas les cibles comme les autres (:type, :targets cibles).": ":name no ordena los objetivos como los demás (:type, :targets objetivos)."
 }
