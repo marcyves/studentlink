@@ -363,7 +363,16 @@ export default function Dashboard({
                                     <DeliverablePreview deliverable={group.deliverable} />
                                 </div>
                             )}
-                            <GroupSubmissionForm group={group} />
+                            {group.can_submit ? (
+                                <GroupSubmissionForm group={group} />
+                            ) : (
+                                <p className="mt-3 text-xs text-on-surface/60">
+                                    {t(
+                                        'Seul :name peut déposer le livrable. Vous pouvez le vérifier ici.',
+                                        { name: group.creator_name },
+                                    )}
+                                </p>
+                            )}
                         </article>
                     ))
                 )}

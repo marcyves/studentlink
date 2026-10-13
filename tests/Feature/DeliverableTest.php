@@ -210,6 +210,56 @@ class DeliverableTest extends TestCase
         $this->assertSame(SubmissionStatus::Submitted, $group->submission->fresh()->status);
     }
 
+    public function test_only_the_group_creator_can_submit_while_members_can_review_it(): void
+    {
+        [$author, , $group] = $this->seedProject(DeliverableType::Link);
+        $author->update(['name' => 'Léa']);
+        $member = User::factory()->create(['name' => 'Camille']);
+        $group->members()->attach($member->id, ['is_leader' => false]);
+
+        $this->actingAs($member)
+            ->post(route('student.groups.submission.store', $group), [
+                'url' => 'https://example.com/autre',
+            ])
+            ->assertForbidden();
+
+        $this->assertSame(SubmissionStatus::Pending, $group->submission->fresh()->status);
+        $this->assertNull($group->submission->url);
+
+        $this->actingAs($author)
+            ->post(route('student.groups.submission.store', $group), [
+                'url' => 'https://example.com/livrable',
+            ])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        $this->actingAs($member)
+            ->post(route('student.groups.submission.store', $group), [
+                'url' => 'https://example.com/remplace',
+            ])
+            ->assertForbidden();
+
+        $this->assertSame('https://example.com/livrable', $group->submission->fresh()->url);
+
+        $this->actingAs($member)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Student/Dashboard')
+                ->where('groups.0.can_submit', false)
+                ->where('groups.0.creator_name', 'Léa')
+                ->where('groups.0.deliverable.submitted', true)
+                ->where('groups.0.deliverable.link', 'https://example.com/livrable'));
+
+        $this->actingAs($author)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Student/Dashboard')
+                ->where('groups.0.can_submit', true)
+                ->where('groups.0.deliverable.link', 'https://example.com/livrable'));
+    }
+
     /**
      * @return array<string, array{0: DeliverableType}>
      */

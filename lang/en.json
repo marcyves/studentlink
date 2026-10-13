@@ -366,6 +366,8 @@
     "Quitter le groupe « :name » ?": "Leave the group “:name”?",
     "Vous avez quitté « :name ».": "You left “:name”.",
     "Suivez qui s'est connecté et ce que les étudiants ont fait dans ce cours.": "See who has logged in and what students have done in this course.",
+    "Seul le créateur du groupe peut déposer le livrable.": "Only the student who created the group can submit the deliverable.",
+    "Seul :name peut déposer le livrable. Vous pouvez le vérifier ici.": "Only :name can submit the deliverable. You can check it here."
     "Écarts avec les autres évaluateurs": "Gaps with the other reviewers",
     "Comparaison des notes déjà envoyées. La moyenne du projet n'est pas modifiée.": "Comparison of submitted scores. The project average is left unchanged.",
     ":name note en moyenne :gap points au-dessus des autres (:type, :targets cibles).": ":name scores :gap points above the others on average (:type, :targets targets).",

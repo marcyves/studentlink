@@ -10,6 +10,7 @@ use App\Models\Course;
 use App\Models\Group;
 use App\Models\PeerEvaluation;
 use App\Models\Project;
+use App\Models\User;
 use App\Services\CourseActivityRecorder;
 use App\Services\EmailDomainService;
 use App\Support\DeliverablePresenter;
@@ -37,6 +38,7 @@ class DashboardController extends Controller
                 'project.course',
                 'members',
                 'submission',
+                'creator',
             ])
             ->get();
 
@@ -72,7 +74,7 @@ class DashboardController extends Controller
         ])->values();
 
         return Inertia::render('Student/Dashboard', [
-            'groups' => $groups->map(fn (Group $group) => $this->formatGroup($group))->values(),
+            'groups' => $groups->map(fn (Group $group) => $this->formatGroup($group, $user))->values(),
             'enrolledCourses' => $enrolledCourses,
             'openProjects' => $openProjects,
             'showJoinCourse' => $enrolledCourses->isEmpty(),
@@ -231,12 +233,14 @@ class DashboardController extends Controller
         ]);
     }
 
-    private function formatGroup(Group $group): array
+    private function formatGroup(Group $group, User $user): array
     {
         return [
             'id' => $group->id,
             'name' => $group->name,
             'invite_code' => $group->invite_code,
+            'can_submit' => (int) $group->created_by === (int) $user->id,
+            'creator_name' => $group->creator?->name,
             'project' => [
                 'id' => $group->project->id,
                 'title' => $group->project->title,

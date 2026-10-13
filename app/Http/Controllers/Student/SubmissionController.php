@@ -27,6 +27,10 @@ class SubmissionController extends Controller
             abort(403);
         }
 
+        if ((int) $group->created_by !== (int) $request->user()->id) {
+            abort(403, __('Seul le créateur du groupe peut déposer le livrable.'));
+        }
+
         $type = $group->project->deliverable_type ?? DeliverableType::None;
         $validated = $this->validateForType($request, $type);
 
